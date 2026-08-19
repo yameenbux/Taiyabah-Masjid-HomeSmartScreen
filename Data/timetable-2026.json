@@ -1,0 +1,6791 @@
+{
+ "masjid": "Taiyabah Masjid (Bolton Central Islamic Society)",
+ "year": 2026,
+ "source": "Official 2026 Salah Timetable (1447–1448 AH)",
+ "timezone": "Europe/London",
+ "notes": {
+  "bst_start": "2026-03-29",
+  "bst_end": "2026-10-25",
+  "maghrib": "begins == jamaat (prayed at listed time)"
+ },
+ "days": {
+  "2026-01-01": {
+   "hijri": "12 Rajab 1447 AH",
+   "begins": {
+    "fajr": "06:36",
+    "sunrise": "08:26",
+    "zuhr": "12:20",
+    "asr": "14:13",
+    "maghrib": "16:06",
+    "isha": "17:48"
+   },
+   "jamaat": {
+    "fajr": "07:45",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:06",
+    "isha": "18:30"
+   }
+  },
+  "2026-01-02": {
+   "hijri": "13 Rajab 1447 AH",
+   "begins": {
+    "fajr": "06:36",
+    "sunrise": "08:26",
+    "zuhr": "12:21",
+    "asr": "14:14",
+    "maghrib": "16:07",
+    "isha": "17:49"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:07",
+    "isha": "18:30"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "13:40"
+   }
+  },
+  "2026-01-03": {
+   "hijri": "14 Rajab 1447 AH",
+   "begins": {
+    "fajr": "06:36",
+    "sunrise": "08:26",
+    "zuhr": "12:21",
+    "asr": "14:15",
+    "maghrib": "16:08",
+    "isha": "17:50"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:08",
+    "isha": "18:30"
+   }
+  },
+  "2026-01-04": {
+   "hijri": "15 Rajab 1447 AH",
+   "begins": {
+    "fajr": "06:36",
+    "sunrise": "08:25",
+    "zuhr": "12:22",
+    "asr": "14:17",
+    "maghrib": "16:09",
+    "isha": "17:52"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:09",
+    "isha": "18:30"
+   }
+  },
+  "2026-01-05": {
+   "hijri": "16 Rajab 1447 AH",
+   "begins": {
+    "fajr": "06:36",
+    "sunrise": "08:25",
+    "zuhr": "12:22",
+    "asr": "14:18",
+    "maghrib": "16:11",
+    "isha": "17:53"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:11",
+    "isha": "19:30"
+   }
+  },
+  "2026-01-06": {
+   "hijri": "17 Rajab 1447 AH",
+   "begins": {
+    "fajr": "06:35",
+    "sunrise": "08:25",
+    "zuhr": "12:23",
+    "asr": "14:19",
+    "maghrib": "16:12",
+    "isha": "17:55"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:12",
+    "isha": "19:30"
+   }
+  },
+  "2026-01-07": {
+   "hijri": "18 Rajab 1447 AH",
+   "begins": {
+    "fajr": "06:35",
+    "sunrise": "08:24",
+    "zuhr": "12:23",
+    "asr": "14:20",
+    "maghrib": "16:13",
+    "isha": "17:56"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:13",
+    "isha": "19:30"
+   }
+  },
+  "2026-01-08": {
+   "hijri": "19 Rajab 1447 AH",
+   "begins": {
+    "fajr": "06:35",
+    "sunrise": "08:24",
+    "zuhr": "12:24",
+    "asr": "14:22",
+    "maghrib": "16:15",
+    "isha": "17:57"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:15",
+    "isha": "19:30"
+   }
+  },
+  "2026-01-09": {
+   "hijri": "20 Rajab 1447 AH",
+   "begins": {
+    "fajr": "06:34",
+    "sunrise": "08:23",
+    "zuhr": "12:24",
+    "asr": "14:23",
+    "maghrib": "16:16",
+    "isha": "17:59"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:16",
+    "isha": "19:30"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "13:50"
+   }
+  },
+  "2026-01-10": {
+   "hijri": "21 Rajab 1447 AH",
+   "begins": {
+    "fajr": "06:34",
+    "sunrise": "08:22",
+    "zuhr": "12:24",
+    "asr": "14:25",
+    "maghrib": "16:18",
+    "isha": "18:01"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:18",
+    "isha": "18:30"
+   }
+  },
+  "2026-01-11": {
+   "hijri": "22 Rajab 1447 AH",
+   "begins": {
+    "fajr": "06:33",
+    "sunrise": "08:22",
+    "zuhr": "12:25",
+    "asr": "14:26",
+    "maghrib": "16:19",
+    "isha": "18:02"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:19",
+    "isha": "18:30"
+   }
+  },
+  "2026-01-12": {
+   "hijri": "23 Rajab 1447 AH",
+   "begins": {
+    "fajr": "06:33",
+    "sunrise": "08:21",
+    "zuhr": "12:25",
+    "asr": "14:28",
+    "maghrib": "16:21",
+    "isha": "18:04"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:21",
+    "isha": "19:30"
+   }
+  },
+  "2026-01-13": {
+   "hijri": "24 Rajab 1447 AH",
+   "begins": {
+    "fajr": "06:32",
+    "sunrise": "08:20",
+    "zuhr": "12:25",
+    "asr": "14:29",
+    "maghrib": "16:22",
+    "isha": "18:05"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:22",
+    "isha": "19:30"
+   }
+  },
+  "2026-01-14": {
+   "hijri": "25 Rajab 1447 AH",
+   "begins": {
+    "fajr": "06:31",
+    "sunrise": "08:19",
+    "zuhr": "12:26",
+    "asr": "14:31",
+    "maghrib": "16:24",
+    "isha": "18:07"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:24",
+    "isha": "19:30"
+   }
+  },
+  "2026-01-15": {
+   "hijri": "26 Rajab 1447 AH",
+   "begins": {
+    "fajr": "06:31",
+    "sunrise": "08:18",
+    "zuhr": "12:26",
+    "asr": "14:32",
+    "maghrib": "16:26",
+    "isha": "18:09"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:26",
+    "isha": "19:30"
+   }
+  },
+  "2026-01-16": {
+   "hijri": "27 Rajab 1447 AH",
+   "begins": {
+    "fajr": "06:30",
+    "sunrise": "08:17",
+    "zuhr": "12:27",
+    "asr": "14:34",
+    "maghrib": "16:27",
+    "isha": "18:11"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:27",
+    "isha": "19:30"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "14:00"
+   }
+  },
+  "2026-01-17": {
+   "hijri": "28 Rajab 1447 AH",
+   "begins": {
+    "fajr": "06:29",
+    "sunrise": "08:16",
+    "zuhr": "12:27",
+    "asr": "14:35",
+    "maghrib": "16:29",
+    "isha": "18:12"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:29",
+    "isha": "18:30"
+   }
+  },
+  "2026-01-18": {
+   "hijri": "29 Rajab 1447 AH",
+   "begins": {
+    "fajr": "06:28",
+    "sunrise": "08:15",
+    "zuhr": "12:27",
+    "asr": "14:37",
+    "maghrib": "16:31",
+    "isha": "18:14"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:31",
+    "isha": "18:30"
+   }
+  },
+  "2026-01-19": {
+   "hijri": "30 Rajab 1447 AH",
+   "begins": {
+    "fajr": "06:28",
+    "sunrise": "08:14",
+    "zuhr": "12:28",
+    "asr": "14:39",
+    "maghrib": "16:33",
+    "isha": "18:16"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:33",
+    "isha": "19:30"
+   }
+  },
+  "2026-01-20": {
+   "hijri": "1 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "06:27",
+    "sunrise": "08:13",
+    "zuhr": "12:28",
+    "asr": "14:40",
+    "maghrib": "16:34",
+    "isha": "18:18"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:34",
+    "isha": "19:30"
+   }
+  },
+  "2026-01-21": {
+   "hijri": "2 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "06:26",
+    "sunrise": "08:11",
+    "zuhr": "12:28",
+    "asr": "14:42",
+    "maghrib": "16:36",
+    "isha": "18:19"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:36",
+    "isha": "19:30"
+   }
+  },
+  "2026-01-22": {
+   "hijri": "3 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "06:25",
+    "sunrise": "08:10",
+    "zuhr": "12:28",
+    "asr": "14:44",
+    "maghrib": "16:38",
+    "isha": "18:22"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:38",
+    "isha": "19:30"
+   }
+  },
+  "2026-01-23": {
+   "hijri": "4 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "06:24",
+    "sunrise": "08:09",
+    "zuhr": "12:29",
+    "asr": "14:46",
+    "maghrib": "16:40",
+    "isha": "18:23"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:40",
+    "isha": "19:30"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "14:10"
+   }
+  },
+  "2026-01-24": {
+   "hijri": "5 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "06:22",
+    "sunrise": "08:07",
+    "zuhr": "12:29",
+    "asr": "14:47",
+    "maghrib": "16:42",
+    "isha": "18:25"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:42",
+    "isha": "18:45"
+   }
+  },
+  "2026-01-25": {
+   "hijri": "6 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "06:21",
+    "sunrise": "08:06",
+    "zuhr": "12:29",
+    "asr": "14:49",
+    "maghrib": "16:44",
+    "isha": "18:27"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:44",
+    "isha": "18:45"
+   }
+  },
+  "2026-01-26": {
+   "hijri": "7 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "06:20",
+    "sunrise": "08:04",
+    "zuhr": "12:29",
+    "asr": "14:51",
+    "maghrib": "16:46",
+    "isha": "18:29"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:46",
+    "isha": "19:30"
+   }
+  },
+  "2026-01-27": {
+   "hijri": "8 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "06:19",
+    "sunrise": "08:03",
+    "zuhr": "12:30",
+    "asr": "14:53",
+    "maghrib": "16:47",
+    "isha": "18:31"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:47",
+    "isha": "19:30"
+   }
+  },
+  "2026-01-28": {
+   "hijri": "9 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "06:18",
+    "sunrise": "08:01",
+    "zuhr": "12:30",
+    "asr": "14:55",
+    "maghrib": "16:49",
+    "isha": "18:33"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:49",
+    "isha": "19:30"
+   }
+  },
+  "2026-01-29": {
+   "hijri": "10 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "06:16",
+    "sunrise": "08:00",
+    "zuhr": "12:30",
+    "asr": "14:56",
+    "maghrib": "16:51",
+    "isha": "18:35"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:51",
+    "isha": "19:30"
+   }
+  },
+  "2026-01-30": {
+   "hijri": "11 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "06:15",
+    "sunrise": "07:58",
+    "zuhr": "12:30",
+    "asr": "14:58",
+    "maghrib": "16:53",
+    "isha": "18:36"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:45",
+    "maghrib": "16:53",
+    "isha": "19:30"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "14:20"
+   }
+  },
+  "2026-01-31": {
+   "hijri": "12 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "06:13",
+    "sunrise": "07:57",
+    "zuhr": "12:30",
+    "asr": "15:00",
+    "maghrib": "16:55",
+    "isha": "18:38"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:45",
+    "maghrib": "16:55",
+    "isha": "19:00"
+   }
+  },
+  "2026-02-01": {
+   "hijri": "13 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "06:12",
+    "sunrise": "07:55",
+    "zuhr": "12:30",
+    "asr": "15:02",
+    "maghrib": "16:57",
+    "isha": "18:39"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:45",
+    "maghrib": "16:57",
+    "isha": "19:00"
+   }
+  },
+  "2026-02-02": {
+   "hijri": "14 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "06:10",
+    "sunrise": "07:53",
+    "zuhr": "12:30",
+    "asr": "15:04",
+    "maghrib": "16:59",
+    "isha": "18:40"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:45",
+    "maghrib": "16:59",
+    "isha": "19:30"
+   }
+  },
+  "2026-02-03": {
+   "hijri": "15 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "06:08",
+    "sunrise": "07:51",
+    "zuhr": "12:31",
+    "asr": "15:06",
+    "maghrib": "17:01",
+    "isha": "18:41"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:45",
+    "maghrib": "17:01",
+    "isha": "19:30"
+   }
+  },
+  "2026-02-04": {
+   "hijri": "16 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "06:06",
+    "sunrise": "07:50",
+    "zuhr": "12:31",
+    "asr": "15:07",
+    "maghrib": "17:03",
+    "isha": "18:43"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:45",
+    "maghrib": "17:03",
+    "isha": "19:30"
+   }
+  },
+  "2026-02-05": {
+   "hijri": "17 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "06:05",
+    "sunrise": "07:48",
+    "zuhr": "12:31",
+    "asr": "15:09",
+    "maghrib": "17:05",
+    "isha": "18:44"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "15:45",
+    "maghrib": "17:05",
+    "isha": "19:30"
+   }
+  },
+  "2026-02-06": {
+   "hijri": "18 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "06:03",
+    "sunrise": "07:46",
+    "zuhr": "12:31",
+    "asr": "15:11",
+    "maghrib": "17:07",
+    "isha": "18:46"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "12:45",
+    "asr": "15:45",
+    "maghrib": "17:07",
+    "isha": "19:30"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "14:30"
+   }
+  },
+  "2026-02-07": {
+   "hijri": "19 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "06:01",
+    "sunrise": "07:44",
+    "zuhr": "12:31",
+    "asr": "15:13",
+    "maghrib": "17:09",
+    "isha": "18:47"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "12:45",
+    "asr": "15:45",
+    "maghrib": "17:09",
+    "isha": "19:00"
+   }
+  },
+  "2026-02-08": {
+   "hijri": "20 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "05:59",
+    "sunrise": "07:42",
+    "zuhr": "12:31",
+    "asr": "15:15",
+    "maghrib": "17:11",
+    "isha": "18:49"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "12:45",
+    "asr": "15:45",
+    "maghrib": "17:11",
+    "isha": "19:00"
+   }
+  },
+  "2026-02-09": {
+   "hijri": "21 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "05:57",
+    "sunrise": "07:40",
+    "zuhr": "12:31",
+    "asr": "15:17",
+    "maghrib": "17:13",
+    "isha": "18:51"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "12:45",
+    "asr": "15:45",
+    "maghrib": "17:13",
+    "isha": "19:30"
+   }
+  },
+  "2026-02-10": {
+   "hijri": "22 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "05:55",
+    "sunrise": "07:38",
+    "zuhr": "12:31",
+    "asr": "15:19",
+    "maghrib": "17:15",
+    "isha": "18:53"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "12:45",
+    "asr": "15:45",
+    "maghrib": "17:15",
+    "isha": "19:30"
+   }
+  },
+  "2026-02-11": {
+   "hijri": "23 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "05:53",
+    "sunrise": "07:36",
+    "zuhr": "12:31",
+    "asr": "15:20",
+    "maghrib": "17:17",
+    "isha": "18:54"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "12:45",
+    "asr": "15:45",
+    "maghrib": "17:17",
+    "isha": "19:30"
+   }
+  },
+  "2026-02-12": {
+   "hijri": "24 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "05:51",
+    "sunrise": "07:34",
+    "zuhr": "12:31",
+    "asr": "15:22",
+    "maghrib": "17:19",
+    "isha": "18:56"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "12:45",
+    "asr": "15:45",
+    "maghrib": "17:19",
+    "isha": "19:30"
+   }
+  },
+  "2026-02-13": {
+   "hijri": "25 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "05:49",
+    "sunrise": "07:32",
+    "zuhr": "12:31",
+    "asr": "15:24",
+    "maghrib": "17:21",
+    "isha": "18:58"
+   },
+   "jamaat": {
+    "fajr": "06:45",
+    "zuhr": "12:45",
+    "asr": "16:00",
+    "maghrib": "17:21",
+    "isha": "19:30"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "14:50"
+   }
+  },
+  "2026-02-14": {
+   "hijri": "26 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "05:47",
+    "sunrise": "07:30",
+    "zuhr": "12:31",
+    "asr": "15:26",
+    "maghrib": "17:23",
+    "isha": "19:00"
+   },
+   "jamaat": {
+    "fajr": "06:45",
+    "zuhr": "12:45",
+    "asr": "16:00",
+    "maghrib": "17:23",
+    "isha": "19:15"
+   }
+  },
+  "2026-02-15": {
+   "hijri": "27 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "05:45",
+    "sunrise": "07:28",
+    "zuhr": "12:31",
+    "asr": "15:28",
+    "maghrib": "17:25",
+    "isha": "19:01"
+   },
+   "jamaat": {
+    "fajr": "06:45",
+    "zuhr": "12:45",
+    "asr": "16:00",
+    "maghrib": "17:25",
+    "isha": "19:15"
+   }
+  },
+  "2026-02-16": {
+   "hijri": "28 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "05:43",
+    "sunrise": "07:26",
+    "zuhr": "12:31",
+    "asr": "15:30",
+    "maghrib": "17:27",
+    "isha": "19:03"
+   },
+   "jamaat": {
+    "fajr": "06:45",
+    "zuhr": "12:45",
+    "asr": "16:00",
+    "maghrib": "17:27",
+    "isha": "19:30"
+   }
+  },
+  "2026-02-17": {
+   "hijri": "29 Sha'ban 1447 AH",
+   "begins": {
+    "fajr": "05:41",
+    "sunrise": "07:24",
+    "zuhr": "12:31",
+    "asr": "15:31",
+    "maghrib": "17:29",
+    "isha": "19:05"
+   },
+   "jamaat": {
+    "fajr": "06:45",
+    "zuhr": "12:45",
+    "asr": "16:00",
+    "maghrib": "17:29",
+    "isha": "19:30"
+   }
+  },
+  "2026-02-18": {
+   "hijri": "1 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "05:38",
+    "sunrise": "07:22",
+    "zuhr": "12:31",
+    "asr": "15:33",
+    "maghrib": "17:31",
+    "isha": "19:07"
+   },
+   "jamaat": {
+    "fajr": "06:00",
+    "zuhr": "12:45",
+    "asr": "16:00",
+    "maghrib": "17:31",
+    "isha": "19:30"
+   }
+  },
+  "2026-02-19": {
+   "hijri": "2 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "05:36",
+    "sunrise": "07:20",
+    "zuhr": "12:31",
+    "asr": "15:35",
+    "maghrib": "17:33",
+    "isha": "19:08"
+   },
+   "jamaat": {
+    "fajr": "06:00",
+    "zuhr": "12:45",
+    "asr": "16:00",
+    "maghrib": "17:33",
+    "isha": "19:30"
+   }
+  },
+  "2026-02-20": {
+   "hijri": "3 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "05:34",
+    "sunrise": "07:18",
+    "zuhr": "12:30",
+    "asr": "15:37",
+    "maghrib": "17:35",
+    "isha": "19:10"
+   },
+   "jamaat": {
+    "fajr": "05:50",
+    "zuhr": "12:45",
+    "asr": "16:15",
+    "maghrib": "17:35",
+    "isha": "19:45"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "15:00"
+   }
+  },
+  "2026-02-21": {
+   "hijri": "4 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "05:32",
+    "sunrise": "07:15",
+    "zuhr": "12:30",
+    "asr": "15:38",
+    "maghrib": "17:37",
+    "isha": "19:12"
+   },
+   "jamaat": {
+    "fajr": "05:50",
+    "zuhr": "12:45",
+    "asr": "16:15",
+    "maghrib": "17:37",
+    "isha": "19:45"
+   }
+  },
+  "2026-02-22": {
+   "hijri": "5 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "05:30",
+    "sunrise": "07:13",
+    "zuhr": "12:30",
+    "asr": "15:40",
+    "maghrib": "17:39",
+    "isha": "19:13"
+   },
+   "jamaat": {
+    "fajr": "05:50",
+    "zuhr": "12:45",
+    "asr": "16:15",
+    "maghrib": "17:39",
+    "isha": "19:45"
+   }
+  },
+  "2026-02-23": {
+   "hijri": "6 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "05:27",
+    "sunrise": "07:11",
+    "zuhr": "12:30",
+    "asr": "15:42",
+    "maghrib": "17:41",
+    "isha": "19:14"
+   },
+   "jamaat": {
+    "fajr": "05:50",
+    "zuhr": "12:45",
+    "asr": "16:15",
+    "maghrib": "17:41",
+    "isha": "19:45"
+   }
+  },
+  "2026-02-24": {
+   "hijri": "7 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "05:25",
+    "sunrise": "07:09",
+    "zuhr": "12:30",
+    "asr": "15:44",
+    "maghrib": "17:43",
+    "isha": "19:16"
+   },
+   "jamaat": {
+    "fajr": "05:40",
+    "zuhr": "12:45",
+    "asr": "16:15",
+    "maghrib": "17:43",
+    "isha": "19:45"
+   }
+  },
+  "2026-02-25": {
+   "hijri": "8 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "05:23",
+    "sunrise": "07:06",
+    "zuhr": "12:30",
+    "asr": "15:46",
+    "maghrib": "17:45",
+    "isha": "19:18"
+   },
+   "jamaat": {
+    "fajr": "05:40",
+    "zuhr": "12:45",
+    "asr": "16:15",
+    "maghrib": "17:45",
+    "isha": "19:45"
+   }
+  },
+  "2026-02-26": {
+   "hijri": "9 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "05:21",
+    "sunrise": "07:04",
+    "zuhr": "12:30",
+    "asr": "15:47",
+    "maghrib": "17:47",
+    "isha": "19:20"
+   },
+   "jamaat": {
+    "fajr": "05:40",
+    "zuhr": "12:45",
+    "asr": "16:15",
+    "maghrib": "17:47",
+    "isha": "19:45"
+   }
+  },
+  "2026-02-27": {
+   "hijri": "10 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "05:18",
+    "sunrise": "07:02",
+    "zuhr": "12:29",
+    "asr": "15:49",
+    "maghrib": "17:48",
+    "isha": "19:21"
+   },
+   "jamaat": {
+    "fajr": "05:35",
+    "zuhr": "12:45",
+    "asr": "16:30",
+    "maghrib": "17:48",
+    "isha": "20:00"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "15:15"
+   }
+  },
+  "2026-02-28": {
+   "hijri": "11 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "05:16",
+    "sunrise": "07:00",
+    "zuhr": "12:29",
+    "asr": "15:51",
+    "maghrib": "17:50",
+    "isha": "19:23"
+   },
+   "jamaat": {
+    "fajr": "05:35",
+    "zuhr": "12:45",
+    "asr": "16:30",
+    "maghrib": "17:50",
+    "isha": "20:00"
+   }
+  },
+  "2026-03-01": {
+   "hijri": "12 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "05:14",
+    "sunrise": "06:57",
+    "zuhr": "12:29",
+    "asr": "15:52",
+    "maghrib": "17:52",
+    "isha": "19:24"
+   },
+   "jamaat": {
+    "fajr": "05:35",
+    "zuhr": "12:45",
+    "asr": "16:30",
+    "maghrib": "17:52",
+    "isha": "20:00"
+   }
+  },
+  "2026-03-02": {
+   "hijri": "13 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "05:11",
+    "sunrise": "06:55",
+    "zuhr": "12:29",
+    "asr": "15:54",
+    "maghrib": "17:54",
+    "isha": "19:26"
+   },
+   "jamaat": {
+    "fajr": "05:35",
+    "zuhr": "12:45",
+    "asr": "16:30",
+    "maghrib": "17:54",
+    "isha": "20:00"
+   }
+  },
+  "2026-03-03": {
+   "hijri": "14 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "05:09",
+    "sunrise": "06:53",
+    "zuhr": "12:29",
+    "asr": "15:56",
+    "maghrib": "17:56",
+    "isha": "19:27"
+   },
+   "jamaat": {
+    "fajr": "05:25",
+    "zuhr": "12:45",
+    "asr": "16:30",
+    "maghrib": "17:56",
+    "isha": "20:00"
+   }
+  },
+  "2026-03-04": {
+   "hijri": "15 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "05:07",
+    "sunrise": "06:50",
+    "zuhr": "12:28",
+    "asr": "15:57",
+    "maghrib": "17:58",
+    "isha": "19:29"
+   },
+   "jamaat": {
+    "fajr": "05:25",
+    "zuhr": "12:45",
+    "asr": "16:30",
+    "maghrib": "17:58",
+    "isha": "20:00"
+   }
+  },
+  "2026-03-05": {
+   "hijri": "16 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "05:04",
+    "sunrise": "06:48",
+    "zuhr": "12:28",
+    "asr": "15:59",
+    "maghrib": "18:00",
+    "isha": "19:30"
+   },
+   "jamaat": {
+    "fajr": "05:25",
+    "zuhr": "12:45",
+    "asr": "16:30",
+    "maghrib": "18:00",
+    "isha": "20:00"
+   }
+  },
+  "2026-03-06": {
+   "hijri": "17 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "05:02",
+    "sunrise": "06:46",
+    "zuhr": "12:28",
+    "asr": "16:01",
+    "maghrib": "18:02",
+    "isha": "19:31"
+   },
+   "jamaat": {
+    "fajr": "05:15",
+    "zuhr": "12:45",
+    "asr": "16:45",
+    "maghrib": "18:02",
+    "isha": "20:00"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "15:15"
+   }
+  },
+  "2026-03-07": {
+   "hijri": "18 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "05:00",
+    "sunrise": "06:43",
+    "zuhr": "12:28",
+    "asr": "16:02",
+    "maghrib": "18:04",
+    "isha": "19:32"
+   },
+   "jamaat": {
+    "fajr": "05:15",
+    "zuhr": "12:45",
+    "asr": "16:45",
+    "maghrib": "18:04",
+    "isha": "20:00"
+   }
+  },
+  "2026-03-08": {
+   "hijri": "19 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "04:57",
+    "sunrise": "06:41",
+    "zuhr": "12:27",
+    "asr": "16:04",
+    "maghrib": "18:06",
+    "isha": "19:34"
+   },
+   "jamaat": {
+    "fajr": "05:15",
+    "zuhr": "12:45",
+    "asr": "16:45",
+    "maghrib": "18:06",
+    "isha": "20:00"
+   }
+  },
+  "2026-03-09": {
+   "hijri": "20 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "04:55",
+    "sunrise": "06:38",
+    "zuhr": "12:27",
+    "asr": "16:05",
+    "maghrib": "18:08",
+    "isha": "19:36"
+   },
+   "jamaat": {
+    "fajr": "05:15",
+    "zuhr": "12:45",
+    "asr": "16:45",
+    "maghrib": "18:08",
+    "isha": "20:00"
+   }
+  },
+  "2026-03-10": {
+   "hijri": "21 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "04:52",
+    "sunrise": "06:36",
+    "zuhr": "12:27",
+    "asr": "16:07",
+    "maghrib": "18:09",
+    "isha": "19:38"
+   },
+   "jamaat": {
+    "fajr": "05:10",
+    "zuhr": "12:45",
+    "asr": "16:45",
+    "maghrib": "18:09",
+    "isha": "20:00"
+   }
+  },
+  "2026-03-11": {
+   "hijri": "22 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "04:50",
+    "sunrise": "06:34",
+    "zuhr": "12:27",
+    "asr": "16:09",
+    "maghrib": "18:11",
+    "isha": "19:39"
+   },
+   "jamaat": {
+    "fajr": "05:10",
+    "zuhr": "12:45",
+    "asr": "16:45",
+    "maghrib": "18:11",
+    "isha": "20:00"
+   }
+  },
+  "2026-03-12": {
+   "hijri": "23 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "04:48",
+    "sunrise": "06:31",
+    "zuhr": "12:26",
+    "asr": "16:10",
+    "maghrib": "18:13",
+    "isha": "19:41"
+   },
+   "jamaat": {
+    "fajr": "05:10",
+    "zuhr": "12:45",
+    "asr": "16:45",
+    "maghrib": "18:13",
+    "isha": "20:00"
+   }
+  },
+  "2026-03-13": {
+   "hijri": "24 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "04:45",
+    "sunrise": "06:29",
+    "zuhr": "12:26",
+    "asr": "16:12",
+    "maghrib": "18:15",
+    "isha": "19:43"
+   },
+   "jamaat": {
+    "fajr": "05:00",
+    "zuhr": "12:45",
+    "asr": "17:00",
+    "maghrib": "18:15",
+    "isha": "20:15"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "15:30"
+   }
+  },
+  "2026-03-14": {
+   "hijri": "25 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "04:43",
+    "sunrise": "06:26",
+    "zuhr": "12:26",
+    "asr": "16:13",
+    "maghrib": "18:17",
+    "isha": "19:44"
+   },
+   "jamaat": {
+    "fajr": "05:00",
+    "zuhr": "12:45",
+    "asr": "17:00",
+    "maghrib": "18:17",
+    "isha": "20:15"
+   }
+  },
+  "2026-03-15": {
+   "hijri": "26 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "04:40",
+    "sunrise": "06:24",
+    "zuhr": "12:25",
+    "asr": "16:15",
+    "maghrib": "18:19",
+    "isha": "19:45"
+   },
+   "jamaat": {
+    "fajr": "05:00",
+    "zuhr": "12:45",
+    "asr": "17:00",
+    "maghrib": "18:19",
+    "isha": "20:15"
+   }
+  },
+  "2026-03-16": {
+   "hijri": "27 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "04:38",
+    "sunrise": "06:22",
+    "zuhr": "12:25",
+    "asr": "16:16",
+    "maghrib": "18:21",
+    "isha": "19:47"
+   },
+   "jamaat": {
+    "fajr": "05:00",
+    "zuhr": "12:45",
+    "asr": "17:00",
+    "maghrib": "18:21",
+    "isha": "20:15"
+   }
+  },
+  "2026-03-17": {
+   "hijri": "28 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "04:36",
+    "sunrise": "06:19",
+    "zuhr": "12:25",
+    "asr": "16:18",
+    "maghrib": "18:23",
+    "isha": "19:49"
+   },
+   "jamaat": {
+    "fajr": "04:55",
+    "zuhr": "12:45",
+    "asr": "17:00",
+    "maghrib": "18:23",
+    "isha": "20:15"
+   }
+  },
+  "2026-03-18": {
+   "hijri": "29 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "04:33",
+    "sunrise": "06:17",
+    "zuhr": "12:25",
+    "asr": "16:19",
+    "maghrib": "18:24",
+    "isha": "19:51"
+   },
+   "jamaat": {
+    "fajr": "04:55",
+    "zuhr": "12:45",
+    "asr": "17:00",
+    "maghrib": "18:24",
+    "isha": "20:15"
+   }
+  },
+  "2026-03-19": {
+   "hijri": "30 Ramadan 1447 AH",
+   "begins": {
+    "fajr": "04:32",
+    "sunrise": "06:14",
+    "zuhr": "12:24",
+    "asr": "16:21",
+    "maghrib": "18:26",
+    "isha": "19:52"
+   },
+   "jamaat": {
+    "fajr": "04:55",
+    "zuhr": "12:45",
+    "asr": "17:00",
+    "maghrib": "18:26",
+    "isha": "20:15"
+   }
+  },
+  "2026-03-20": {
+   "hijri": "1 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:29",
+    "sunrise": "06:12",
+    "zuhr": "12:24",
+    "asr": "16:22",
+    "maghrib": "18:28",
+    "isha": "19:54"
+   },
+   "jamaat": {
+    "fajr": "05:30",
+    "zuhr": "12:45",
+    "asr": "17:15",
+    "maghrib": "18:28",
+    "isha": "20:30"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "15:30"
+   }
+  },
+  "2026-03-21": {
+   "hijri": "2 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:28",
+    "sunrise": "06:09",
+    "zuhr": "12:24",
+    "asr": "16:24",
+    "maghrib": "18:30",
+    "isha": "19:55"
+   },
+   "jamaat": {
+    "fajr": "05:30",
+    "zuhr": "12:45",
+    "asr": "17:15",
+    "maghrib": "18:30",
+    "isha": "20:30"
+   }
+  },
+  "2026-03-22": {
+   "hijri": "3 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:25",
+    "sunrise": "06:07",
+    "zuhr": "12:23",
+    "asr": "16:25",
+    "maghrib": "18:32",
+    "isha": "19:57"
+   },
+   "jamaat": {
+    "fajr": "05:30",
+    "zuhr": "12:45",
+    "asr": "17:15",
+    "maghrib": "18:32",
+    "isha": "20:30"
+   }
+  },
+  "2026-03-23": {
+   "hijri": "4 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:23",
+    "sunrise": "06:04",
+    "zuhr": "12:23",
+    "asr": "16:27",
+    "maghrib": "18:34",
+    "isha": "19:58"
+   },
+   "jamaat": {
+    "fajr": "05:30",
+    "zuhr": "12:45",
+    "asr": "17:15",
+    "maghrib": "18:34",
+    "isha": "20:30"
+   }
+  },
+  "2026-03-24": {
+   "hijri": "5 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:20",
+    "sunrise": "06:02",
+    "zuhr": "12:23",
+    "asr": "16:28",
+    "maghrib": "18:35",
+    "isha": "20:00"
+   },
+   "jamaat": {
+    "fajr": "05:30",
+    "zuhr": "12:45",
+    "asr": "17:15",
+    "maghrib": "18:35",
+    "isha": "20:30"
+   }
+  },
+  "2026-03-25": {
+   "hijri": "6 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:19",
+    "sunrise": "06:00",
+    "zuhr": "12:22",
+    "asr": "16:30",
+    "maghrib": "18:37",
+    "isha": "20:02"
+   },
+   "jamaat": {
+    "fajr": "05:30",
+    "zuhr": "12:45",
+    "asr": "17:15",
+    "maghrib": "18:37",
+    "isha": "20:30"
+   }
+  },
+  "2026-03-26": {
+   "hijri": "7 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:17",
+    "sunrise": "05:57",
+    "zuhr": "12:21",
+    "asr": "16:31",
+    "maghrib": "18:39",
+    "isha": "20:03"
+   },
+   "jamaat": {
+    "fajr": "05:30",
+    "zuhr": "12:45",
+    "asr": "17:15",
+    "maghrib": "18:39",
+    "isha": "20:30"
+   }
+  },
+  "2026-03-27": {
+   "hijri": "8 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:15",
+    "sunrise": "05:55",
+    "zuhr": "12:21",
+    "asr": "16:32",
+    "maghrib": "18:41",
+    "isha": "20:04"
+   },
+   "jamaat": {
+    "fajr": "05:15",
+    "zuhr": "12:45",
+    "asr": "17:30",
+    "maghrib": "18:41",
+    "isha": "20:30"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "15:30"
+   }
+  },
+  "2026-03-28": {
+   "hijri": "9 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:13",
+    "sunrise": "05:52",
+    "zuhr": "12:21",
+    "asr": "16:34",
+    "maghrib": "18:43",
+    "isha": "20:06"
+   },
+   "jamaat": {
+    "fajr": "05:15",
+    "zuhr": "12:45",
+    "asr": "17:30",
+    "maghrib": "18:43",
+    "isha": "20:30"
+   }
+  },
+  "2026-03-29": {
+   "hijri": "10 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "05:10",
+    "sunrise": "06:50",
+    "zuhr": "13:21",
+    "asr": "17:35",
+    "maghrib": "19:45",
+    "isha": "21:08"
+   },
+   "jamaat": {
+    "fajr": "06:15",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "19:45",
+    "isha": "21:30"
+   }
+  },
+  "2026-03-30": {
+   "hijri": "11 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "05:09",
+    "sunrise": "06:47",
+    "zuhr": "13:21",
+    "asr": "17:37",
+    "maghrib": "19:46",
+    "isha": "21:09"
+   },
+   "jamaat": {
+    "fajr": "06:15",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "19:46",
+    "isha": "21:30"
+   }
+  },
+  "2026-03-31": {
+   "hijri": "12 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "05:06",
+    "sunrise": "06:45",
+    "zuhr": "13:21",
+    "asr": "17:38",
+    "maghrib": "19:48",
+    "isha": "21:11"
+   },
+   "jamaat": {
+    "fajr": "06:15",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "19:48",
+    "isha": "21:30"
+   }
+  },
+  "2026-04-01": {
+   "hijri": "13 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "05:04",
+    "sunrise": "06:43",
+    "zuhr": "13:20",
+    "asr": "17:39",
+    "maghrib": "19:50",
+    "isha": "21:12"
+   },
+   "jamaat": {
+    "fajr": "06:15",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "19:50",
+    "isha": "21:30"
+   }
+  },
+  "2026-04-02": {
+   "hijri": "14 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "05:02",
+    "sunrise": "06:40",
+    "zuhr": "13:20",
+    "asr": "17:41",
+    "maghrib": "19:52",
+    "isha": "21:13"
+   },
+   "jamaat": {
+    "fajr": "06:15",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "19:52",
+    "isha": "21:30"
+   }
+  },
+  "2026-04-03": {
+   "hijri": "15 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:59",
+    "sunrise": "06:38",
+    "zuhr": "13:20",
+    "asr": "17:42",
+    "maghrib": "19:54",
+    "isha": "21:14"
+   },
+   "jamaat": {
+    "fajr": "06:00",
+    "zuhr": "13:30",
+    "asr": "18:30",
+    "maghrib": "19:54",
+    "isha": "21:30"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-04-04": {
+   "hijri": "16 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:57",
+    "sunrise": "06:35",
+    "zuhr": "13:20",
+    "asr": "17:43",
+    "maghrib": "19:56",
+    "isha": "21:15"
+   },
+   "jamaat": {
+    "fajr": "06:00",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "19:56",
+    "isha": "21:30"
+   }
+  },
+  "2026-04-05": {
+   "hijri": "17 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:54",
+    "sunrise": "06:33",
+    "zuhr": "13:19",
+    "asr": "17:45",
+    "maghrib": "19:57",
+    "isha": "21:15"
+   },
+   "jamaat": {
+    "fajr": "06:00",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "19:57",
+    "isha": "21:30"
+   }
+  },
+  "2026-04-06": {
+   "hijri": "18 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:52",
+    "sunrise": "06:31",
+    "zuhr": "13:19",
+    "asr": "17:46",
+    "maghrib": "19:59",
+    "isha": "21:16"
+   },
+   "jamaat": {
+    "fajr": "06:00",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "19:59",
+    "isha": "21:30"
+   }
+  },
+  "2026-04-07": {
+   "hijri": "19 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:50",
+    "sunrise": "06:28",
+    "zuhr": "13:19",
+    "asr": "17:47",
+    "maghrib": "20:01",
+    "isha": "21:17"
+   },
+   "jamaat": {
+    "fajr": "06:00",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "20:01",
+    "isha": "21:30"
+   }
+  },
+  "2026-04-08": {
+   "hijri": "20 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:47",
+    "sunrise": "06:26",
+    "zuhr": "13:18",
+    "asr": "17:49",
+    "maghrib": "20:03",
+    "isha": "21:17"
+   },
+   "jamaat": {
+    "fajr": "06:00",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "20:03",
+    "isha": "21:30"
+   }
+  },
+  "2026-04-09": {
+   "hijri": "21 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:45",
+    "sunrise": "06:23",
+    "zuhr": "13:18",
+    "asr": "17:50",
+    "maghrib": "20:05",
+    "isha": "21:18"
+   },
+   "jamaat": {
+    "fajr": "06:00",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "20:05",
+    "isha": "21:30"
+   }
+  },
+  "2026-04-10": {
+   "hijri": "22 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:43",
+    "sunrise": "06:21",
+    "zuhr": "13:18",
+    "asr": "17:51",
+    "maghrib": "20:07",
+    "isha": "21:19"
+   },
+   "jamaat": {
+    "fajr": "05:40",
+    "zuhr": "13:30",
+    "asr": "18:30",
+    "maghrib": "20:07",
+    "isha": "21:45"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-04-11": {
+   "hijri": "23 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:40",
+    "sunrise": "06:19",
+    "zuhr": "13:18",
+    "asr": "17:52",
+    "maghrib": "20:08",
+    "isha": "21:20"
+   },
+   "jamaat": {
+    "fajr": "05:40",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "20:08",
+    "isha": "21:45"
+   }
+  },
+  "2026-04-12": {
+   "hijri": "24 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:38",
+    "sunrise": "06:16",
+    "zuhr": "13:17",
+    "asr": "17:54",
+    "maghrib": "20:10",
+    "isha": "21:22"
+   },
+   "jamaat": {
+    "fajr": "05:40",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "20:10",
+    "isha": "21:45"
+   }
+  },
+  "2026-04-13": {
+   "hijri": "25 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:35",
+    "sunrise": "06:14",
+    "zuhr": "13:17",
+    "asr": "17:55",
+    "maghrib": "20:12",
+    "isha": "21:23"
+   },
+   "jamaat": {
+    "fajr": "05:40",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "20:12",
+    "isha": "21:45"
+   }
+  },
+  "2026-04-14": {
+   "hijri": "26 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:33",
+    "sunrise": "06:12",
+    "zuhr": "13:17",
+    "asr": "17:56",
+    "maghrib": "20:14",
+    "isha": "21:25"
+   },
+   "jamaat": {
+    "fajr": "05:40",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "20:14",
+    "isha": "21:45"
+   }
+  },
+  "2026-04-15": {
+   "hijri": "27 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:31",
+    "sunrise": "06:09",
+    "zuhr": "13:17",
+    "asr": "17:57",
+    "maghrib": "20:16",
+    "isha": "21:27"
+   },
+   "jamaat": {
+    "fajr": "05:40",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "20:16",
+    "isha": "21:45"
+   }
+  },
+  "2026-04-16": {
+   "hijri": "28 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:29",
+    "sunrise": "06:07",
+    "zuhr": "13:16",
+    "asr": "17:59",
+    "maghrib": "20:18",
+    "isha": "21:29"
+   },
+   "jamaat": {
+    "fajr": "05:40",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "20:18",
+    "isha": "21:45"
+   }
+  },
+  "2026-04-17": {
+   "hijri": "29 Shawwal 1447 AH",
+   "begins": {
+    "fajr": "04:25",
+    "sunrise": "06:05",
+    "zuhr": "13:16",
+    "asr": "18:00",
+    "maghrib": "20:19",
+    "isha": "21:31"
+   },
+   "jamaat": {
+    "fajr": "05:15",
+    "zuhr": "13:30",
+    "asr": "19:15",
+    "maghrib": "20:19",
+    "isha": "22:00"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-04-18": {
+   "hijri": "1 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "04:23",
+    "sunrise": "06:02",
+    "zuhr": "13:16",
+    "asr": "18:01",
+    "maghrib": "20:21",
+    "isha": "21:33"
+   },
+   "jamaat": {
+    "fajr": "05:15",
+    "zuhr": "13:45",
+    "asr": "19:15",
+    "maghrib": "20:21",
+    "isha": "22:00"
+   }
+  },
+  "2026-04-19": {
+   "hijri": "2 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "04:21",
+    "sunrise": "06:00",
+    "zuhr": "13:16",
+    "asr": "18:02",
+    "maghrib": "20:23",
+    "isha": "21:34"
+   },
+   "jamaat": {
+    "fajr": "05:15",
+    "zuhr": "13:45",
+    "asr": "19:15",
+    "maghrib": "20:23",
+    "isha": "22:00"
+   }
+  },
+  "2026-04-20": {
+   "hijri": "3 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "04:18",
+    "sunrise": "05:58",
+    "zuhr": "13:16",
+    "asr": "18:03",
+    "maghrib": "20:25",
+    "isha": "21:36"
+   },
+   "jamaat": {
+    "fajr": "05:15",
+    "zuhr": "13:45",
+    "asr": "19:15",
+    "maghrib": "20:25",
+    "isha": "22:00"
+   }
+  },
+  "2026-04-21": {
+   "hijri": "4 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "04:15",
+    "sunrise": "05:56",
+    "zuhr": "13:15",
+    "asr": "18:05",
+    "maghrib": "20:27",
+    "isha": "21:38"
+   },
+   "jamaat": {
+    "fajr": "05:15",
+    "zuhr": "13:45",
+    "asr": "19:15",
+    "maghrib": "20:27",
+    "isha": "22:00"
+   }
+  },
+  "2026-04-22": {
+   "hijri": "5 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "04:13",
+    "sunrise": "05:53",
+    "zuhr": "13:15",
+    "asr": "18:06",
+    "maghrib": "20:29",
+    "isha": "21:40"
+   },
+   "jamaat": {
+    "fajr": "05:15",
+    "zuhr": "13:45",
+    "asr": "19:15",
+    "maghrib": "20:29",
+    "isha": "22:00"
+   }
+  },
+  "2026-04-23": {
+   "hijri": "6 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "04:10",
+    "sunrise": "05:51",
+    "zuhr": "13:15",
+    "asr": "18:07",
+    "maghrib": "20:30",
+    "isha": "21:42"
+   },
+   "jamaat": {
+    "fajr": "05:15",
+    "zuhr": "13:45",
+    "asr": "19:15",
+    "maghrib": "20:30",
+    "isha": "22:00"
+   }
+  },
+  "2026-04-24": {
+   "hijri": "7 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "04:08",
+    "sunrise": "05:49",
+    "zuhr": "13:15",
+    "asr": "18:08",
+    "maghrib": "20:32",
+    "isha": "21:43"
+   },
+   "jamaat": {
+    "fajr": "05:00",
+    "zuhr": "13:30",
+    "asr": "19:15",
+    "maghrib": "20:32",
+    "isha": "22:00"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-04-25": {
+   "hijri": "8 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "04:06",
+    "sunrise": "05:47",
+    "zuhr": "13:15",
+    "asr": "18:09",
+    "maghrib": "20:34",
+    "isha": "21:45"
+   },
+   "jamaat": {
+    "fajr": "05:00",
+    "zuhr": "13:45",
+    "asr": "19:15",
+    "maghrib": "20:34",
+    "isha": "22:00"
+   }
+  },
+  "2026-04-26": {
+   "hijri": "9 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "04:02",
+    "sunrise": "05:45",
+    "zuhr": "13:14",
+    "asr": "18:11",
+    "maghrib": "20:36",
+    "isha": "21:47"
+   },
+   "jamaat": {
+    "fajr": "05:00",
+    "zuhr": "13:45",
+    "asr": "19:15",
+    "maghrib": "20:36",
+    "isha": "22:00"
+   }
+  },
+  "2026-04-27": {
+   "hijri": "10 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "04:00",
+    "sunrise": "05:43",
+    "zuhr": "13:14",
+    "asr": "18:12",
+    "maghrib": "20:38",
+    "isha": "21:48"
+   },
+   "jamaat": {
+    "fajr": "05:00",
+    "zuhr": "13:45",
+    "asr": "19:15",
+    "maghrib": "20:38",
+    "isha": "22:00"
+   }
+  },
+  "2026-04-28": {
+   "hijri": "11 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:58",
+    "sunrise": "05:40",
+    "zuhr": "13:14",
+    "asr": "18:13",
+    "maghrib": "20:40",
+    "isha": "21:48"
+   },
+   "jamaat": {
+    "fajr": "05:00",
+    "zuhr": "13:45",
+    "asr": "19:15",
+    "maghrib": "20:40",
+    "isha": "22:00"
+   }
+  },
+  "2026-04-29": {
+   "hijri": "12 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:55",
+    "sunrise": "05:38",
+    "zuhr": "13:14",
+    "asr": "18:14",
+    "maghrib": "20:41",
+    "isha": "21:48"
+   },
+   "jamaat": {
+    "fajr": "05:00",
+    "zuhr": "13:45",
+    "asr": "19:15",
+    "maghrib": "20:41",
+    "isha": "22:00"
+   }
+  },
+  "2026-04-30": {
+   "hijri": "13 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:52",
+    "sunrise": "05:36",
+    "zuhr": "13:14",
+    "asr": "18:15",
+    "maghrib": "20:43",
+    "isha": "21:50"
+   },
+   "jamaat": {
+    "fajr": "05:00",
+    "zuhr": "13:45",
+    "asr": "19:15",
+    "maghrib": "20:43",
+    "isha": "22:00"
+   }
+  },
+  "2026-05-01": {
+   "hijri": "14 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:50",
+    "sunrise": "05:34",
+    "zuhr": "13:14",
+    "asr": "18:16",
+    "maghrib": "20:45",
+    "isha": "21:51"
+   },
+   "jamaat": {
+    "fajr": "04:45",
+    "zuhr": "13:30",
+    "asr": "19:30",
+    "maghrib": "20:45",
+    "isha": "22:15"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-05-02": {
+   "hijri": "15 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:47",
+    "sunrise": "05:32",
+    "zuhr": "13:14",
+    "asr": "18:17",
+    "maghrib": "20:47",
+    "isha": "21:51"
+   },
+   "jamaat": {
+    "fajr": "04:45",
+    "zuhr": "13:45",
+    "asr": "19:30",
+    "maghrib": "20:47",
+    "isha": "22:15"
+   }
+  },
+  "2026-05-03": {
+   "hijri": "16 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:45",
+    "sunrise": "05:30",
+    "zuhr": "13:14",
+    "asr": "18:18",
+    "maghrib": "20:49",
+    "isha": "21:53"
+   },
+   "jamaat": {
+    "fajr": "04:45",
+    "zuhr": "13:45",
+    "asr": "19:30",
+    "maghrib": "20:49",
+    "isha": "22:15"
+   }
+  },
+  "2026-05-04": {
+   "hijri": "17 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:42",
+    "sunrise": "05:28",
+    "zuhr": "13:13",
+    "asr": "18:19",
+    "maghrib": "20:50",
+    "isha": "21:54"
+   },
+   "jamaat": {
+    "fajr": "04:45",
+    "zuhr": "13:45",
+    "asr": "19:30",
+    "maghrib": "20:50",
+    "isha": "22:15"
+   }
+  },
+  "2026-05-05": {
+   "hijri": "18 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:40",
+    "sunrise": "05:26",
+    "zuhr": "13:13",
+    "asr": "18:20",
+    "maghrib": "20:52",
+    "isha": "21:56"
+   },
+   "jamaat": {
+    "fajr": "04:45",
+    "zuhr": "13:45",
+    "asr": "19:30",
+    "maghrib": "20:52",
+    "isha": "22:15"
+   }
+  },
+  "2026-05-06": {
+   "hijri": "19 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:37",
+    "sunrise": "05:24",
+    "zuhr": "13:13",
+    "asr": "18:22",
+    "maghrib": "20:54",
+    "isha": "21:58"
+   },
+   "jamaat": {
+    "fajr": "04:45",
+    "zuhr": "13:45",
+    "asr": "19:30",
+    "maghrib": "20:54",
+    "isha": "22:15"
+   }
+  },
+  "2026-05-07": {
+   "hijri": "20 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:35",
+    "sunrise": "05:23",
+    "zuhr": "13:13",
+    "asr": "18:23",
+    "maghrib": "20:56",
+    "isha": "22:00"
+   },
+   "jamaat": {
+    "fajr": "04:45",
+    "zuhr": "13:45",
+    "asr": "19:30",
+    "maghrib": "20:56",
+    "isha": "22:15"
+   }
+  },
+  "2026-05-08": {
+   "hijri": "21 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:33",
+    "sunrise": "05:21",
+    "zuhr": "13:13",
+    "asr": "18:24",
+    "maghrib": "20:57",
+    "isha": "22:02"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:30",
+    "asr": "19:45",
+    "maghrib": "20:57",
+    "isha": "22:25"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-05-09": {
+   "hijri": "22 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:31",
+    "sunrise": "05:19",
+    "zuhr": "13:13",
+    "asr": "18:25",
+    "maghrib": "20:59",
+    "isha": "22:04"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "20:59",
+    "isha": "22:25"
+   }
+  },
+  "2026-05-10": {
+   "hijri": "23 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:28",
+    "sunrise": "05:17",
+    "zuhr": "13:13",
+    "asr": "18:26",
+    "maghrib": "21:01",
+    "isha": "22:05"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:01",
+    "isha": "22:25"
+   }
+  },
+  "2026-05-11": {
+   "hijri": "24 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:26",
+    "sunrise": "05:15",
+    "zuhr": "13:13",
+    "asr": "18:27",
+    "maghrib": "21:03",
+    "isha": "22:07"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:03",
+    "isha": "22:25"
+   }
+  },
+  "2026-05-12": {
+   "hijri": "25 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:23",
+    "sunrise": "05:13",
+    "zuhr": "13:13",
+    "asr": "18:28",
+    "maghrib": "21:04",
+    "isha": "22:08"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:04",
+    "isha": "22:25"
+   }
+  },
+  "2026-05-13": {
+   "hijri": "26 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:22",
+    "sunrise": "05:12",
+    "zuhr": "13:13",
+    "asr": "18:29",
+    "maghrib": "21:06",
+    "isha": "22:10"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:06",
+    "isha": "22:25"
+   }
+  },
+  "2026-05-14": {
+   "hijri": "27 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:19",
+    "sunrise": "05:10",
+    "zuhr": "13:13",
+    "asr": "18:30",
+    "maghrib": "21:08",
+    "isha": "22:12"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:08",
+    "isha": "22:25"
+   }
+  },
+  "2026-05-15": {
+   "hijri": "28 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:17",
+    "sunrise": "05:08",
+    "zuhr": "13:13",
+    "asr": "18:31",
+    "maghrib": "21:09",
+    "isha": "22:13"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:30",
+    "asr": "19:45",
+    "maghrib": "21:09",
+    "isha": "22:35"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-05-16": {
+   "hijri": "29 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:15",
+    "sunrise": "05:07",
+    "zuhr": "13:13",
+    "asr": "18:32",
+    "maghrib": "21:11",
+    "isha": "22:14"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:11",
+    "isha": "22:35"
+   }
+  },
+  "2026-05-17": {
+   "hijri": "30 Dhul Qa'dah 1447 AH",
+   "begins": {
+    "fajr": "03:13",
+    "sunrise": "05:05",
+    "zuhr": "13:13",
+    "asr": "18:33",
+    "maghrib": "21:13",
+    "isha": "22:16"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:13",
+    "isha": "22:35"
+   }
+  },
+  "2026-05-18": {
+   "hijri": "1 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "03:11",
+    "sunrise": "05:04",
+    "zuhr": "13:13",
+    "asr": "18:33",
+    "maghrib": "21:14",
+    "isha": "22:17"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:14",
+    "isha": "22:35"
+   }
+  },
+  "2026-05-19": {
+   "hijri": "2 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "03:09",
+    "sunrise": "05:02",
+    "zuhr": "13:13",
+    "asr": "18:34",
+    "maghrib": "21:16",
+    "isha": "22:19"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:16",
+    "isha": "22:35"
+   }
+  },
+  "2026-05-20": {
+   "hijri": "3 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "03:07",
+    "sunrise": "05:01",
+    "zuhr": "13:13",
+    "asr": "18:35",
+    "maghrib": "21:17",
+    "isha": "22:21"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:17",
+    "isha": "22:35"
+   }
+  },
+  "2026-05-21": {
+   "hijri": "4 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "03:06",
+    "sunrise": "04:59",
+    "zuhr": "13:13",
+    "asr": "18:36",
+    "maghrib": "21:19",
+    "isha": "22:22"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:19",
+    "isha": "22:35"
+   }
+  },
+  "2026-05-22": {
+   "hijri": "5 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "03:03",
+    "sunrise": "04:58",
+    "zuhr": "13:13",
+    "asr": "18:37",
+    "maghrib": "21:20",
+    "isha": "22:24"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:30",
+    "asr": "19:45",
+    "maghrib": "21:20",
+    "isha": "22:45"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-05-23": {
+   "hijri": "6 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "03:01",
+    "sunrise": "04:57",
+    "zuhr": "13:13",
+    "asr": "18:38",
+    "maghrib": "21:22",
+    "isha": "22:25"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:22",
+    "isha": "22:45"
+   }
+  },
+  "2026-05-24": {
+   "hijri": "7 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:59",
+    "sunrise": "04:55",
+    "zuhr": "13:14",
+    "asr": "18:39",
+    "maghrib": "21:23",
+    "isha": "22:26"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:23",
+    "isha": "22:45"
+   }
+  },
+  "2026-05-25": {
+   "hijri": "8 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:57",
+    "sunrise": "04:54",
+    "zuhr": "13:14",
+    "asr": "18:40",
+    "maghrib": "21:25",
+    "isha": "22:27"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:25",
+    "isha": "22:45"
+   }
+  },
+  "2026-05-26": {
+   "hijri": "9 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:55",
+    "sunrise": "04:53",
+    "zuhr": "13:14",
+    "asr": "18:40",
+    "maghrib": "21:26",
+    "isha": "22:28"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:26",
+    "isha": "22:45"
+   }
+  },
+  "2026-05-27": {
+   "hijri": "10 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:54",
+    "sunrise": "04:52",
+    "zuhr": "13:14",
+    "asr": "18:41",
+    "maghrib": "21:27",
+    "isha": "22:30"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:27",
+    "isha": "22:45"
+   }
+  },
+  "2026-05-28": {
+   "hijri": "11 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:52",
+    "sunrise": "04:51",
+    "zuhr": "13:14",
+    "asr": "18:42",
+    "maghrib": "21:29",
+    "isha": "22:31"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:29",
+    "isha": "22:45"
+   }
+  },
+  "2026-05-29": {
+   "hijri": "12 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:51",
+    "sunrise": "04:50",
+    "zuhr": "13:14",
+    "asr": "18:43",
+    "maghrib": "21:30",
+    "isha": "22:32"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:30",
+    "asr": "19:45",
+    "maghrib": "21:30",
+    "isha": "22:50"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-05-30": {
+   "hijri": "13 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:49",
+    "sunrise": "04:49",
+    "zuhr": "13:14",
+    "asr": "18:44",
+    "maghrib": "21:31",
+    "isha": "22:33"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:31",
+    "isha": "22:50"
+   }
+  },
+  "2026-05-31": {
+   "hijri": "14 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:48",
+    "sunrise": "04:48",
+    "zuhr": "13:14",
+    "asr": "18:44",
+    "maghrib": "21:33",
+    "isha": "22:34"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:33",
+    "isha": "22:50"
+   }
+  },
+  "2026-06-01": {
+   "hijri": "15 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:46",
+    "sunrise": "04:47",
+    "zuhr": "13:15",
+    "asr": "18:45",
+    "maghrib": "21:34",
+    "isha": "22:34"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:34",
+    "isha": "22:50"
+   }
+  },
+  "2026-06-02": {
+   "hijri": "16 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:45",
+    "sunrise": "04:46",
+    "zuhr": "13:15",
+    "asr": "18:46",
+    "maghrib": "21:35",
+    "isha": "22:35"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:35",
+    "isha": "22:50"
+   }
+  },
+  "2026-06-03": {
+   "hijri": "17 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:44",
+    "sunrise": "04:45",
+    "zuhr": "13:15",
+    "asr": "18:46",
+    "maghrib": "21:36",
+    "isha": "22:36"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:36",
+    "isha": "22:50"
+   }
+  },
+  "2026-06-04": {
+   "hijri": "18 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:43",
+    "sunrise": "04:44",
+    "zuhr": "13:15",
+    "asr": "18:47",
+    "maghrib": "21:37",
+    "isha": "22:37"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:37",
+    "isha": "22:50"
+   }
+  },
+  "2026-06-05": {
+   "hijri": "19 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:41",
+    "sunrise": "04:44",
+    "zuhr": "13:15",
+    "asr": "18:48",
+    "maghrib": "21:38",
+    "isha": "22:38"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:30",
+    "asr": "20:00",
+    "maghrib": "21:38",
+    "isha": "22:55"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-06-06": {
+   "hijri": "20 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:40",
+    "sunrise": "04:43",
+    "zuhr": "13:15",
+    "asr": "18:48",
+    "maghrib": "21:39",
+    "isha": "22:39"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:39",
+    "isha": "22:55"
+   }
+  },
+  "2026-06-07": {
+   "hijri": "21 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:39",
+    "sunrise": "04:42",
+    "zuhr": "13:16",
+    "asr": "18:49",
+    "maghrib": "21:40",
+    "isha": "22:40"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:40",
+    "isha": "22:55"
+   }
+  },
+  "2026-06-08": {
+   "hijri": "22 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:38",
+    "sunrise": "04:42",
+    "zuhr": "13:16",
+    "asr": "18:49",
+    "maghrib": "21:41",
+    "isha": "22:41"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:41",
+    "isha": "22:55"
+   }
+  },
+  "2026-06-09": {
+   "hijri": "23 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:37",
+    "sunrise": "04:41",
+    "zuhr": "13:16",
+    "asr": "18:50",
+    "maghrib": "21:42",
+    "isha": "22:42"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:42",
+    "isha": "22:55"
+   }
+  },
+  "2026-06-10": {
+   "hijri": "24 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:37",
+    "sunrise": "04:41",
+    "zuhr": "13:16",
+    "asr": "18:50",
+    "maghrib": "21:43",
+    "isha": "22:43"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:43",
+    "isha": "22:55"
+   }
+  },
+  "2026-06-11": {
+   "hijri": "25 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:35",
+    "sunrise": "04:40",
+    "zuhr": "13:16",
+    "asr": "18:51",
+    "maghrib": "21:44",
+    "isha": "22:44"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:44",
+    "isha": "22:55"
+   }
+  },
+  "2026-06-12": {
+   "hijri": "26 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:34",
+    "sunrise": "04:40",
+    "zuhr": "13:17",
+    "asr": "18:51",
+    "maghrib": "21:44",
+    "isha": "22:44"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:30",
+    "asr": "20:00",
+    "maghrib": "21:44",
+    "isha": "23:00"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-06-13": {
+   "hijri": "27 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:34",
+    "sunrise": "04:40",
+    "zuhr": "13:17",
+    "asr": "18:52",
+    "maghrib": "21:45",
+    "isha": "22:45"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:45",
+    "isha": "23:00"
+   }
+  },
+  "2026-06-14": {
+   "hijri": "28 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:34",
+    "sunrise": "04:40",
+    "zuhr": "13:17",
+    "asr": "18:52",
+    "maghrib": "21:46",
+    "isha": "22:46"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:46",
+    "isha": "23:00"
+   }
+  },
+  "2026-06-15": {
+   "hijri": "29 Dhul Hijjah 1447 AH",
+   "begins": {
+    "fajr": "02:33",
+    "sunrise": "04:40",
+    "zuhr": "13:17",
+    "asr": "18:53",
+    "maghrib": "21:46",
+    "isha": "22:46"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:46",
+    "isha": "23:00"
+   }
+  },
+  "2026-06-16": {
+   "hijri": "1 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:33",
+    "sunrise": "04:39",
+    "zuhr": "13:17",
+    "asr": "18:53",
+    "maghrib": "21:47",
+    "isha": "22:47"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:47",
+    "isha": "23:00"
+   }
+  },
+  "2026-06-17": {
+   "hijri": "2 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:33",
+    "sunrise": "04:39",
+    "zuhr": "13:18",
+    "asr": "18:53",
+    "maghrib": "21:47",
+    "isha": "22:47"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:47",
+    "isha": "23:00"
+   }
+  },
+  "2026-06-18": {
+   "hijri": "3 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:33",
+    "sunrise": "04:39",
+    "zuhr": "13:18",
+    "asr": "18:54",
+    "maghrib": "21:47",
+    "isha": "22:47"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:47",
+    "isha": "23:00"
+   }
+  },
+  "2026-06-19": {
+   "hijri": "4 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:33",
+    "sunrise": "04:40",
+    "zuhr": "13:18",
+    "asr": "18:54",
+    "maghrib": "21:48",
+    "isha": "22:48"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:30",
+    "asr": "20:00",
+    "maghrib": "21:48",
+    "isha": "23:00"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-06-20": {
+   "hijri": "5 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:33",
+    "sunrise": "04:40",
+    "zuhr": "13:18",
+    "asr": "18:54",
+    "maghrib": "21:48",
+    "isha": "22:48"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:48",
+    "isha": "23:00"
+   }
+  },
+  "2026-06-21": {
+   "hijri": "6 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:35",
+    "sunrise": "04:40",
+    "zuhr": "13:19",
+    "asr": "18:54",
+    "maghrib": "21:48",
+    "isha": "22:48"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:48",
+    "isha": "23:00"
+   }
+  },
+  "2026-06-22": {
+   "hijri": "7 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:35",
+    "sunrise": "04:40",
+    "zuhr": "13:19",
+    "asr": "18:54",
+    "maghrib": "21:48",
+    "isha": "22:48"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:48",
+    "isha": "23:00"
+   }
+  },
+  "2026-06-23": {
+   "hijri": "8 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:37",
+    "sunrise": "04:40",
+    "zuhr": "13:19",
+    "asr": "18:55",
+    "maghrib": "21:48",
+    "isha": "22:48"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:48",
+    "isha": "23:00"
+   }
+  },
+  "2026-06-24": {
+   "hijri": "9 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:37",
+    "sunrise": "04:41",
+    "zuhr": "13:19",
+    "asr": "18:55",
+    "maghrib": "21:48",
+    "isha": "22:48"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:48",
+    "isha": "23:00"
+   }
+  },
+  "2026-06-25": {
+   "hijri": "10 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:38",
+    "sunrise": "04:41",
+    "zuhr": "13:19",
+    "asr": "18:55",
+    "maghrib": "21:48",
+    "isha": "22:48"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:48",
+    "isha": "23:00"
+   }
+  },
+  "2026-06-26": {
+   "hijri": "11 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:39",
+    "sunrise": "04:42",
+    "zuhr": "13:20",
+    "asr": "18:55",
+    "maghrib": "21:48",
+    "isha": "22:48"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:30",
+    "asr": "20:00",
+    "maghrib": "21:48",
+    "isha": "23:00"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-06-27": {
+   "hijri": "12 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:40",
+    "sunrise": "04:42",
+    "zuhr": "13:20",
+    "asr": "18:55",
+    "maghrib": "21:48",
+    "isha": "22:48"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:48",
+    "isha": "23:00"
+   }
+  },
+  "2026-06-28": {
+   "hijri": "13 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:41",
+    "sunrise": "04:43",
+    "zuhr": "13:20",
+    "asr": "18:55",
+    "maghrib": "21:48",
+    "isha": "22:48"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:48",
+    "isha": "23:00"
+   }
+  },
+  "2026-06-29": {
+   "hijri": "14 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:42",
+    "sunrise": "04:43",
+    "zuhr": "13:20",
+    "asr": "18:55",
+    "maghrib": "21:48",
+    "isha": "22:48"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:48",
+    "isha": "23:00"
+   }
+  },
+  "2026-06-30": {
+   "hijri": "15 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:43",
+    "sunrise": "04:44",
+    "zuhr": "13:20",
+    "asr": "18:55",
+    "maghrib": "21:48",
+    "isha": "22:48"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:48",
+    "isha": "23:00"
+   }
+  },
+  "2026-07-01": {
+   "hijri": "16 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:45",
+    "sunrise": "04:45",
+    "zuhr": "13:21",
+    "asr": "18:55",
+    "maghrib": "21:47",
+    "isha": "22:47"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:47",
+    "isha": "23:00"
+   }
+  },
+  "2026-07-02": {
+   "hijri": "17 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:46",
+    "sunrise": "04:46",
+    "zuhr": "13:21",
+    "asr": "18:55",
+    "maghrib": "21:47",
+    "isha": "22:47"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:47",
+    "isha": "23:00"
+   }
+  },
+  "2026-07-03": {
+   "hijri": "18 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:48",
+    "sunrise": "04:46",
+    "zuhr": "13:21",
+    "asr": "18:55",
+    "maghrib": "21:46",
+    "isha": "22:46"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:30",
+    "asr": "20:00",
+    "maghrib": "21:46",
+    "isha": "23:00"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-07-04": {
+   "hijri": "19 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:49",
+    "sunrise": "04:47",
+    "zuhr": "13:21",
+    "asr": "18:54",
+    "maghrib": "21:46",
+    "isha": "22:46"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:46",
+    "isha": "23:00"
+   }
+  },
+  "2026-07-05": {
+   "hijri": "20 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:50",
+    "sunrise": "04:48",
+    "zuhr": "13:21",
+    "asr": "18:54",
+    "maghrib": "21:45",
+    "isha": "22:45"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:45",
+    "isha": "23:00"
+   }
+  },
+  "2026-07-06": {
+   "hijri": "21 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:52",
+    "sunrise": "04:49",
+    "zuhr": "13:21",
+    "asr": "18:54",
+    "maghrib": "21:45",
+    "isha": "22:45"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:45",
+    "isha": "23:00"
+   }
+  },
+  "2026-07-07": {
+   "hijri": "22 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:53",
+    "sunrise": "04:50",
+    "zuhr": "13:21",
+    "asr": "18:54",
+    "maghrib": "21:44",
+    "isha": "22:44"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:44",
+    "isha": "23:00"
+   }
+  },
+  "2026-07-08": {
+   "hijri": "23 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:55",
+    "sunrise": "04:51",
+    "zuhr": "13:21",
+    "asr": "18:53",
+    "maghrib": "21:43",
+    "isha": "22:43"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:43",
+    "isha": "23:00"
+   }
+  },
+  "2026-07-09": {
+   "hijri": "24 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:56",
+    "sunrise": "04:52",
+    "zuhr": "13:21",
+    "asr": "18:53",
+    "maghrib": "21:42",
+    "isha": "22:42"
+   },
+   "jamaat": {
+    "fajr": "04:15",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:42",
+    "isha": "23:00"
+   }
+  },
+  "2026-07-10": {
+   "hijri": "25 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:57",
+    "sunrise": "04:53",
+    "zuhr": "13:21",
+    "asr": "18:53",
+    "maghrib": "21:41",
+    "isha": "22:41"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:30",
+    "asr": "20:00",
+    "maghrib": "21:41",
+    "isha": "22:50"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-07-11": {
+   "hijri": "26 Muharram 1448 AH",
+   "begins": {
+    "fajr": "02:59",
+    "sunrise": "04:55",
+    "zuhr": "13:21",
+    "asr": "18:52",
+    "maghrib": "21:41",
+    "isha": "22:41"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:41",
+    "isha": "22:50"
+   }
+  },
+  "2026-07-12": {
+   "hijri": "27 Muharram 1448 AH",
+   "begins": {
+    "fajr": "03:00",
+    "sunrise": "04:56",
+    "zuhr": "13:21",
+    "asr": "18:52",
+    "maghrib": "21:40",
+    "isha": "22:40"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:40",
+    "isha": "22:50"
+   }
+  },
+  "2026-07-13": {
+   "hijri": "28 Muharram 1448 AH",
+   "begins": {
+    "fajr": "03:03",
+    "sunrise": "04:57",
+    "zuhr": "13:21",
+    "asr": "18:51",
+    "maghrib": "21:39",
+    "isha": "22:39"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:39",
+    "isha": "22:50"
+   }
+  },
+  "2026-07-14": {
+   "hijri": "29 Muharram 1448 AH",
+   "begins": {
+    "fajr": "03:04",
+    "sunrise": "04:58",
+    "zuhr": "13:21",
+    "asr": "18:51",
+    "maghrib": "21:38",
+    "isha": "22:38"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:38",
+    "isha": "22:50"
+   }
+  },
+  "2026-07-15": {
+   "hijri": "1 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:05",
+    "sunrise": "05:00",
+    "zuhr": "13:21",
+    "asr": "18:50",
+    "maghrib": "21:36",
+    "isha": "22:36"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:36",
+    "isha": "22:50"
+   }
+  },
+  "2026-07-16": {
+   "hijri": "2 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:08",
+    "sunrise": "05:01",
+    "zuhr": "13:21",
+    "asr": "18:50",
+    "maghrib": "21:35",
+    "isha": "22:35"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "20:00",
+    "maghrib": "21:35",
+    "isha": "22:50"
+   }
+  },
+  "2026-07-17": {
+   "hijri": "3 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:09",
+    "sunrise": "05:02",
+    "zuhr": "13:21",
+    "asr": "18:49",
+    "maghrib": "21:34",
+    "isha": "22:34"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:30",
+    "asr": "19:45",
+    "maghrib": "21:34",
+    "isha": "22:45"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-07-18": {
+   "hijri": "4 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:11",
+    "sunrise": "05:04",
+    "zuhr": "13:21",
+    "asr": "18:48",
+    "maghrib": "21:33",
+    "isha": "22:33"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:33",
+    "isha": "22:45"
+   }
+  },
+  "2026-07-19": {
+   "hijri": "5 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:13",
+    "sunrise": "05:05",
+    "zuhr": "13:21",
+    "asr": "18:48",
+    "maghrib": "21:32",
+    "isha": "22:32"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:32",
+    "isha": "22:45"
+   }
+  },
+  "2026-07-20": {
+   "hijri": "6 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:14",
+    "sunrise": "05:07",
+    "zuhr": "13:21",
+    "asr": "18:47",
+    "maghrib": "21:30",
+    "isha": "22:30"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:30",
+    "isha": "22:45"
+   }
+  },
+  "2026-07-21": {
+   "hijri": "7 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:17",
+    "sunrise": "05:08",
+    "zuhr": "13:21",
+    "asr": "18:46",
+    "maghrib": "21:29",
+    "isha": "22:29"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:29",
+    "isha": "22:45"
+   }
+  },
+  "2026-07-22": {
+   "hijri": "8 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:18",
+    "sunrise": "05:09",
+    "zuhr": "13:21",
+    "asr": "18:45",
+    "maghrib": "21:27",
+    "isha": "22:27"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:27",
+    "isha": "22:45"
+   }
+  },
+  "2026-07-23": {
+   "hijri": "9 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:21",
+    "sunrise": "05:11",
+    "zuhr": "13:21",
+    "asr": "18:45",
+    "maghrib": "21:26",
+    "isha": "22:26"
+   },
+   "jamaat": {
+    "fajr": "04:30",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:26",
+    "isha": "22:45"
+   }
+  },
+  "2026-07-24": {
+   "hijri": "10 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:22",
+    "sunrise": "05:13",
+    "zuhr": "13:21",
+    "asr": "18:44",
+    "maghrib": "21:24",
+    "isha": "22:25"
+   },
+   "jamaat": {
+    "fajr": "04:45",
+    "zuhr": "13:30",
+    "asr": "19:45",
+    "maghrib": "21:24",
+    "isha": "22:35"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-07-25": {
+   "hijri": "11 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:25",
+    "sunrise": "05:14",
+    "zuhr": "13:21",
+    "asr": "18:43",
+    "maghrib": "21:23",
+    "isha": "22:24"
+   },
+   "jamaat": {
+    "fajr": "04:45",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:23",
+    "isha": "22:35"
+   }
+  },
+  "2026-07-26": {
+   "hijri": "12 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:26",
+    "sunrise": "05:16",
+    "zuhr": "13:21",
+    "asr": "18:42",
+    "maghrib": "21:21",
+    "isha": "22:23"
+   },
+   "jamaat": {
+    "fajr": "04:45",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:21",
+    "isha": "22:35"
+   }
+  },
+  "2026-07-27": {
+   "hijri": "13 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:29",
+    "sunrise": "05:17",
+    "zuhr": "13:21",
+    "asr": "18:41",
+    "maghrib": "21:20",
+    "isha": "22:21"
+   },
+   "jamaat": {
+    "fajr": "04:45",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:20",
+    "isha": "22:35"
+   }
+  },
+  "2026-07-28": {
+   "hijri": "14 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:31",
+    "sunrise": "05:19",
+    "zuhr": "13:21",
+    "asr": "18:40",
+    "maghrib": "21:18",
+    "isha": "22:20"
+   },
+   "jamaat": {
+    "fajr": "04:45",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:18",
+    "isha": "22:35"
+   }
+  },
+  "2026-07-29": {
+   "hijri": "15 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:33",
+    "sunrise": "05:20",
+    "zuhr": "13:21",
+    "asr": "18:39",
+    "maghrib": "21:16",
+    "isha": "22:18"
+   },
+   "jamaat": {
+    "fajr": "04:45",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:16",
+    "isha": "22:35"
+   }
+  },
+  "2026-07-30": {
+   "hijri": "16 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:35",
+    "sunrise": "05:22",
+    "zuhr": "13:21",
+    "asr": "18:38",
+    "maghrib": "21:15",
+    "isha": "22:16"
+   },
+   "jamaat": {
+    "fajr": "04:45",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:15",
+    "isha": "22:35"
+   }
+  },
+  "2026-07-31": {
+   "hijri": "17 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:37",
+    "sunrise": "05:24",
+    "zuhr": "13:21",
+    "asr": "18:37",
+    "maghrib": "21:13",
+    "isha": "22:15"
+   },
+   "jamaat": {
+    "fajr": "05:00",
+    "zuhr": "13:30",
+    "asr": "19:45",
+    "maghrib": "21:13",
+    "isha": "22:30"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-08-01": {
+   "hijri": "18 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:39",
+    "sunrise": "05:25",
+    "zuhr": "13:21",
+    "asr": "18:36",
+    "maghrib": "21:11",
+    "isha": "22:14"
+   },
+   "jamaat": {
+    "fajr": "05:00",
+    "zuhr": "13:30",
+    "asr": "19:45",
+    "maghrib": "21:11",
+    "isha": "22:30"
+   }
+  },
+  "2026-08-02": {
+   "hijri": "19 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:42",
+    "sunrise": "05:27",
+    "zuhr": "13:21",
+    "asr": "18:35",
+    "maghrib": "21:09",
+    "isha": "22:12"
+   },
+   "jamaat": {
+    "fajr": "05:00",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:09",
+    "isha": "22:30"
+   }
+  },
+  "2026-08-03": {
+   "hijri": "20 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:44",
+    "sunrise": "05:29",
+    "zuhr": "13:21",
+    "asr": "18:34",
+    "maghrib": "21:08",
+    "isha": "22:11"
+   },
+   "jamaat": {
+    "fajr": "05:00",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:08",
+    "isha": "22:30"
+   }
+  },
+  "2026-08-04": {
+   "hijri": "21 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:46",
+    "sunrise": "05:30",
+    "zuhr": "13:21",
+    "asr": "18:33",
+    "maghrib": "21:06",
+    "isha": "22:09"
+   },
+   "jamaat": {
+    "fajr": "05:00",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:06",
+    "isha": "22:30"
+   }
+  },
+  "2026-08-05": {
+   "hijri": "22 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:47",
+    "sunrise": "05:32",
+    "zuhr": "13:21",
+    "asr": "18:31",
+    "maghrib": "21:04",
+    "isha": "22:07"
+   },
+   "jamaat": {
+    "fajr": "05:00",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:04",
+    "isha": "22:30"
+   }
+  },
+  "2026-08-06": {
+   "hijri": "23 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:50",
+    "sunrise": "05:34",
+    "zuhr": "13:21",
+    "asr": "18:30",
+    "maghrib": "21:02",
+    "isha": "22:06"
+   },
+   "jamaat": {
+    "fajr": "05:00",
+    "zuhr": "13:45",
+    "asr": "19:45",
+    "maghrib": "21:02",
+    "isha": "22:30"
+   }
+  },
+  "2026-08-07": {
+   "hijri": "24 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:52",
+    "sunrise": "05:35",
+    "zuhr": "13:21",
+    "asr": "18:29",
+    "maghrib": "21:00",
+    "isha": "22:04"
+   },
+   "jamaat": {
+    "fajr": "05:10",
+    "zuhr": "13:30",
+    "asr": "19:30",
+    "maghrib": "21:00",
+    "isha": "22:15"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-08-08": {
+   "hijri": "25 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:54",
+    "sunrise": "05:37",
+    "zuhr": "13:21",
+    "asr": "18:28",
+    "maghrib": "20:58",
+    "isha": "22:02"
+   },
+   "jamaat": {
+    "fajr": "05:10",
+    "zuhr": "13:45",
+    "asr": "19:30",
+    "maghrib": "20:58",
+    "isha": "22:15"
+   }
+  },
+  "2026-08-09": {
+   "hijri": "26 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:56",
+    "sunrise": "05:39",
+    "zuhr": "13:21",
+    "asr": "18:26",
+    "maghrib": "20:56",
+    "isha": "22:00"
+   },
+   "jamaat": {
+    "fajr": "05:10",
+    "zuhr": "13:45",
+    "asr": "19:30",
+    "maghrib": "20:56",
+    "isha": "22:15"
+   }
+  },
+  "2026-08-10": {
+   "hijri": "27 Safar 1448 AH",
+   "begins": {
+    "fajr": "03:58",
+    "sunrise": "05:41",
+    "zuhr": "13:21",
+    "asr": "18:25",
+    "maghrib": "20:54",
+    "isha": "21:59"
+   },
+   "jamaat": {
+    "fajr": "05:10",
+    "zuhr": "13:45",
+    "asr": "19:30",
+    "maghrib": "20:54",
+    "isha": "22:15"
+   }
+  },
+  "2026-08-11": {
+   "hijri": "28 Safar 1448 AH",
+   "begins": {
+    "fajr": "04:00",
+    "sunrise": "05:42",
+    "zuhr": "13:21",
+    "asr": "18:24",
+    "maghrib": "20:52",
+    "isha": "21:58"
+   },
+   "jamaat": {
+    "fajr": "05:10",
+    "zuhr": "13:45",
+    "asr": "19:30",
+    "maghrib": "20:52",
+    "isha": "22:15"
+   }
+  },
+  "2026-08-12": {
+   "hijri": "29 Safar 1448 AH",
+   "begins": {
+    "fajr": "04:02",
+    "sunrise": "05:44",
+    "zuhr": "13:21",
+    "asr": "18:22",
+    "maghrib": "20:50",
+    "isha": "21:57"
+   },
+   "jamaat": {
+    "fajr": "05:10",
+    "zuhr": "13:45",
+    "asr": "19:30",
+    "maghrib": "20:50",
+    "isha": "22:15"
+   }
+  },
+  "2026-08-13": {
+   "hijri": "30 Safar 1448 AH",
+   "begins": {
+    "fajr": "04:05",
+    "sunrise": "05:46",
+    "zuhr": "13:21",
+    "asr": "18:21",
+    "maghrib": "20:48",
+    "isha": "21:56"
+   },
+   "jamaat": {
+    "fajr": "05:10",
+    "zuhr": "13:45",
+    "asr": "19:30",
+    "maghrib": "20:48",
+    "isha": "22:15"
+   }
+  },
+  "2026-08-14": {
+   "hijri": "1 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:06",
+    "sunrise": "05:48",
+    "zuhr": "13:21",
+    "asr": "18:19",
+    "maghrib": "20:46",
+    "isha": "21:55"
+   },
+   "jamaat": {
+    "fajr": "05:20",
+    "zuhr": "13:30",
+    "asr": "19:15",
+    "maghrib": "20:46",
+    "isha": "22:15"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-08-15": {
+   "hijri": "2 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:08",
+    "sunrise": "05:49",
+    "zuhr": "13:21",
+    "asr": "18:18",
+    "maghrib": "20:43",
+    "isha": "21:54"
+   },
+   "jamaat": {
+    "fajr": "05:20",
+    "zuhr": "13:45",
+    "asr": "19:15",
+    "maghrib": "20:43",
+    "isha": "22:15"
+   }
+  },
+  "2026-08-16": {
+   "hijri": "3 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:10",
+    "sunrise": "05:51",
+    "zuhr": "13:21",
+    "asr": "18:16",
+    "maghrib": "20:41",
+    "isha": "21:53"
+   },
+   "jamaat": {
+    "fajr": "05:20",
+    "zuhr": "13:45",
+    "asr": "19:15",
+    "maghrib": "20:41",
+    "isha": "22:15"
+   }
+  },
+  "2026-08-17": {
+   "hijri": "4 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:13",
+    "sunrise": "05:53",
+    "zuhr": "13:21",
+    "asr": "18:15",
+    "maghrib": "20:39",
+    "isha": "21:51"
+   },
+   "jamaat": {
+    "fajr": "05:20",
+    "zuhr": "13:45",
+    "asr": "19:15",
+    "maghrib": "20:39",
+    "isha": "22:15"
+   }
+  },
+  "2026-08-18": {
+   "hijri": "5 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:14",
+    "sunrise": "05:55",
+    "zuhr": "13:20",
+    "asr": "18:13",
+    "maghrib": "20:37",
+    "isha": "21:48"
+   },
+   "jamaat": {
+    "fajr": "05:20",
+    "zuhr": "13:45",
+    "asr": "19:15",
+    "maghrib": "20:37",
+    "isha": "22:15"
+   }
+  },
+  "2026-08-19": {
+   "hijri": "6 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:17",
+    "sunrise": "05:56",
+    "zuhr": "13:20",
+    "asr": "18:12",
+    "maghrib": "20:35",
+    "isha": "21:46"
+   },
+   "jamaat": {
+    "fajr": "05:20",
+    "zuhr": "13:45",
+    "asr": "19:15",
+    "maghrib": "20:35",
+    "isha": "22:15"
+   }
+  },
+  "2026-08-20": {
+   "hijri": "7 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:19",
+    "sunrise": "05:58",
+    "zuhr": "13:20",
+    "asr": "18:10",
+    "maghrib": "20:32",
+    "isha": "21:44"
+   },
+   "jamaat": {
+    "fajr": "05:20",
+    "zuhr": "13:45",
+    "asr": "19:15",
+    "maghrib": "20:32",
+    "isha": "22:15"
+   }
+  },
+  "2026-08-21": {
+   "hijri": "8 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:21",
+    "sunrise": "06:00",
+    "zuhr": "13:20",
+    "asr": "18:08",
+    "maghrib": "20:30",
+    "isha": "21:43"
+   },
+   "jamaat": {
+    "fajr": "05:30",
+    "zuhr": "13:30",
+    "asr": "18:45",
+    "maghrib": "20:30",
+    "isha": "22:00"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-08-22": {
+   "hijri": "9 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:23",
+    "sunrise": "06:02",
+    "zuhr": "13:19",
+    "asr": "18:07",
+    "maghrib": "20:28",
+    "isha": "21:40"
+   },
+   "jamaat": {
+    "fajr": "05:30",
+    "zuhr": "13:45",
+    "asr": "18:45",
+    "maghrib": "20:28",
+    "isha": "22:00"
+   }
+  },
+  "2026-08-23": {
+   "hijri": "10 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:24",
+    "sunrise": "06:03",
+    "zuhr": "13:19",
+    "asr": "18:05",
+    "maghrib": "20:26",
+    "isha": "21:38"
+   },
+   "jamaat": {
+    "fajr": "05:30",
+    "zuhr": "13:45",
+    "asr": "18:45",
+    "maghrib": "20:26",
+    "isha": "22:00"
+   }
+  },
+  "2026-08-24": {
+   "hijri": "11 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:25",
+    "sunrise": "06:05",
+    "zuhr": "13:19",
+    "asr": "18:04",
+    "maghrib": "20:23",
+    "isha": "21:36"
+   },
+   "jamaat": {
+    "fajr": "05:30",
+    "zuhr": "13:45",
+    "asr": "18:45",
+    "maghrib": "20:23",
+    "isha": "22:00"
+   }
+  },
+  "2026-08-25": {
+   "hijri": "12 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:26",
+    "sunrise": "06:07",
+    "zuhr": "13:19",
+    "asr": "18:02",
+    "maghrib": "20:21",
+    "isha": "21:35"
+   },
+   "jamaat": {
+    "fajr": "05:30",
+    "zuhr": "13:45",
+    "asr": "18:45",
+    "maghrib": "20:21",
+    "isha": "22:00"
+   }
+  },
+  "2026-08-26": {
+   "hijri": "13 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:27",
+    "sunrise": "06:09",
+    "zuhr": "13:18",
+    "asr": "18:00",
+    "maghrib": "20:19",
+    "isha": "21:32"
+   },
+   "jamaat": {
+    "fajr": "05:30",
+    "zuhr": "13:45",
+    "asr": "18:45",
+    "maghrib": "20:19",
+    "isha": "22:00"
+   }
+  },
+  "2026-08-27": {
+   "hijri": "14 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:28",
+    "sunrise": "06:10",
+    "zuhr": "13:18",
+    "asr": "17:58",
+    "maghrib": "20:17",
+    "isha": "21:30"
+   },
+   "jamaat": {
+    "fajr": "05:30",
+    "zuhr": "13:45",
+    "asr": "18:45",
+    "maghrib": "20:17",
+    "isha": "22:00"
+   }
+  },
+  "2026-08-28": {
+   "hijri": "15 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:29",
+    "sunrise": "06:12",
+    "zuhr": "13:18",
+    "asr": "17:57",
+    "maghrib": "20:14",
+    "isha": "21:28"
+   },
+   "jamaat": {
+    "fajr": "05:45",
+    "zuhr": "13:30",
+    "asr": "18:45",
+    "maghrib": "20:14",
+    "isha": "21:45"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-08-29": {
+   "hijri": "16 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:30",
+    "sunrise": "06:14",
+    "zuhr": "13:18",
+    "asr": "17:55",
+    "maghrib": "20:12",
+    "isha": "21:26"
+   },
+   "jamaat": {
+    "fajr": "05:45",
+    "zuhr": "13:45",
+    "asr": "18:45",
+    "maghrib": "20:12",
+    "isha": "21:45"
+   }
+  },
+  "2026-08-30": {
+   "hijri": "17 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:31",
+    "sunrise": "06:16",
+    "zuhr": "13:17",
+    "asr": "17:53",
+    "maghrib": "20:09",
+    "isha": "21:24"
+   },
+   "jamaat": {
+    "fajr": "05:45",
+    "zuhr": "13:45",
+    "asr": "18:45",
+    "maghrib": "20:09",
+    "isha": "21:45"
+   }
+  },
+  "2026-08-31": {
+   "hijri": "18 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:31",
+    "sunrise": "06:17",
+    "zuhr": "13:17",
+    "asr": "17:51",
+    "maghrib": "20:07",
+    "isha": "21:22"
+   },
+   "jamaat": {
+    "fajr": "05:45",
+    "zuhr": "13:45",
+    "asr": "18:45",
+    "maghrib": "20:07",
+    "isha": "21:45"
+   }
+  },
+  "2026-09-01": {
+   "hijri": "19 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:33",
+    "sunrise": "06:19",
+    "zuhr": "13:17",
+    "asr": "17:49",
+    "maghrib": "20:05",
+    "isha": "21:20"
+   },
+   "jamaat": {
+    "fajr": "05:45",
+    "zuhr": "13:45",
+    "asr": "18:45",
+    "maghrib": "20:05",
+    "isha": "21:45"
+   }
+  },
+  "2026-09-02": {
+   "hijri": "20 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:36",
+    "sunrise": "06:21",
+    "zuhr": "13:16",
+    "asr": "17:48",
+    "maghrib": "20:02",
+    "isha": "21:18"
+   },
+   "jamaat": {
+    "fajr": "05:45",
+    "zuhr": "13:45",
+    "asr": "18:45",
+    "maghrib": "20:02",
+    "isha": "21:45"
+   }
+  },
+  "2026-09-03": {
+   "hijri": "21 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:38",
+    "sunrise": "06:23",
+    "zuhr": "13:16",
+    "asr": "17:46",
+    "maghrib": "20:00",
+    "isha": "21:15"
+   },
+   "jamaat": {
+    "fajr": "05:45",
+    "zuhr": "13:45",
+    "asr": "18:45",
+    "maghrib": "20:00",
+    "isha": "21:45"
+   }
+  },
+  "2026-09-04": {
+   "hijri": "22 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:40",
+    "sunrise": "06:24",
+    "zuhr": "13:16",
+    "asr": "17:44",
+    "maghrib": "19:58",
+    "isha": "21:14"
+   },
+   "jamaat": {
+    "fajr": "06:00",
+    "zuhr": "13:30",
+    "asr": "18:30",
+    "maghrib": "19:58",
+    "isha": "21:30"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-09-05": {
+   "hijri": "23 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:43",
+    "sunrise": "06:26",
+    "zuhr": "13:15",
+    "asr": "17:42",
+    "maghrib": "19:55",
+    "isha": "21:12"
+   },
+   "jamaat": {
+    "fajr": "06:00",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "19:55",
+    "isha": "21:30"
+   }
+  },
+  "2026-09-06": {
+   "hijri": "24 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:45",
+    "sunrise": "06:28",
+    "zuhr": "13:15",
+    "asr": "17:40",
+    "maghrib": "19:53",
+    "isha": "21:09"
+   },
+   "jamaat": {
+    "fajr": "06:00",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "19:53",
+    "isha": "21:30"
+   }
+  },
+  "2026-09-07": {
+   "hijri": "25 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:47",
+    "sunrise": "06:30",
+    "zuhr": "13:15",
+    "asr": "17:38",
+    "maghrib": "19:50",
+    "isha": "21:08"
+   },
+   "jamaat": {
+    "fajr": "06:00",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "19:50",
+    "isha": "21:30"
+   }
+  },
+  "2026-09-08": {
+   "hijri": "26 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:49",
+    "sunrise": "06:31",
+    "zuhr": "13:14",
+    "asr": "17:36",
+    "maghrib": "19:48",
+    "isha": "21:05"
+   },
+   "jamaat": {
+    "fajr": "06:00",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "19:48",
+    "isha": "21:30"
+   }
+  },
+  "2026-09-09": {
+   "hijri": "27 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:52",
+    "sunrise": "06:33",
+    "zuhr": "13:14",
+    "asr": "17:34",
+    "maghrib": "19:45",
+    "isha": "21:03"
+   },
+   "jamaat": {
+    "fajr": "06:00",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "19:45",
+    "isha": "21:30"
+   }
+  },
+  "2026-09-10": {
+   "hijri": "28 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:54",
+    "sunrise": "06:35",
+    "zuhr": "13:14",
+    "asr": "17:32",
+    "maghrib": "19:43",
+    "isha": "21:00"
+   },
+   "jamaat": {
+    "fajr": "06:00",
+    "zuhr": "13:45",
+    "asr": "18:30",
+    "maghrib": "19:43",
+    "isha": "21:30"
+   }
+  },
+  "2026-09-11": {
+   "hijri": "29 Rabi al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "04:56",
+    "sunrise": "06:36",
+    "zuhr": "13:13",
+    "asr": "17:30",
+    "maghrib": "19:41",
+    "isha": "20:59"
+   },
+   "jamaat": {
+    "fajr": "06:10",
+    "zuhr": "13:30",
+    "asr": "18:15",
+    "maghrib": "19:41",
+    "isha": "21:15"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-09-12": {
+   "hijri": "1 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "04:58",
+    "sunrise": "06:38",
+    "zuhr": "13:13",
+    "asr": "17:28",
+    "maghrib": "19:38",
+    "isha": "20:56"
+   },
+   "jamaat": {
+    "fajr": "06:10",
+    "zuhr": "13:45",
+    "asr": "18:15",
+    "maghrib": "19:38",
+    "isha": "21:15"
+   }
+  },
+  "2026-09-13": {
+   "hijri": "2 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:00",
+    "sunrise": "06:40",
+    "zuhr": "13:12",
+    "asr": "17:26",
+    "maghrib": "19:36",
+    "isha": "20:54"
+   },
+   "jamaat": {
+    "fajr": "06:10",
+    "zuhr": "13:45",
+    "asr": "18:15",
+    "maghrib": "19:36",
+    "isha": "21:15"
+   }
+  },
+  "2026-09-14": {
+   "hijri": "3 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:02",
+    "sunrise": "06:42",
+    "zuhr": "13:12",
+    "asr": "17:24",
+    "maghrib": "19:33",
+    "isha": "20:52"
+   },
+   "jamaat": {
+    "fajr": "06:10",
+    "zuhr": "13:45",
+    "asr": "18:15",
+    "maghrib": "19:33",
+    "isha": "21:15"
+   }
+  },
+  "2026-09-15": {
+   "hijri": "4 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:05",
+    "sunrise": "06:43",
+    "zuhr": "13:12",
+    "asr": "17:22",
+    "maghrib": "19:31",
+    "isha": "20:50"
+   },
+   "jamaat": {
+    "fajr": "06:10",
+    "zuhr": "13:45",
+    "asr": "18:15",
+    "maghrib": "19:31",
+    "isha": "21:15"
+   }
+  },
+  "2026-09-16": {
+   "hijri": "5 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:08",
+    "sunrise": "06:45",
+    "zuhr": "13:11",
+    "asr": "17:20",
+    "maghrib": "19:28",
+    "isha": "20:48"
+   },
+   "jamaat": {
+    "fajr": "06:10",
+    "zuhr": "13:45",
+    "asr": "18:15",
+    "maghrib": "19:28",
+    "isha": "21:15"
+   }
+  },
+  "2026-09-17": {
+   "hijri": "6 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:10",
+    "sunrise": "06:47",
+    "zuhr": "13:11",
+    "asr": "17:18",
+    "maghrib": "19:26",
+    "isha": "20:45"
+   },
+   "jamaat": {
+    "fajr": "06:10",
+    "zuhr": "13:45",
+    "asr": "18:15",
+    "maghrib": "19:26",
+    "isha": "21:15"
+   }
+  },
+  "2026-09-18": {
+   "hijri": "7 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:12",
+    "sunrise": "06:49",
+    "zuhr": "13:11",
+    "asr": "17:16",
+    "maghrib": "19:23",
+    "isha": "20:42"
+   },
+   "jamaat": {
+    "fajr": "06:20",
+    "zuhr": "13:30",
+    "asr": "18:00",
+    "maghrib": "19:23",
+    "isha": "21:00"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-09-19": {
+   "hijri": "8 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:14",
+    "sunrise": "06:50",
+    "zuhr": "13:10",
+    "asr": "17:14",
+    "maghrib": "19:21",
+    "isha": "20:40"
+   },
+   "jamaat": {
+    "fajr": "06:20",
+    "zuhr": "13:45",
+    "asr": "18:00",
+    "maghrib": "19:21",
+    "isha": "21:00"
+   }
+  },
+  "2026-09-20": {
+   "hijri": "9 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:15",
+    "sunrise": "06:52",
+    "zuhr": "13:10",
+    "asr": "17:12",
+    "maghrib": "19:18",
+    "isha": "20:38"
+   },
+   "jamaat": {
+    "fajr": "06:20",
+    "zuhr": "13:45",
+    "asr": "18:00",
+    "maghrib": "19:18",
+    "isha": "21:00"
+   }
+  },
+  "2026-09-21": {
+   "hijri": "10 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:18",
+    "sunrise": "06:54",
+    "zuhr": "13:10",
+    "asr": "17:10",
+    "maghrib": "19:16",
+    "isha": "20:36"
+   },
+   "jamaat": {
+    "fajr": "06:20",
+    "zuhr": "13:45",
+    "asr": "18:00",
+    "maghrib": "19:16",
+    "isha": "21:00"
+   }
+  },
+  "2026-09-22": {
+   "hijri": "11 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:20",
+    "sunrise": "06:56",
+    "zuhr": "13:09",
+    "asr": "17:08",
+    "maghrib": "19:14",
+    "isha": "20:34"
+   },
+   "jamaat": {
+    "fajr": "06:20",
+    "zuhr": "13:45",
+    "asr": "18:00",
+    "maghrib": "19:14",
+    "isha": "21:00"
+   }
+  },
+  "2026-09-23": {
+   "hijri": "12 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:21",
+    "sunrise": "06:57",
+    "zuhr": "13:09",
+    "asr": "17:06",
+    "maghrib": "19:11",
+    "isha": "20:31"
+   },
+   "jamaat": {
+    "fajr": "06:20",
+    "zuhr": "13:45",
+    "asr": "18:00",
+    "maghrib": "19:11",
+    "isha": "21:00"
+   }
+  },
+  "2026-09-24": {
+   "hijri": "13 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:23",
+    "sunrise": "06:59",
+    "zuhr": "13:09",
+    "asr": "17:03",
+    "maghrib": "19:09",
+    "isha": "20:29"
+   },
+   "jamaat": {
+    "fajr": "06:20",
+    "zuhr": "13:45",
+    "asr": "18:00",
+    "maghrib": "19:09",
+    "isha": "21:00"
+   }
+  },
+  "2026-09-25": {
+   "hijri": "14 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:25",
+    "sunrise": "07:01",
+    "zuhr": "13:08",
+    "asr": "17:01",
+    "maghrib": "19:06",
+    "isha": "20:28"
+   },
+   "jamaat": {
+    "fajr": "06:30",
+    "zuhr": "13:30",
+    "asr": "17:30",
+    "maghrib": "19:06",
+    "isha": "20:45"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-09-26": {
+   "hijri": "15 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:27",
+    "sunrise": "07:03",
+    "zuhr": "13:08",
+    "asr": "16:59",
+    "maghrib": "19:04",
+    "isha": "20:25"
+   },
+   "jamaat": {
+    "fajr": "06:30",
+    "zuhr": "13:45",
+    "asr": "17:30",
+    "maghrib": "19:04",
+    "isha": "20:45"
+   }
+  },
+  "2026-09-27": {
+   "hijri": "16 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:29",
+    "sunrise": "07:05",
+    "zuhr": "13:08",
+    "asr": "16:57",
+    "maghrib": "19:01",
+    "isha": "20:23"
+   },
+   "jamaat": {
+    "fajr": "06:30",
+    "zuhr": "13:45",
+    "asr": "17:30",
+    "maghrib": "19:01",
+    "isha": "20:45"
+   }
+  },
+  "2026-09-28": {
+   "hijri": "17 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:31",
+    "sunrise": "07:06",
+    "zuhr": "13:07",
+    "asr": "16:55",
+    "maghrib": "18:59",
+    "isha": "20:20"
+   },
+   "jamaat": {
+    "fajr": "06:30",
+    "zuhr": "13:45",
+    "asr": "17:30",
+    "maghrib": "18:59",
+    "isha": "20:45"
+   }
+  },
+  "2026-09-29": {
+   "hijri": "18 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:32",
+    "sunrise": "07:08",
+    "zuhr": "13:07",
+    "asr": "16:53",
+    "maghrib": "18:56",
+    "isha": "20:18"
+   },
+   "jamaat": {
+    "fajr": "06:30",
+    "zuhr": "13:45",
+    "asr": "17:30",
+    "maghrib": "18:56",
+    "isha": "20:45"
+   }
+  },
+  "2026-09-30": {
+   "hijri": "19 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:34",
+    "sunrise": "07:10",
+    "zuhr": "13:07",
+    "asr": "16:51",
+    "maghrib": "18:54",
+    "isha": "20:15"
+   },
+   "jamaat": {
+    "fajr": "06:30",
+    "zuhr": "13:45",
+    "asr": "17:30",
+    "maghrib": "18:54",
+    "isha": "20:45"
+   }
+  },
+  "2026-10-01": {
+   "hijri": "20 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:36",
+    "sunrise": "07:12",
+    "zuhr": "13:06",
+    "asr": "16:49",
+    "maghrib": "18:52",
+    "isha": "20:14"
+   },
+   "jamaat": {
+    "fajr": "06:30",
+    "zuhr": "13:45",
+    "asr": "17:30",
+    "maghrib": "18:52",
+    "isha": "20:45"
+   }
+  },
+  "2026-10-02": {
+   "hijri": "21 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:38",
+    "sunrise": "07:13",
+    "zuhr": "13:06",
+    "asr": "16:46",
+    "maghrib": "18:49",
+    "isha": "20:11"
+   },
+   "jamaat": {
+    "fajr": "06:45",
+    "zuhr": "13:30",
+    "asr": "17:30",
+    "maghrib": "18:49",
+    "isha": "20:30"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-10-03": {
+   "hijri": "22 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:40",
+    "sunrise": "07:15",
+    "zuhr": "13:06",
+    "asr": "16:44",
+    "maghrib": "18:47",
+    "isha": "20:09"
+   },
+   "jamaat": {
+    "fajr": "06:45",
+    "zuhr": "13:45",
+    "asr": "17:30",
+    "maghrib": "18:47",
+    "isha": "20:30"
+   }
+  },
+  "2026-10-04": {
+   "hijri": "23 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:42",
+    "sunrise": "07:17",
+    "zuhr": "13:05",
+    "asr": "16:42",
+    "maghrib": "18:44",
+    "isha": "20:07"
+   },
+   "jamaat": {
+    "fajr": "06:45",
+    "zuhr": "13:45",
+    "asr": "17:30",
+    "maghrib": "18:44",
+    "isha": "20:30"
+   }
+  },
+  "2026-10-05": {
+   "hijri": "24 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:44",
+    "sunrise": "07:19",
+    "zuhr": "13:05",
+    "asr": "16:40",
+    "maghrib": "18:42",
+    "isha": "20:06"
+   },
+   "jamaat": {
+    "fajr": "06:45",
+    "zuhr": "13:45",
+    "asr": "17:30",
+    "maghrib": "18:42",
+    "isha": "20:30"
+   }
+  },
+  "2026-10-06": {
+   "hijri": "25 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:46",
+    "sunrise": "07:21",
+    "zuhr": "13:05",
+    "asr": "16:38",
+    "maghrib": "18:39",
+    "isha": "20:04"
+   },
+   "jamaat": {
+    "fajr": "06:45",
+    "zuhr": "13:45",
+    "asr": "17:30",
+    "maghrib": "18:39",
+    "isha": "20:30"
+   }
+  },
+  "2026-10-07": {
+   "hijri": "26 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:47",
+    "sunrise": "07:22",
+    "zuhr": "13:04",
+    "asr": "16:36",
+    "maghrib": "18:37",
+    "isha": "20:02"
+   },
+   "jamaat": {
+    "fajr": "06:45",
+    "zuhr": "13:45",
+    "asr": "17:30",
+    "maghrib": "18:37",
+    "isha": "20:30"
+   }
+  },
+  "2026-10-08": {
+   "hijri": "27 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:49",
+    "sunrise": "07:24",
+    "zuhr": "13:04",
+    "asr": "16:34",
+    "maghrib": "18:35",
+    "isha": "19:59"
+   },
+   "jamaat": {
+    "fajr": "06:45",
+    "zuhr": "13:45",
+    "asr": "17:30",
+    "maghrib": "18:35",
+    "isha": "20:30"
+   }
+  },
+  "2026-10-09": {
+   "hijri": "28 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:51",
+    "sunrise": "07:26",
+    "zuhr": "13:04",
+    "asr": "16:32",
+    "maghrib": "18:32",
+    "isha": "19:57"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "13:30",
+    "asr": "17:00",
+    "maghrib": "18:32",
+    "isha": "20:15"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-10-10": {
+   "hijri": "29 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:53",
+    "sunrise": "07:28",
+    "zuhr": "13:04",
+    "asr": "16:29",
+    "maghrib": "18:30",
+    "isha": "19:54"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "13:45",
+    "asr": "17:00",
+    "maghrib": "18:30",
+    "isha": "20:15"
+   }
+  },
+  "2026-10-11": {
+   "hijri": "30 Rabi al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:55",
+    "sunrise": "07:30",
+    "zuhr": "13:03",
+    "asr": "16:27",
+    "maghrib": "18:28",
+    "isha": "19:53"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "13:45",
+    "asr": "17:00",
+    "maghrib": "18:28",
+    "isha": "20:15"
+   }
+  },
+  "2026-10-12": {
+   "hijri": "1 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "05:57",
+    "sunrise": "07:32",
+    "zuhr": "13:03",
+    "asr": "16:25",
+    "maghrib": "18:25",
+    "isha": "19:52"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "13:45",
+    "asr": "17:00",
+    "maghrib": "18:25",
+    "isha": "20:15"
+   }
+  },
+  "2026-10-13": {
+   "hijri": "2 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "05:58",
+    "sunrise": "07:33",
+    "zuhr": "13:03",
+    "asr": "16:23",
+    "maghrib": "18:23",
+    "isha": "19:50"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "13:45",
+    "asr": "17:00",
+    "maghrib": "18:23",
+    "isha": "20:15"
+   }
+  },
+  "2026-10-14": {
+   "hijri": "3 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "06:00",
+    "sunrise": "07:35",
+    "zuhr": "13:03",
+    "asr": "16:21",
+    "maghrib": "18:21",
+    "isha": "19:47"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "13:45",
+    "asr": "17:00",
+    "maghrib": "18:21",
+    "isha": "20:15"
+   }
+  },
+  "2026-10-15": {
+   "hijri": "4 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "06:01",
+    "sunrise": "07:37",
+    "zuhr": "13:02",
+    "asr": "16:19",
+    "maghrib": "18:18",
+    "isha": "19:45"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "13:45",
+    "asr": "17:00",
+    "maghrib": "18:18",
+    "isha": "20:15"
+   }
+  },
+  "2026-10-16": {
+   "hijri": "5 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "06:02",
+    "sunrise": "07:39",
+    "zuhr": "13:02",
+    "asr": "16:17",
+    "maghrib": "18:16",
+    "isha": "19:43"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "13:30",
+    "asr": "17:00",
+    "maghrib": "18:16",
+    "isha": "20:00"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-10-17": {
+   "hijri": "6 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "06:04",
+    "sunrise": "07:41",
+    "zuhr": "13:02",
+    "asr": "16:15",
+    "maghrib": "18:14",
+    "isha": "19:40"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "13:45",
+    "asr": "17:00",
+    "maghrib": "18:14",
+    "isha": "20:00"
+   }
+  },
+  "2026-10-18": {
+   "hijri": "7 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "06:06",
+    "sunrise": "07:43",
+    "zuhr": "13:02",
+    "asr": "16:13",
+    "maghrib": "18:12",
+    "isha": "19:38"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "13:45",
+    "asr": "17:00",
+    "maghrib": "18:12",
+    "isha": "20:00"
+   }
+  },
+  "2026-10-19": {
+   "hijri": "8 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "06:08",
+    "sunrise": "07:45",
+    "zuhr": "13:02",
+    "asr": "16:11",
+    "maghrib": "18:09",
+    "isha": "19:37"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "13:45",
+    "asr": "17:00",
+    "maghrib": "18:09",
+    "isha": "20:00"
+   }
+  },
+  "2026-10-20": {
+   "hijri": "9 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "06:09",
+    "sunrise": "07:47",
+    "zuhr": "13:01",
+    "asr": "16:09",
+    "maghrib": "18:07",
+    "isha": "19:36"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "13:45",
+    "asr": "17:00",
+    "maghrib": "18:07",
+    "isha": "20:00"
+   }
+  },
+  "2026-10-21": {
+   "hijri": "10 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "06:11",
+    "sunrise": "07:48",
+    "zuhr": "13:01",
+    "asr": "16:07",
+    "maghrib": "18:05",
+    "isha": "19:34"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "13:45",
+    "asr": "17:00",
+    "maghrib": "18:05",
+    "isha": "20:00"
+   }
+  },
+  "2026-10-22": {
+   "hijri": "11 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "06:12",
+    "sunrise": "07:50",
+    "zuhr": "13:01",
+    "asr": "16:05",
+    "maghrib": "18:03",
+    "isha": "19:31"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "13:45",
+    "asr": "17:00",
+    "maghrib": "18:03",
+    "isha": "20:00"
+   }
+  },
+  "2026-10-23": {
+   "hijri": "12 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "06:15",
+    "sunrise": "07:52",
+    "zuhr": "13:01",
+    "asr": "16:03",
+    "maghrib": "18:01",
+    "isha": "19:30"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "13:30",
+    "asr": "17:00",
+    "maghrib": "18:01",
+    "isha": "19:45"
+   },
+   "jummah": {
+    "first": "13:30",
+    "second": "15:30"
+   }
+  },
+  "2026-10-24": {
+   "hijri": "13 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "06:15",
+    "sunrise": "07:54",
+    "zuhr": "13:01",
+    "asr": "16:01",
+    "maghrib": "17:58",
+    "isha": "19:29"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "13:45",
+    "asr": "17:00",
+    "maghrib": "17:58",
+    "isha": "19:45"
+   }
+  },
+  "2026-10-25": {
+   "hijri": "14 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "05:16",
+    "sunrise": "06:56",
+    "zuhr": "12:01",
+    "asr": "14:59",
+    "maghrib": "16:56",
+    "isha": "18:27"
+   },
+   "jamaat": {
+    "fajr": "06:30",
+    "zuhr": "12:45",
+    "asr": "15:45",
+    "maghrib": "16:56",
+    "isha": "18:45"
+   }
+  },
+  "2026-10-26": {
+   "hijri": "15 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "05:18",
+    "sunrise": "06:58",
+    "zuhr": "12:01",
+    "asr": "14:57",
+    "maghrib": "16:54",
+    "isha": "18:25"
+   },
+   "jamaat": {
+    "fajr": "06:30",
+    "zuhr": "12:45",
+    "asr": "15:45",
+    "maghrib": "16:54",
+    "isha": "19:30"
+   }
+  },
+  "2026-10-27": {
+   "hijri": "16 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "05:20",
+    "sunrise": "07:00",
+    "zuhr": "12:00",
+    "asr": "14:55",
+    "maghrib": "16:52",
+    "isha": "18:23"
+   },
+   "jamaat": {
+    "fajr": "06:30",
+    "zuhr": "12:45",
+    "asr": "15:45",
+    "maghrib": "16:52",
+    "isha": "19:30"
+   }
+  },
+  "2026-10-28": {
+   "hijri": "17 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "05:21",
+    "sunrise": "07:02",
+    "zuhr": "12:00",
+    "asr": "14:53",
+    "maghrib": "16:50",
+    "isha": "18:21"
+   },
+   "jamaat": {
+    "fajr": "06:30",
+    "zuhr": "12:45",
+    "asr": "15:45",
+    "maghrib": "16:50",
+    "isha": "19:30"
+   }
+  },
+  "2026-10-29": {
+   "hijri": "18 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "05:23",
+    "sunrise": "07:04",
+    "zuhr": "12:00",
+    "asr": "14:51",
+    "maghrib": "16:48",
+    "isha": "18:19"
+   },
+   "jamaat": {
+    "fajr": "06:30",
+    "zuhr": "12:45",
+    "asr": "15:45",
+    "maghrib": "16:48",
+    "isha": "19:30"
+   }
+  },
+  "2026-10-30": {
+   "hijri": "19 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "05:25",
+    "sunrise": "07:06",
+    "zuhr": "12:00",
+    "asr": "14:49",
+    "maghrib": "16:46",
+    "isha": "18:17"
+   },
+   "jamaat": {
+    "fajr": "06:30",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:46",
+    "isha": "19:30"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "14:15"
+   }
+  },
+  "2026-10-31": {
+   "hijri": "20 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "05:27",
+    "sunrise": "07:07",
+    "zuhr": "12:00",
+    "asr": "14:47",
+    "maghrib": "16:44",
+    "isha": "18:15"
+   },
+   "jamaat": {
+    "fajr": "06:30",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:44",
+    "isha": "18:30"
+   }
+  },
+  "2026-11-01": {
+   "hijri": "21 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "05:29",
+    "sunrise": "07:09",
+    "zuhr": "12:00",
+    "asr": "14:45",
+    "maghrib": "16:42",
+    "isha": "18:15"
+   },
+   "jamaat": {
+    "fajr": "06:30",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:42",
+    "isha": "18:30"
+   }
+  },
+  "2026-11-02": {
+   "hijri": "22 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "05:31",
+    "sunrise": "07:11",
+    "zuhr": "12:00",
+    "asr": "14:44",
+    "maghrib": "16:40",
+    "isha": "18:13"
+   },
+   "jamaat": {
+    "fajr": "06:30",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:40",
+    "isha": "19:30"
+   }
+  },
+  "2026-11-03": {
+   "hijri": "23 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "05:32",
+    "sunrise": "07:13",
+    "zuhr": "12:00",
+    "asr": "14:42",
+    "maghrib": "16:38",
+    "isha": "18:12"
+   },
+   "jamaat": {
+    "fajr": "06:30",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:38",
+    "isha": "19:30"
+   }
+  },
+  "2026-11-04": {
+   "hijri": "24 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "05:34",
+    "sunrise": "07:15",
+    "zuhr": "12:00",
+    "asr": "14:40",
+    "maghrib": "16:36",
+    "isha": "18:10"
+   },
+   "jamaat": {
+    "fajr": "06:30",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:36",
+    "isha": "19:30"
+   }
+  },
+  "2026-11-05": {
+   "hijri": "25 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "05:35",
+    "sunrise": "07:17",
+    "zuhr": "12:00",
+    "asr": "14:38",
+    "maghrib": "16:34",
+    "isha": "18:09"
+   },
+   "jamaat": {
+    "fajr": "06:30",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:34",
+    "isha": "19:30"
+   }
+  },
+  "2026-11-06": {
+   "hijri": "26 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "05:36",
+    "sunrise": "07:19",
+    "zuhr": "12:00",
+    "asr": "14:37",
+    "maghrib": "16:33",
+    "isha": "18:07"
+   },
+   "jamaat": {
+    "fajr": "06:45",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:33",
+    "isha": "19:30"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "14:00"
+   }
+  },
+  "2026-11-07": {
+   "hijri": "27 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "05:38",
+    "sunrise": "07:21",
+    "zuhr": "12:00",
+    "asr": "14:35",
+    "maghrib": "16:31",
+    "isha": "18:06"
+   },
+   "jamaat": {
+    "fajr": "06:45",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:31",
+    "isha": "18:30"
+   }
+  },
+  "2026-11-08": {
+   "hijri": "28 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "05:40",
+    "sunrise": "07:23",
+    "zuhr": "12:00",
+    "asr": "14:33",
+    "maghrib": "16:29",
+    "isha": "18:04"
+   },
+   "jamaat": {
+    "fajr": "06:45",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:29",
+    "isha": "18:30"
+   }
+  },
+  "2026-11-09": {
+   "hijri": "29 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "05:41",
+    "sunrise": "07:25",
+    "zuhr": "12:00",
+    "asr": "14:32",
+    "maghrib": "16:27",
+    "isha": "18:03"
+   },
+   "jamaat": {
+    "fajr": "06:45",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:27",
+    "isha": "19:30"
+   }
+  },
+  "2026-11-10": {
+   "hijri": "30 Jumada al-Awwal 1448 AH",
+   "begins": {
+    "fajr": "05:43",
+    "sunrise": "07:27",
+    "zuhr": "12:01",
+    "asr": "14:30",
+    "maghrib": "16:25",
+    "isha": "18:01"
+   },
+   "jamaat": {
+    "fajr": "06:45",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:25",
+    "isha": "19:30"
+   }
+  },
+  "2026-11-11": {
+   "hijri": "1 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:45",
+    "sunrise": "07:28",
+    "zuhr": "12:01",
+    "asr": "14:28",
+    "maghrib": "16:24",
+    "isha": "18:00"
+   },
+   "jamaat": {
+    "fajr": "06:45",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:24",
+    "isha": "19:30"
+   }
+  },
+  "2026-11-12": {
+   "hijri": "2 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:46",
+    "sunrise": "07:30",
+    "zuhr": "12:01",
+    "asr": "14:27",
+    "maghrib": "16:22",
+    "isha": "17:59"
+   },
+   "jamaat": {
+    "fajr": "06:45",
+    "zuhr": "12:45",
+    "asr": "15:30",
+    "maghrib": "16:22",
+    "isha": "19:30"
+   }
+  },
+  "2026-11-13": {
+   "hijri": "3 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:48",
+    "sunrise": "07:32",
+    "zuhr": "12:01",
+    "asr": "14:25",
+    "maghrib": "16:21",
+    "isha": "17:58"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:21",
+    "isha": "19:30"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "13:50"
+   }
+  },
+  "2026-11-14": {
+   "hijri": "4 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:50",
+    "sunrise": "07:34",
+    "zuhr": "12:01",
+    "asr": "14:24",
+    "maghrib": "16:19",
+    "isha": "17:57"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:19",
+    "isha": "18:30"
+   }
+  },
+  "2026-11-15": {
+   "hijri": "5 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:50",
+    "sunrise": "07:36",
+    "zuhr": "12:01",
+    "asr": "14:23",
+    "maghrib": "16:17",
+    "isha": "17:55"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:17",
+    "isha": "18:30"
+   }
+  },
+  "2026-11-16": {
+   "hijri": "6 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:52",
+    "sunrise": "07:38",
+    "zuhr": "12:01",
+    "asr": "14:21",
+    "maghrib": "16:16",
+    "isha": "17:54"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:16",
+    "isha": "19:30"
+   }
+  },
+  "2026-11-17": {
+   "hijri": "7 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:54",
+    "sunrise": "07:40",
+    "zuhr": "12:02",
+    "asr": "14:20",
+    "maghrib": "16:15",
+    "isha": "17:53"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:15",
+    "isha": "19:30"
+   }
+  },
+  "2026-11-18": {
+   "hijri": "8 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:56",
+    "sunrise": "07:41",
+    "zuhr": "12:02",
+    "asr": "14:19",
+    "maghrib": "16:13",
+    "isha": "17:52"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:13",
+    "isha": "19:30"
+   }
+  },
+  "2026-11-19": {
+   "hijri": "9 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:58",
+    "sunrise": "07:43",
+    "zuhr": "12:02",
+    "asr": "14:17",
+    "maghrib": "16:12",
+    "isha": "17:50"
+   },
+   "jamaat": {
+    "fajr": "07:00",
+    "zuhr": "12:45",
+    "asr": "15:00",
+    "maghrib": "16:12",
+    "isha": "19:30"
+   }
+  },
+  "2026-11-20": {
+   "hijri": "10 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "05:59",
+    "sunrise": "07:45",
+    "zuhr": "12:02",
+    "asr": "14:16",
+    "maghrib": "16:10",
+    "isha": "17:49"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:10",
+    "isha": "19:30"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "13:40"
+   }
+  },
+  "2026-11-21": {
+   "hijri": "11 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "06:01",
+    "sunrise": "07:47",
+    "zuhr": "12:03",
+    "asr": "14:15",
+    "maghrib": "16:09",
+    "isha": "17:49"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:09",
+    "isha": "18:30"
+   }
+  },
+  "2026-11-22": {
+   "hijri": "12 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "06:03",
+    "sunrise": "07:49",
+    "zuhr": "12:03",
+    "asr": "14:14",
+    "maghrib": "16:08",
+    "isha": "17:48"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:08",
+    "isha": "18:30"
+   }
+  },
+  "2026-11-23": {
+   "hijri": "13 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "06:05",
+    "sunrise": "07:50",
+    "zuhr": "12:03",
+    "asr": "14:13",
+    "maghrib": "16:07",
+    "isha": "17:46"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:07",
+    "isha": "19:30"
+   }
+  },
+  "2026-11-24": {
+   "hijri": "14 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "06:06",
+    "sunrise": "07:52",
+    "zuhr": "12:03",
+    "asr": "14:12",
+    "maghrib": "16:06",
+    "isha": "17:45"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:06",
+    "isha": "19:30"
+   }
+  },
+  "2026-11-25": {
+   "hijri": "15 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "06:08",
+    "sunrise": "07:54",
+    "zuhr": "12:04",
+    "asr": "14:11",
+    "maghrib": "16:05",
+    "isha": "17:45"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:05",
+    "isha": "19:30"
+   }
+  },
+  "2026-11-26": {
+   "hijri": "16 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "06:10",
+    "sunrise": "07:55",
+    "zuhr": "12:04",
+    "asr": "14:10",
+    "maghrib": "16:04",
+    "isha": "17:44"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:04",
+    "isha": "19:30"
+   }
+  },
+  "2026-11-27": {
+   "hijri": "17 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "06:11",
+    "sunrise": "07:57",
+    "zuhr": "12:04",
+    "asr": "14:09",
+    "maghrib": "16:03",
+    "isha": "17:43"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:03",
+    "isha": "19:30"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "13:40"
+   }
+  },
+  "2026-11-28": {
+   "hijri": "18 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "06:13",
+    "sunrise": "07:59",
+    "zuhr": "12:05",
+    "asr": "14:08",
+    "maghrib": "16:02",
+    "isha": "17:43"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:02",
+    "isha": "18:30"
+   }
+  },
+  "2026-11-29": {
+   "hijri": "19 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "06:14",
+    "sunrise": "08:00",
+    "zuhr": "12:05",
+    "asr": "14:07",
+    "maghrib": "16:01",
+    "isha": "17:42"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:01",
+    "isha": "18:30"
+   }
+  },
+  "2026-11-30": {
+   "hijri": "20 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "06:15",
+    "sunrise": "08:02",
+    "zuhr": "12:05",
+    "asr": "14:07",
+    "maghrib": "16:00",
+    "isha": "17:42"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:00",
+    "isha": "19:30"
+   }
+  },
+  "2026-12-01": {
+   "hijri": "21 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "06:16",
+    "sunrise": "08:03",
+    "zuhr": "12:06",
+    "asr": "14:06",
+    "maghrib": "15:59",
+    "isha": "17:41"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:59",
+    "isha": "19:30"
+   }
+  },
+  "2026-12-02": {
+   "hijri": "22 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "06:17",
+    "sunrise": "08:05",
+    "zuhr": "12:06",
+    "asr": "14:05",
+    "maghrib": "15:59",
+    "isha": "17:40"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:59",
+    "isha": "19:30"
+   }
+  },
+  "2026-12-03": {
+   "hijri": "23 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "06:18",
+    "sunrise": "08:06",
+    "zuhr": "12:07",
+    "asr": "14:05",
+    "maghrib": "15:58",
+    "isha": "17:40"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:58",
+    "isha": "19:30"
+   }
+  },
+  "2026-12-04": {
+   "hijri": "24 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "06:20",
+    "sunrise": "08:08",
+    "zuhr": "12:07",
+    "asr": "14:04",
+    "maghrib": "15:57",
+    "isha": "17:39"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:57",
+    "isha": "19:30"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "13:35"
+   }
+  },
+  "2026-12-05": {
+   "hijri": "25 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "06:21",
+    "sunrise": "08:09",
+    "zuhr": "12:07",
+    "asr": "14:04",
+    "maghrib": "15:57",
+    "isha": "17:38"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:57",
+    "isha": "18:30"
+   }
+  },
+  "2026-12-06": {
+   "hijri": "26 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "06:22",
+    "sunrise": "08:10",
+    "zuhr": "12:08",
+    "asr": "14:03",
+    "maghrib": "15:56",
+    "isha": "17:38"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:56",
+    "isha": "18:30"
+   }
+  },
+  "2026-12-07": {
+   "hijri": "27 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "06:23",
+    "sunrise": "08:12",
+    "zuhr": "12:08",
+    "asr": "14:03",
+    "maghrib": "15:56",
+    "isha": "17:38"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:56",
+    "isha": "19:30"
+   }
+  },
+  "2026-12-08": {
+   "hijri": "28 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "06:24",
+    "sunrise": "08:13",
+    "zuhr": "12:09",
+    "asr": "14:03",
+    "maghrib": "15:55",
+    "isha": "17:37"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:55",
+    "isha": "19:30"
+   }
+  },
+  "2026-12-09": {
+   "hijri": "29 Jumada al-Thani 1448 AH",
+   "begins": {
+    "fajr": "06:25",
+    "sunrise": "08:14",
+    "zuhr": "12:09",
+    "asr": "14:03",
+    "maghrib": "15:55",
+    "isha": "17:37"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:55",
+    "isha": "19:30"
+   }
+  },
+  "2026-12-10": {
+   "hijri": "1 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:26",
+    "sunrise": "08:15",
+    "zuhr": "12:10",
+    "asr": "14:02",
+    "maghrib": "15:55",
+    "isha": "17:37"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:55",
+    "isha": "19:30"
+   }
+  },
+  "2026-12-11": {
+   "hijri": "2 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:27",
+    "sunrise": "08:16",
+    "zuhr": "12:10",
+    "asr": "14:02",
+    "maghrib": "15:55",
+    "isha": "17:37"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:55",
+    "isha": "19:30"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "13:35"
+   }
+  },
+  "2026-12-12": {
+   "hijri": "3 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:28",
+    "sunrise": "08:17",
+    "zuhr": "12:10",
+    "asr": "14:02",
+    "maghrib": "15:55",
+    "isha": "17:37"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:55",
+    "isha": "18:30"
+   }
+  },
+  "2026-12-13": {
+   "hijri": "4 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:28",
+    "sunrise": "08:18",
+    "zuhr": "12:11",
+    "asr": "14:02",
+    "maghrib": "15:55",
+    "isha": "17:36"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:55",
+    "isha": "18:30"
+   }
+  },
+  "2026-12-14": {
+   "hijri": "5 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:29",
+    "sunrise": "08:19",
+    "zuhr": "12:11",
+    "asr": "14:02",
+    "maghrib": "15:55",
+    "isha": "17:37"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:55",
+    "isha": "19:30"
+   }
+  },
+  "2026-12-15": {
+   "hijri": "6 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:30",
+    "sunrise": "08:20",
+    "zuhr": "12:12",
+    "asr": "14:02",
+    "maghrib": "15:55",
+    "isha": "17:37"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:55",
+    "isha": "19:30"
+   }
+  },
+  "2026-12-16": {
+   "hijri": "7 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:31",
+    "sunrise": "08:21",
+    "zuhr": "12:12",
+    "asr": "14:03",
+    "maghrib": "15:55",
+    "isha": "17:37"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:55",
+    "isha": "19:30"
+   }
+  },
+  "2026-12-17": {
+   "hijri": "8 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:31",
+    "sunrise": "08:22",
+    "zuhr": "12:13",
+    "asr": "14:03",
+    "maghrib": "15:55",
+    "isha": "17:37"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:55",
+    "isha": "19:30"
+   }
+  },
+  "2026-12-18": {
+   "hijri": "9 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:32",
+    "sunrise": "08:22",
+    "zuhr": "12:13",
+    "asr": "14:03",
+    "maghrib": "15:55",
+    "isha": "17:37"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:55",
+    "isha": "19:30"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "13:40"
+   }
+  },
+  "2026-12-19": {
+   "hijri": "10 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:33",
+    "sunrise": "08:23",
+    "zuhr": "12:14",
+    "asr": "14:03",
+    "maghrib": "15:56",
+    "isha": "17:38"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:56",
+    "isha": "18:30"
+   }
+  },
+  "2026-12-20": {
+   "hijri": "11 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:33",
+    "sunrise": "08:24",
+    "zuhr": "12:14",
+    "asr": "14:04",
+    "maghrib": "15:56",
+    "isha": "17:38"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:56",
+    "isha": "18:30"
+   }
+  },
+  "2026-12-21": {
+   "hijri": "12 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:34",
+    "sunrise": "08:24",
+    "zuhr": "12:15",
+    "asr": "14:04",
+    "maghrib": "15:57",
+    "isha": "17:39"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:57",
+    "isha": "19:30"
+   }
+  },
+  "2026-12-22": {
+   "hijri": "13 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:34",
+    "sunrise": "08:25",
+    "zuhr": "12:15",
+    "asr": "14:05",
+    "maghrib": "15:57",
+    "isha": "17:39"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:57",
+    "isha": "19:30"
+   }
+  },
+  "2026-12-23": {
+   "hijri": "14 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:34",
+    "sunrise": "08:25",
+    "zuhr": "12:16",
+    "asr": "14:05",
+    "maghrib": "15:58",
+    "isha": "17:40"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:58",
+    "isha": "19:30"
+   }
+  },
+  "2026-12-24": {
+   "hijri": "15 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:35",
+    "sunrise": "08:26",
+    "zuhr": "12:16",
+    "asr": "14:06",
+    "maghrib": "15:58",
+    "isha": "17:40"
+   },
+   "jamaat": {
+    "fajr": "07:15",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:58",
+    "isha": "19:30"
+   }
+  },
+  "2026-12-25": {
+   "hijri": "16 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:35",
+    "sunrise": "08:26",
+    "zuhr": "12:17",
+    "asr": "14:07",
+    "maghrib": "15:59",
+    "isha": "17:41"
+   },
+   "jamaat": {
+    "fajr": "07:45",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "15:59",
+    "isha": "18:30"
+   },
+   "jummah": {
+    "first": "12:45",
+    "second": "13:40"
+   }
+  },
+  "2026-12-26": {
+   "hijri": "17 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:35",
+    "sunrise": "08:26",
+    "zuhr": "12:17",
+    "asr": "14:07",
+    "maghrib": "16:00",
+    "isha": "17:42"
+   },
+   "jamaat": {
+    "fajr": "07:45",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:00",
+    "isha": "18:30"
+   }
+  },
+  "2026-12-27": {
+   "hijri": "18 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:36",
+    "sunrise": "08:26",
+    "zuhr": "12:18",
+    "asr": "14:08",
+    "maghrib": "16:01",
+    "isha": "17:43"
+   },
+   "jamaat": {
+    "fajr": "07:45",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:01",
+    "isha": "18:30"
+   }
+  },
+  "2026-12-28": {
+   "hijri": "19 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:36",
+    "sunrise": "08:26",
+    "zuhr": "12:18",
+    "asr": "14:09",
+    "maghrib": "16:01",
+    "isha": "17:43"
+   },
+   "jamaat": {
+    "fajr": "07:45",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:01",
+    "isha": "18:30"
+   }
+  },
+  "2026-12-29": {
+   "hijri": "20 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:36",
+    "sunrise": "08:27",
+    "zuhr": "12:19",
+    "asr": "14:10",
+    "maghrib": "16:02",
+    "isha": "17:44"
+   },
+   "jamaat": {
+    "fajr": "07:45",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:02",
+    "isha": "18:30"
+   }
+  },
+  "2026-12-30": {
+   "hijri": "21 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:36",
+    "sunrise": "08:27",
+    "zuhr": "12:19",
+    "asr": "14:11",
+    "maghrib": "16:03",
+    "isha": "17:45"
+   },
+   "jamaat": {
+    "fajr": "07:45",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:03",
+    "isha": "18:30"
+   }
+  },
+  "2026-12-31": {
+   "hijri": "22 Rajab 1448 AH",
+   "begins": {
+    "fajr": "06:36",
+    "sunrise": "08:26",
+    "zuhr": "12:20",
+    "asr": "14:12",
+    "maghrib": "16:04",
+    "isha": "17:46"
+   },
+   "jamaat": {
+    "fajr": "07:45",
+    "zuhr": "12:45",
+    "asr": "14:45",
+    "maghrib": "16:04",
+    "isha": "18:30"
+   }
+  }
+ }
+}
