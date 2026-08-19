@@ -1,0 +1,15 @@
+{
+  "name": "Taiyabah Masjid — Home",
+  "short_name": "Taiyabah Home",
+  "description": "Live Salah & Iqamah times for Taiyabah Masjid, with Adhan and Iqamah sound, for tablets and TVs at home.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#3C0B2A",
+  "theme_color": "#3C0B2A",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
