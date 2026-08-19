@@ -401,28 +401,37 @@ try { soundUnlocked = localStorage.getItem(SOUND_KEY) === '1'; } catch(e){}
 let firedTriggers = new Set();
 let firedForDate = null;
 
-function unlockSound(){
+function unlockSound(playConfirm){
   soundUnlocked = true;
   try { localStorage.setItem(SOUND_KEY, '1'); } catch(e){}
-  // Prime both elements with a silent play/pause cycle so the browser
-  // treats this origin as having user-engaged audio playback.
+  // Prime both elements with a play/pause cycle, directly inside this
+  // click handler, so the browser treats this origin as having
+  // user-engaged audio playback. iOS Safari in particular only grants
+  // this per page-load, tied to a real gesture — it is NOT reliably
+  // remembered across closing and reopening a Home Screen app, so this
+  // pill deliberately stays visible (as an "ON, tap to test" state)
+  // rather than disappearing, in case it needs tapping again.
   [audioAdhan, audioIqamah].forEach(a=>{
-    const v = a.volume;
-    a.muted = true;
-    a.play().then(()=>{ a.pause(); a.currentTime = 0; a.muted = false; a.volume = v; }).catch(()=>{ a.muted = false; });
+    const audible = playConfirm && a===audioIqamah;
+    a.muted = !audible;
+    a.currentTime = 0;
+    a.play().then(()=>{
+      if(!audible){ a.pause(); a.currentTime = 0; a.muted = false; }
+    }).catch(()=>{ a.muted = false; });
   });
   updateSoundPill();
 }
 function updateSoundPill(){
+  soundPill.hidden = false;
   if(soundUnlocked){
-    soundPill.hidden = true;
+    soundPill.classList.add('on');
+    soundPillLabel.textContent = "Sound on · tap to test";
   } else {
-    soundPill.hidden = false;
     soundPill.classList.remove('on');
     soundPillLabel.textContent = "Enable Adhan & Iqamah sound";
   }
 }
-soundPill.addEventListener('click', unlockSound);
+soundPill.addEventListener('click', ()=>unlockSound(true));
 
 function buildTriggersForDay(rec, baseDate){
   const isFriday = baseDate.getDay()===5 && !!rec.jummah;
@@ -442,6 +451,17 @@ function buildTriggersForDay(rec, baseDate){
   return withAdhan;
 }
 
+/* A tab/Home-Screen app that's been backgrounded, or whose screen has
+   locked, has its timers frozen by the OS — a trigger due while that's
+   happening is simply not seen at the moment it happens. Rather than
+   silently lose it, a 3-minute catch-up window means reopening the app
+   shortly after still plays it late, which is far better than never for
+   a devotional reminder (unlike the mosque's own kiosk screens, which
+   care about second-perfect timing because someone's always watching
+   them). Retries each tick until it actually succeeds or the window
+   closes, in case play() is blocked once but not the next second. */
+const CATCHUP_WINDOW_MS = 3*60000;
+
 function checkAudioTriggers(rec, baseDate, now){
   const dayKey = ymd(baseDate);
   if(firedForDate !== dayKey){ firedForDate = dayKey; firedTriggers = new Set(); }
@@ -450,11 +470,12 @@ function checkAudioTriggers(rec, baseDate, now){
   for(const t of triggers){
     if(firedTriggers.has(t.id)) continue;
     const diff = now - t.at;
-    if(diff >= 0 && diff < 5000){
-      firedTriggers.add(t.id);
+    if(diff >= 0 && diff < CATCHUP_WINDOW_MS){
       const player = t.kind==="adhan" ? audioAdhan : audioIqamah;
       player.currentTime = 0;
-      player.play().catch(()=>{ /* blocked until next user tap */ });
+      player.play().then(()=>{ firedTriggers.add(t.id); }).catch(()=>{ /* retry next tick */ });
+    } else if(diff >= CATCHUP_WINDOW_MS){
+      firedTriggers.add(t.id); // too late — give up quietly, don't retry forever
     }
   }
 }
@@ -655,9 +676,31 @@ document.getElementById('btn-contact').addEventListener('click', ()=>{ document.
 document.getElementById('contact-close').addEventListener('click', ()=>{ document.getElementById('contact-wrap').hidden = true; });
 document.getElementById('contact-wrap').addEventListener('click', (e)=>{ if(e.target.id==='contact-wrap') document.getElementById('contact-wrap').hidden = true; });
 
+/* ---------------- keep it awake & catch up on resume ---------------- */
+/* Screen Wake Lock stops the device dimming/locking while this page is
+   the active tab — the single biggest thing that keeps the audio
+   triggers actually reliable on a tablet/TV that's meant to be an
+   always-on ambient display. Not supported on iOS Safari at all
+   (as of this build), so on iPhone/iPad the device's own
+   Settings → Display → Auto-Lock still needs setting to "Never" for
+   this to behave like the always-on kiosk it's designed to be. */
+let wakeLock = null;
+async function requestWakeLock(){
+  if(!('wakeLock' in navigator)) return;
+  try{ wakeLock = await navigator.wakeLock.request('screen'); }catch(e){ /* denied or unsupported — silent */ }
+}
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState === 'visible'){
+    requestWakeLock();
+    tick(); // re-check immediately on resume, don't wait up to 1s for the next interval
+  }
+});
+window.addEventListener('focus', tick);
+
 /* ---------------- boot ---------------- */
 renderSupport();
 updateSoundPill();
+requestWakeLock();
 tick();
 setInterval(tick, 1000);
 
