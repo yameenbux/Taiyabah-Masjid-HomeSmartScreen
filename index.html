@@ -20,10 +20,10 @@
   --gold:#C6A24C;
   --gold-bright:#DCBB63;
   --paper:#F5F1E8;
-  --card:#FCFAF3;
+  --card:#EDE1C8;
   --ink:#261B22;
   --muted:#7C6E77;
-  --line:#E4DECF;
+  --line:#D8CAA5;
   --danger:#B4532F;
   --radius:18px;
   --shadow:0 1px 2px rgba(60,11,42,.06), 0 12px 30px -18px rgba(60,11,42,.35);
@@ -76,10 +76,9 @@ button{font:inherit;color:inherit}
 @media (max-width:820px){
   .topbar{grid-template-columns:1fr 1fr;grid-template-areas:"center center" "left right"}
 }
-.brandmark{height:clamp(52px,7.2vmin,92px);width:auto;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.25))}
-.brandtext{display:flex;flex-direction:column;line-height:1.18;min-width:0}
-.brandtext .name{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(22px,3.4vmin,38px);color:#F3EFE3;white-space:nowrap}
-.brandtext .sub{font-size:clamp(12px,1.5vmin,18px);letter-spacing:.08em;text-transform:uppercase;color:#BBA9B4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Logo carries its own "Taiyabah Masjid" wordmark already — a second,
+   literal text label next to it just repeated the name; dropped it. */
+.brandmark{height:clamp(58px,8.2vmin,108px);width:auto;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.25))}
 .soundpill{display:flex;align-items:center;gap:10px;background:rgba(198,162,76,.16);
   border:1px solid rgba(198,162,76,.5);color:#F3EFE3;border-radius:99px;
   padding:12px 20px;font-size:clamp(13px,1.5vmin,18px);font-weight:600;cursor:pointer;white-space:nowrap}
@@ -216,11 +215,7 @@ button{font:inherit;color:inherit}
       </button>
     </div>
     <div class="topbar-center">
-      <img class="brandmark" src="logo-cream.png" alt="Taiyabah Masjid logo">
-      <div class="brandtext">
-        <span class="name">Taiyabah Masjid</span>
-        <span class="sub">Bolton Central Islamic Society</span>
-      </div>
+      <img class="brandmark" src="logo-cream.png" alt="Taiyabah Masjid — Bolton Central Islamic Society">
     </div>
     <div class="topbar-right clockblock">
       <div class="clock tnum" id="clock">--:--</div>
