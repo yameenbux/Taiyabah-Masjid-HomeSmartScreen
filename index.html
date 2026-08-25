@@ -64,35 +64,44 @@ button{font:inherit;color:inherit}
   gap:clamp(12px,1.8vmin,22px);}
 
 /* ---- header ---- */
-.topbar{display:flex;align-items:center;flex-wrap:wrap;row-gap:8px;gap:clamp(10px,1.6vmin,18px);flex:0 0 auto}
-.brandmark{height:clamp(36px,5.2vmin,60px);width:auto;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.25))}
+/* Logo centred, sound control on the left, clock/date on the right —
+   sized up well beyond typical web defaults throughout this page: a
+   good few of the masjid's congregation are older and this is meant to
+   be read from across a room on a TV, not held close like a phone. */
+.topbar{display:grid;grid-template-columns:1fr auto 1fr;grid-template-areas:"left center right";
+  align-items:center;row-gap:10px;column-gap:clamp(10px,1.6vmin,18px);flex:0 0 auto}
+.topbar-left{grid-area:left;display:flex;justify-content:flex-start;min-width:0}
+.topbar-center{grid-area:center;display:flex;align-items:center;gap:clamp(12px,1.8vmin,20px);justify-content:center}
+.topbar-right{grid-area:right;justify-self:end}
+@media (max-width:820px){
+  .topbar{grid-template-columns:1fr 1fr;grid-template-areas:"center center" "left right"}
+}
+.brandmark{height:clamp(52px,7.2vmin,92px);width:auto;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.25))}
 .brandtext{display:flex;flex-direction:column;line-height:1.18;min-width:0}
-.brandtext .name{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(15px,2vmin,21px);color:#F3EFE3;white-space:nowrap}
-.brandtext .sub{font-size:clamp(9px,.95vmin,11.5px);letter-spacing:.1em;text-transform:uppercase;color:#BBA9B4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.spacer{flex:1}
-.soundpill{display:flex;align-items:center;gap:8px;background:rgba(198,162,76,.16);
+.brandtext .name{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(22px,3.4vmin,38px);color:#F3EFE3;white-space:nowrap}
+.brandtext .sub{font-size:clamp(12px,1.5vmin,18px);letter-spacing:.08em;text-transform:uppercase;color:#BBA9B4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.soundpill{display:flex;align-items:center;gap:10px;background:rgba(198,162,76,.16);
   border:1px solid rgba(198,162,76,.5);color:#F3EFE3;border-radius:99px;
-  padding:8px 14px;font-size:clamp(10.5px,1.1vmin,13px);cursor:pointer;white-space:nowrap;
-  margin-right:clamp(8px,1.4vmin,16px)}
-.soundpill .dot{width:8px;height:8px;border-radius:50%;background:var(--gold-bright);
+  padding:12px 20px;font-size:clamp(13px,1.5vmin,18px);font-weight:600;cursor:pointer;white-space:nowrap}
+.soundpill .dot{width:11px;height:11px;flex:0 0 auto;border-radius:50%;background:var(--gold-bright);
   animation:pulseDot 1.6s ease-in-out infinite}
 .soundpill.on{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16);cursor:default}
 .soundpill.on .dot{background:#8fce9e;animation:none}
 @keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.3}}
-@media (max-width:760px){
-  .soundpill{padding:9px;margin-right:0}
+@media (max-width:520px){
   #sound-pill-label{display:none}
+  .soundpill{padding:12px}
 }
 .clockblock{text-align:right}
-.clock{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(26px,5.4vmin,58px);color:#F3EFE3;line-height:1}
-.dateline{font-size:clamp(10.5px,1.25vmin,14.5px);color:#D9C9D2;margin-top:3px}
+.clock{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(34px,7vmin,76px);color:#F3EFE3;line-height:1}
+.dateline{font-size:clamp(14px,1.8vmin,22px);color:#D9C9D2;margin-top:4px}
 .dateline .hijri{color:var(--gold-bright)}
 .dateline .dot{margin:0 6px;opacity:.5}
 
 /* ---- main two-pane layout ---- */
 .layout{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:1fr;gap:clamp(12px,2vmin,24px)}
 @media (min-width:860px) and (orientation:landscape){
-  .layout{grid-template-columns:minmax(260px,36%) 1fr}
+  .layout{grid-template-columns:minmax(320px,38%) 1fr}
 }
 
 /* ---- hero: next jama'ah ---- */
@@ -102,54 +111,54 @@ button{font:inherit;color:inherit}
   position:relative;overflow:hidden;min-height:0}
 .hero::before{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(120% 100% at 100% 0%,rgba(198,162,76,.16),transparent 62%)}
-.hero-eyebrow{font-size:clamp(10.5px,1.15vmin,13px);letter-spacing:.16em;text-transform:uppercase;color:var(--gold-bright)}
-.hero-name{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(28px,5.6vmin,52px);color:#FBF8F0;
+.hero-eyebrow{font-size:clamp(13px,1.5vmin,18px);letter-spacing:.16em;text-transform:uppercase;color:var(--gold-bright)}
+.hero-name{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(34px,6.6vmin,66px);color:#FBF8F0;
   display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
 .hero-name .ar{font-family:"Amiri",serif;font-size:.68em;color:var(--gold-bright)}
-.hero-countdown{font-family:"Fraunces",Georgia,serif;font-weight:500;font-size:clamp(38px,8.4vmin,88px);
+.hero-countdown{font-family:"Fraunces",Georgia,serif;font-weight:500;font-size:clamp(46px,10vmin,110px);
   color:var(--gold-bright);letter-spacing:.01em;margin-top:2px}
-.hero-sub{font-size:clamp(12.5px,1.4vmin,16.5px);color:#E7DCE2}
+.hero-sub{font-size:clamp(16px,2vmin,24px);color:#E7DCE2}
 .hero-sub b{color:#fff}
 
 /* ---- table card ---- */
 .tablecard{background:var(--card);color:var(--ink);border-radius:var(--radius);box-shadow:var(--shadow);
   padding:clamp(14px,2.2vmin,26px);display:flex;flex-direction:column;min-height:0;overflow:hidden}
 .tablehead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:clamp(6px,1.2vmin,12px);flex:0 0 auto}
-.tablehead h2{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(16px,2vmin,21px);color:var(--brand-800)}
-.tablehead .hijri-today{font-size:clamp(11px,1.15vmin,13.5px);color:var(--muted);white-space:nowrap}
+.tablehead h2{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(22px,3vmin,34px);color:var(--brand-800)}
+.tablehead .hijri-today{font-size:clamp(14px,1.7vmin,20px);color:var(--muted);white-space:nowrap}
 .rows{flex:1 1 auto;min-height:0;overflow:auto}
 .prow{display:grid;grid-template-columns:1.5fr 1fr 1fr;align-items:center;
-  padding:clamp(7px,1.3vmin,13px) clamp(6px,.9vmin,10px);border-bottom:1px solid var(--line)}
-.prow.headrow{color:var(--muted);font-size:clamp(9.5px,.95vmin,11.5px);letter-spacing:.08em;text-transform:uppercase;
-  border-bottom:2px solid var(--line);padding-bottom:8px}
+  padding:clamp(10px,1.8vmin,18px) clamp(6px,.9vmin,10px);border-bottom:1px solid var(--line)}
+.prow.headrow{color:var(--muted);font-size:clamp(12px,1.3vmin,16px);letter-spacing:.08em;text-transform:uppercase;
+  border-bottom:2px solid var(--line);padding-bottom:10px}
 .prow .pname{display:flex;align-items:center;gap:9px;font-family:"Fraunces",Georgia,serif;font-weight:600;
-  font-size:clamp(13.5px,1.6vmin,18px);color:var(--ink)}
+  font-size:clamp(20px,3vmin,34px);color:var(--ink)}
 .prow .pname .ar{font-family:"Amiri",serif;color:var(--muted);font-size:.82em}
-.prow .t{font-size:clamp(13.5px,1.6vmin,18px)}
+.prow .t{font-size:clamp(20px,3vmin,34px);font-weight:600}
 .prow.active{background:rgba(198,162,76,.14);border-radius:10px;border-bottom-color:transparent}
 .prow.active .pname{color:var(--brand-800)}
 .prow.jummahrow{background:rgba(198,162,76,.08)}
 .prow.info .pname{color:var(--muted);font-weight:500}
-.prow.info .t{color:var(--muted)}
-.badge{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;background:var(--gold);color:#3C0B2A;
-  padding:2px 7px;border-radius:99px;font-family:"Hanken Grotesk";font-weight:700}
+.prow.info .t{color:var(--muted);font-weight:400}
+.badge{font-size:12px;letter-spacing:.06em;text-transform:uppercase;background:var(--gold);color:#3C0B2A;
+  padding:3px 9px;border-radius:99px;font-family:"Hanken Grotesk";font-weight:700}
 
-.jummahbanner{margin-top:clamp(6px,1.2vmin,12px);border-top:1px dashed var(--line);padding-top:clamp(8px,1.2vmin,12px);
-  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px 14px;
-  font-size:clamp(11.5px,1.25vmin,14.5px);color:var(--muted);flex:0 0 auto}
+.jummahbanner{margin-top:clamp(8px,1.4vmin,14px);border-top:1px dashed var(--line);padding-top:clamp(10px,1.5vmin,16px);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 16px;
+  font-size:clamp(15px,1.9vmin,21px);color:var(--muted);flex:0 0 auto}
 .jummahbanner b{color:var(--brand-800)}
-.jummahbanner .times{display:flex;gap:14px}
+.jummahbanner .times{display:flex;gap:16px}
 
 /* ---- footer strip ---- */
-.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(9px,1.4vmin,16px);flex:0 0 auto}
+.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.8vmin,20px);flex:0 0 auto}
 @media (max-width:640px){.strip{grid-template-columns:1fr}}
-.stripcard{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);border-radius:14px;
-  padding:clamp(11px,1.5vmin,17px);color:#F3EFE3;display:flex;flex-direction:column;gap:3px;cursor:pointer;
+.stripcard{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);border-radius:16px;
+  padding:clamp(18px,2.6vmin,30px);color:#F3EFE3;display:flex;flex-direction:column;gap:6px;cursor:pointer;
   transition:background .15s ease;text-align:left;width:100%}
 .stripcard:hover,.stripcard:active{background:rgba(255,255,255,.11)}
-.stripcard .k{font-size:clamp(9px,.95vmin,10.5px);letter-spacing:.1em;text-transform:uppercase;color:var(--gold-bright)}
-.stripcard .v{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(13.5px,1.55vmin,17px)}
-.stripcard .d{font-size:clamp(10.5px,1.1vmin,12.5px);color:#CDBEC7}
+.stripcard .k{font-size:clamp(12px,1.4vmin,16px);letter-spacing:.1em;text-transform:uppercase;color:var(--gold-bright)}
+.stripcard .v{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(19px,2.6vmin,28px)}
+.stripcard .d{font-size:clamp(13px,1.6vmin,19px);color:#CDBEC7}
 
 /* ---- occasion overlay ---- */
 .occasion{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -166,32 +175,32 @@ button{font:inherit;color:inherit}
 .modal{background:var(--card);color:var(--ink);border-radius:20px;max-width:760px;width:100%;max-height:88vh;
   display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4)}
 .modal header{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line);flex:0 0 auto}
-.modal header h3{font-family:"Fraunces",Georgia,serif;font-weight:600;flex:1;font-size:19px;color:var(--brand-800)}
-.navbtn{border:1px solid var(--line);background:#fff;border-radius:8px;width:32px;height:32px;font-size:15px;
+.modal header h3{font-family:"Fraunces",Georgia,serif;font-weight:600;flex:1;font-size:24px;color:var(--brand-800)}
+.navbtn{border:1px solid var(--line);background:#fff;border-radius:8px;width:40px;height:40px;font-size:19px;
   cursor:pointer;color:var(--brand-800)}
-.closebtn{border:none;background:var(--brand-800);color:#fff;border-radius:8px;padding:8px 14px;font-size:13px;
+.closebtn{border:none;background:var(--brand-800);color:#fff;border-radius:8px;padding:10px 18px;font-size:16px;
   cursor:pointer;font-weight:600}
-.modalbody{overflow:auto;padding:6px 18px 20px}
+.modalbody{overflow:auto;padding:6px 20px 22px}
 
-.monthtable{width:100%;border-collapse:collapse;font-size:13px}
-.monthtable th{position:sticky;top:0;background:var(--card);text-align:left;padding:8px 5px;border-bottom:2px solid var(--line);
-  color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:9.5px}
-.monthtable td{padding:6px 5px;border-bottom:1px solid var(--line)}
+.monthtable{width:100%;border-collapse:collapse;font-size:17px}
+.monthtable th{position:sticky;top:0;background:var(--card);text-align:left;padding:10px 6px;border-bottom:2px solid var(--line);
+  color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:12px}
+.monthtable td{padding:9px 6px;border-bottom:1px solid var(--line)}
 .monthtable tr.today td{background:rgba(198,162,76,.16);font-weight:700}
 .monthtable tr.fri td{color:var(--brand-700)}
 
-.supportbody p{font-size:14px;line-height:1.6;color:var(--ink);margin-bottom:10px}
-.supportbody .tag{display:inline-block;background:var(--gold);color:#3C0B2A;font-size:10.5px;font-weight:700;
-  letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:99px;margin-bottom:10px}
-.bankgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;margin:14px 0;font-size:13.5px}
+.supportbody p{font-size:17px;line-height:1.6;color:var(--ink);margin-bottom:12px}
+.supportbody .tag{display:inline-block;background:var(--gold);color:#3C0B2A;font-size:13px;font-weight:700;
+  letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:99px;margin-bottom:10px}
+.bankgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;margin:16px 0;font-size:17px}
 .bankgrid div span{display:block}
-.bankgrid .k{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em}
-.bankgrid .v{font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px}
-.linkbtn{display:inline-block;margin-top:6px;background:var(--brand-800);color:#fff;text-decoration:none;
-  padding:10px 16px;border-radius:10px;font-size:13.5px;font-weight:600}
-.contactrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}
+.bankgrid .k{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.bankgrid .v{font-weight:600;font-variant-numeric:tabular-nums;margin-top:3px}
+.linkbtn{display:inline-block;margin-top:8px;background:var(--brand-800);color:#fff;text-decoration:none;
+  padding:12px 20px;border-radius:10px;font-size:17px;font-weight:600}
+.contactrow{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--line);font-size:17px}
 .contactrow:last-child{border-bottom:none}
-.contactrow .k{color:var(--muted);width:76px;flex:0 0 auto;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.contactrow .k{color:var(--muted);width:88px;flex:0 0 auto;font-size:13px;text-transform:uppercase;letter-spacing:.05em}
 .contactrow a{color:var(--brand-800);text-decoration:none;font-weight:600}
 </style>
 </head>
@@ -201,16 +210,19 @@ button{font:inherit;color:inherit}
 
 <div class="app">
   <header class="topbar">
-    <img class="brandmark" src="logo-cream.png" alt="Taiyabah Masjid logo">
-    <div class="brandtext">
-      <span class="name">Taiyabah Masjid</span>
-      <span class="sub">Bolton Central Islamic Society</span>
+    <div class="topbar-left">
+      <button class="soundpill" id="sound-pill" type="button" hidden aria-label="Enable Adhan and Iqamah sound">
+        <span class="dot"></span><span id="sound-pill-label">Enable Adhan &amp; Iqamah sound</span>
+      </button>
     </div>
-    <div class="spacer"></div>
-    <button class="soundpill" id="sound-pill" type="button" hidden aria-label="Enable Adhan and Iqamah sound">
-      <span class="dot"></span><span id="sound-pill-label">Enable Adhan &amp; Iqamah sound</span>
-    </button>
-    <div class="clockblock">
+    <div class="topbar-center">
+      <img class="brandmark" src="logo-cream.png" alt="Taiyabah Masjid logo">
+      <div class="brandtext">
+        <span class="name">Taiyabah Masjid</span>
+        <span class="sub">Bolton Central Islamic Society</span>
+      </div>
+    </div>
+    <div class="topbar-right clockblock">
       <div class="clock tnum" id="clock">--:--</div>
       <div class="dateline" id="dateline">Loading…</div>
     </div>
