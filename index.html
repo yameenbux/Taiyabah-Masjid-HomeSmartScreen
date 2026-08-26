@@ -43,6 +43,45 @@ button{font:inherit;color:inherit}
 .arabic{font-family:"Amiri",serif}
 .tnum{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
 
+/* ---- focus rings (D-pad / remote / keyboard) ---- */
+/* Every interactive thing on this page is a real <button> or <a>, so a
+   remote's D-pad already moves between them — but a TV user has no cursor
+   to tell them where they are, so the ring has to be unmistakable across
+   a room. Written as :focus first, then withdrawn again for pointer
+   focus via :focus-visible: an older TV WebView that doesn't understand
+   :focus-visible discards those two rules as invalid and is simply left
+   with the always-on :focus ring, which is the safe way round to fail. */
+button:focus,
+a:focus,
+[tabindex]:focus{
+  outline:3px solid var(--gold-bright);
+  outline-offset:3px;
+  border-radius:6px;
+}
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+[tabindex]:focus:not(:focus-visible){ outline:none }
+button:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible{
+  outline:3px solid var(--gold-bright);
+  outline-offset:3px;
+}
+.stripcard:focus,.stripcard:focus-visible{ background:rgba(255,255,255,.13) }
+.soundpill:focus,.soundpill:focus-visible{ border-radius:99px }
+/* The occasion overlay takes focus when it appears (so "OK" dismisses it),
+   but it gets NO ring: a focus ring is there to say which of several
+   targets is active, and this is one target filling the whole screen. A
+   gold border around a full-bleed Eid greeting is just damage — the
+   "tap anywhere — or press OK" line is the affordance. */
+.occasion:focus,.occasion:focus-visible{ outline:none }
+/* Focus placed programmatically on load: Chrome won't match
+   :focus-visible for it (no key press has happened yet), and an
+   invisible starting position is exactly what this is meant to fix.
+   Dropped again the moment the user actually moves or taps. */
+.initfocus{ outline:3px solid var(--gold-bright) !important;outline-offset:3px !important }
+.occasion.initfocus{ outline:none !important }
+
 /* ---- backdrop (same recipe as the masjid's TV screens / app) ---- */
 .backdrop{position:fixed;inset:0;z-index:0;
   background:
@@ -263,11 +302,12 @@ button{font:inherit;color:inherit}
   </footer>
 </div>
 
-<div class="occasion" id="occasion" hidden>
+<div class="occasion" id="occasion" role="button" tabindex="0" hidden
+     aria-label="Dismiss greeting">
   <div class="ar" id="occasion-ar"></div>
   <div class="title" id="occasion-title"></div>
   <div class="msg" id="occasion-msg"></div>
-  <div class="tap">Tap anywhere to continue</div>
+  <div class="tap">Tap anywhere — or press OK — to continue</div>
 </div>
 
 <div class="modalwrap" id="month-wrap" hidden>
@@ -585,7 +625,11 @@ function renderOccasion(now){
   document.getElementById('occasion-ar').textContent = occ.arabic || "";
   document.getElementById('occasion-title').textContent = occ.title || "";
   document.getElementById('occasion-msg').textContent = occ.message || "";
+  const wasHidden = el.hidden;
   el.hidden = false;
+  // It covers the whole screen and is the only thing left to interact
+  // with, so on a remote it has to be what "OK" is pointing at.
+  if(wasHidden) el.focus();
 }
 
 function tick(){
@@ -602,18 +646,128 @@ function tick(){
   renderOccasion(now);
 }
 
-document.getElementById('occasion').addEventListener('click', ()=>{ occasionDismissed = true; document.getElementById('occasion').hidden = true; });
+/* A <div role="button"> gets none of the keyboard activation a real
+   <button> gets for free, so Enter/Space are wired by hand. (It stays a
+   div because it's a full-bleed overlay, not a control in a row of
+   controls — making it a <button> fights every UA stylesheet instead.) */
+function dismissOccasion(){
+  const el = document.getElementById('occasion');
+  if(el.hidden) return;
+  occasionDismissed = true;
+  el.hidden = true;
+  focusAmbient();
+}
+document.getElementById('occasion').addEventListener('click', dismissOccasion);
+document.getElementById('occasion').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar' || e.key === 'Escape'){
+    e.preventDefault();
+    // Don't let Escape reach the document-level modal handler as well — an
+    // Eid overlay can appear on top of an already-open modal, and one key
+    // press should dismiss one thing.
+    e.stopPropagation();
+    dismissOccasion();
+  }
+});
+
+/* ---------------- modals: open/close, focus, D-pad ---------------- */
+/* All three overlays (month / New Build / contact) go through these two
+   helpers rather than each flipping .hidden itself, so they behave
+   identically for someone driving this with a TV remote: focus moves
+   inside on open, Tab cycles within the modal instead of escaping to the
+   page behind it, and Escape closes and hands focus back to whichever
+   button opened it. Add a fourth modal by calling these, not by copying
+   the old inline .hidden = false pattern. */
+const MODAL_IDS = ['month-wrap','support-wrap','contact-wrap'];
+const modalOpeners = {};
+
+function focusablesIn(root){
+  const sel = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+  return Array.from(root.querySelectorAll(sel))
+    .filter(el => !el.disabled && !el.hasAttribute('hidden') && el.offsetParent !== null);
+}
+
+function openModal(wrapId, triggerEl){
+  const wrap = document.getElementById(wrapId);
+  if(!wrap || !wrap.hidden) return;
+  modalOpeners[wrapId] = triggerEl || (document.activeElement !== document.body ? document.activeElement : null);
+  wrap.hidden = false;
+  const f = focusablesIn(wrap);
+  if(f.length) f[0].focus();
+}
+
+function closeModal(wrapId){
+  const wrap = document.getElementById(wrapId);
+  if(!wrap || wrap.hidden) return;
+  wrap.hidden = true;
+  const opener = modalOpeners[wrapId];
+  modalOpeners[wrapId] = null;
+  if(opener && document.contains(opener)) opener.focus();
+  else focusAmbient();
+}
+
+function openModalWrap(){
+  return MODAL_IDS.map(id => document.getElementById(id)).find(w => w && !w.hidden) || null;
+}
+
+/* Handled at document level rather than on each wrap so that Escape
+   still works if focus has somehow ended up outside the modal — on a
+   kiosk nobody is around to click the page to un-wedge it. */
+document.addEventListener('keydown', (e)=>{
+  // The occasion overlay sits above the modals and owns the keyboard while
+  // it's up; trapping Tab back into a modal underneath it would put focus
+  // somewhere invisible.
+  const occ = document.getElementById('occasion');
+  if(occ && !occ.hidden) return;
+  const wrap = openModalWrap();
+  if(!wrap) return;
+  if(e.key === 'Escape'){ e.preventDefault(); closeModal(wrap.id); return; }
+  if(e.key !== 'Tab') return;
+  const f = focusablesIn(wrap);
+  if(!f.length){ e.preventDefault(); return; }
+  const first = f[0], last = f[f.length-1];
+  if(!wrap.contains(document.activeElement)){ e.preventDefault(); first.focus(); return; }
+  if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+  else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+});
+
+for(const id of MODAL_IDS){
+  document.getElementById(id).addEventListener('click', (e)=>{ if(e.target.id === id) closeModal(id); });
+}
+
+/* Where focus should sit when nothing is open. Without this a remote's
+   first "OK" press does nothing at all, because a page that has never
+   been touched by a pointer has focus on <body>. */
+function focusAmbient(mark){
+  const occ = document.getElementById('occasion');
+  if(occ && !occ.hidden){ occ.focus(); return occ; }
+  let target;
+  if(!soundUnlocked && !soundPill.hidden) target = soundPill;
+  else target = document.getElementById('btn-month');
+  if(!target) return null;
+  target.focus();
+  if(mark){
+    // Chrome won't match :focus-visible for focus we placed ourselves
+    // before any key press, and an invisible starting position is the
+    // whole thing this is here to avoid. Drop it as soon as the user
+    // moves off it or reaches for the touchscreen.
+    target.classList.add('initfocus');
+    const clear = ()=>target.classList.remove('initfocus');
+    target.addEventListener('blur', clear, {once:true});
+    document.addEventListener('pointerdown', clear, {once:true});
+  }
+  return target;
+}
 
 /* ---------------- month browser ---------------- */
 let viewYear = null, viewMonth = null;
 
-function openMonth(){
+function openMonth(triggerEl){
   const now = new Date();
   viewYear = now.getFullYear(); viewMonth = now.getMonth();
   renderMonth();
-  document.getElementById('month-wrap').hidden = false;
+  openModal('month-wrap', triggerEl);
 }
-function closeMonth(){ document.getElementById('month-wrap').hidden = true; }
+function closeMonth(){ closeModal('month-wrap'); }
 
 function renderMonth(){
   const today = new Date();
@@ -644,9 +798,8 @@ function renderMonth(){
   }
 }
 
-document.getElementById('btn-month').addEventListener('click', openMonth);
+document.getElementById('btn-month').addEventListener('click', (e)=>openMonth(e.currentTarget));
 document.getElementById('month-close').addEventListener('click', closeMonth);
-document.getElementById('month-wrap').addEventListener('click', (e)=>{ if(e.target.id==='month-wrap') closeMonth(); });
 document.getElementById('month-prev').addEventListener('click', ()=>{
   viewMonth--; if(viewMonth<0){ viewMonth=11; viewYear--; } renderMonth();
 });
@@ -674,14 +827,12 @@ function renderSupport(){
     <a class="linkbtn" href="${nb.give.otherAmountUrl}" target="_blank" rel="noopener">Give online →</a>
     <p style="font-size:11.5px;color:var(--muted);margin-top:10px">${nb.give.note}</p>`;
 }
-document.getElementById('btn-support').addEventListener('click', ()=>{ document.getElementById('support-wrap').hidden = false; });
-document.getElementById('support-close').addEventListener('click', ()=>{ document.getElementById('support-wrap').hidden = true; });
-document.getElementById('support-wrap').addEventListener('click', (e)=>{ if(e.target.id==='support-wrap') document.getElementById('support-wrap').hidden = true; });
+document.getElementById('btn-support').addEventListener('click', (e)=>openModal('support-wrap', e.currentTarget));
+document.getElementById('support-close').addEventListener('click', ()=>closeModal('support-wrap'));
 
 /* ---------------- contact modal ---------------- */
-document.getElementById('btn-contact').addEventListener('click', ()=>{ document.getElementById('contact-wrap').hidden = false; });
-document.getElementById('contact-close').addEventListener('click', ()=>{ document.getElementById('contact-wrap').hidden = true; });
-document.getElementById('contact-wrap').addEventListener('click', (e)=>{ if(e.target.id==='contact-wrap') document.getElementById('contact-wrap').hidden = true; });
+document.getElementById('btn-contact').addEventListener('click', (e)=>openModal('contact-wrap', e.currentTarget));
+document.getElementById('contact-close').addEventListener('click', ()=>closeModal('contact-wrap'));
 
 /* ---------------- keep it awake & catch up on resume ---------------- */
 /* Screen Wake Lock stops the device dimming/locking while this page is
@@ -709,6 +860,7 @@ renderSupport();
 updateSoundPill();
 requestWakeLock();
 tick();
+focusAmbient(true);
 setInterval(tick, 1000);
 
 if('serviceWorker' in navigator){

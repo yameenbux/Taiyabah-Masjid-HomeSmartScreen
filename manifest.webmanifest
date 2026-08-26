@@ -2,6 +2,7 @@
   "name": "Taiyabah Masjid — Home",
   "short_name": "Taiyabah Home",
   "description": "Live Salah & Iqamah times for Taiyabah Masjid, with Adhan and Iqamah sound, for tablets and TVs at home.",
+  "id": "./index.html",
   "start_url": "./index.html",
   "scope": "./",
   "display": "fullscreen",

@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Taiyabah Masjid — Home</title>
+<link rel="icon" href="icon-512.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#3C0B2A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand-900:#3C0B2A;
+  --brand-800:#4B1136;
+  --brand-700:#5E1844;
+  --brand-600:#772157;
+  --gold:#C6A24C;
+  --gold-bright:#DCBB63;
+  --paper:#F5F1E8;
+  --card:#EDE1C8;
+  --ink:#261B22;
+  --muted:#7C6E77;
+  --line:#D8CAA5;
+  --danger:#B4532F;
+  --radius:18px;
+  --shadow:0 1px 2px rgba(60,11,42,.06), 0 12px 30px -18px rgba(60,11,42,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none !important}
+html,body{height:100%}
+body{
+  font-family:"Hanken Grotesk",system-ui,-apple-system,sans-serif;
+  color:var(--paper);
+  background:var(--brand-900);
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+button{font:inherit;color:inherit}
+.display{font-family:"Fraunces",Georgia,serif}
+.arabic{font-family:"Amiri",serif}
+.tnum{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+
+/* ---- focus rings (D-pad / remote / keyboard) ---- */
+/* Every interactive thing on this page is a real <button> or <a>, so a
+   remote's D-pad already moves between them — but a TV user has no cursor
+   to tell them where they are, so the ring has to be unmistakable across
+   a room. Written as :focus first, then withdrawn again for pointer
+   focus via :focus-visible: an older TV WebView that doesn't understand
+   :focus-visible discards those two rules as invalid and is simply left
+   with the always-on :focus ring, which is the safe way round to fail. */
+button:focus,
+a:focus,
+[tabindex]:focus{
+  outline:3px solid var(--gold-bright);
+  outline-offset:3px;
+  border-radius:6px;
+}
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+[tabindex]:focus:not(:focus-visible){ outline:none }
+button:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible{
+  outline:3px solid var(--gold-bright);
+  outline-offset:3px;
+}
+.stripcard:focus,.stripcard:focus-visible{ background:rgba(255,255,255,.13) }
+.soundpill:focus,.soundpill:focus-visible{ border-radius:99px }
+/* The occasion overlay takes focus when it appears (so "OK" dismisses it),
+   but it gets NO ring: a focus ring is there to say which of several
+   targets is active, and this is one target filling the whole screen. A
+   gold border around a full-bleed Eid greeting is just damage — the
+   "tap anywhere — or press OK" line is the affordance. */
+.occasion:focus,.occasion:focus-visible{ outline:none }
+/* Focus placed programmatically on load: Chrome won't match
+   :focus-visible for it (no key press has happened yet), and an
+   invisible starting position is exactly what this is meant to fix.
+   Dropped again the moment the user actually moves or taps. */
+.initfocus{ outline:3px solid var(--gold-bright) !important;outline-offset:3px !important }
+.occasion.initfocus{ outline:none !important }
+
+/* ---- backdrop (same recipe as the masjid's TV screens / app) ---- */
+.backdrop{position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(130% 55% at 50% -8%, rgba(198,162,76,.16), transparent 60%),
+    radial-gradient(90% 55% at 50% 112%, rgba(119,33,87,.55), transparent 60%),
+    linear-gradient(175deg, var(--brand-900), var(--brand-800) 55%, var(--brand-700));
+}
+.backdrop::after{
+  content:"";position:absolute;inset:-20px;opacity:.055;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon fill='%23C6A24C' points='50,2 57.3,32.4 83.9,16.1 67.6,42.7 98,50 67.6,57.3 83.9,83.9 57.3,67.6 50,98 42.7,67.6 16.1,83.9 32.4,57.3 2,50 32.4,42.7 16.1,16.1 42.7,32.4'/%3E%3C/svg%3E");
+  background-size:9vmin 9vmin;background-repeat:repeat;
+  animation:driftMotif 260s linear infinite;
+}
+@keyframes driftMotif{from{background-position:0 0}to{background-position:820px 410px}}
+
+/* ---- app shell ---- */
+.app{position:relative;z-index:1;height:100vh;height:100dvh;display:flex;flex-direction:column;
+  padding:clamp(14px,2.2vmin,34px) clamp(16px,3vmin,46px);
+  gap:clamp(12px,1.8vmin,22px);}
+
+/* ---- header ---- */
+/* Logo centred, sound control on the left, clock/date on the right —
+   sized up well beyond typical web defaults throughout this page: a
+   good few of the masjid's congregation are older and this is meant to
+   be read from across a room on a TV, not held close like a phone. */
+.topbar{display:grid;grid-template-columns:1fr auto 1fr;grid-template-areas:"left center right";
+  align-items:center;row-gap:10px;column-gap:clamp(10px,1.6vmin,18px);flex:0 0 auto}
+.topbar-left{grid-area:left;display:flex;justify-content:flex-start;min-width:0}
+.topbar-center{grid-area:center;display:flex;align-items:center;gap:clamp(12px,1.8vmin,20px);justify-content:center}
+.topbar-right{grid-area:right;justify-self:end}
+@media (max-width:820px){
+  .topbar{grid-template-columns:1fr 1fr;grid-template-areas:"center center" "left right"}
+}
+/* Logo carries its own "Taiyabah Masjid" wordmark already — a second,
+   literal text label next to it just repeated the name; dropped it. */
+.brandmark{height:clamp(58px,8.2vmin,108px);width:auto;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.25))}
+.soundpill{display:flex;align-items:center;gap:10px;background:rgba(198,162,76,.16);
+  border:1px solid rgba(198,162,76,.5);color:#F3EFE3;border-radius:99px;
+  padding:12px 20px;font-size:clamp(13px,1.5vmin,18px);font-weight:600;cursor:pointer;white-space:nowrap}
+.soundpill .dot{width:11px;height:11px;flex:0 0 auto;border-radius:50%;background:var(--gold-bright);
+  animation:pulseDot 1.6s ease-in-out infinite}
+.soundpill.on{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16);cursor:default}
+.soundpill.on .dot{background:#8fce9e;animation:none}
+@keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.3}}
+@media (max-width:520px){
+  #sound-pill-label{display:none}
+  .soundpill{padding:12px}
+}
+.clockblock{text-align:right}
+.clock{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(34px,7vmin,76px);color:#F3EFE3;line-height:1}
+.dateline{font-size:clamp(14px,1.8vmin,22px);color:#D9C9D2;margin-top:4px}
+.dateline .hijri{color:var(--gold-bright)}
+.dateline .dot{margin:0 6px;opacity:.5}
+
+/* ---- main two-pane layout ---- */
+.layout{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:1fr;gap:clamp(12px,2vmin,24px)}
+@media (min-width:860px) and (orientation:landscape){
+  .layout{grid-template-columns:minmax(320px,38%) 1fr}
+}
+
+/* ---- hero: next jama'ah ---- */
+.hero{background:linear-gradient(165deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.14);border-radius:var(--radius);
+  padding:clamp(18px,3vmin,32px);display:flex;flex-direction:column;justify-content:center;gap:clamp(6px,1vmin,10px);
+  position:relative;overflow:hidden;min-height:0}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(120% 100% at 100% 0%,rgba(198,162,76,.16),transparent 62%)}
+.hero-eyebrow{font-size:clamp(13px,1.5vmin,18px);letter-spacing:.16em;text-transform:uppercase;color:var(--gold-bright)}
+.hero-name{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(34px,6.6vmin,66px);color:#FBF8F0;
+  display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.hero-name .ar{font-family:"Amiri",serif;font-size:.68em;color:var(--gold-bright)}
+.hero-countdown{font-family:"Fraunces",Georgia,serif;font-weight:500;font-size:clamp(46px,10vmin,110px);
+  color:var(--gold-bright);letter-spacing:.01em;margin-top:2px}
+.hero-sub{font-size:clamp(16px,2vmin,24px);color:#E7DCE2}
+.hero-sub b{color:#fff}
+
+/* ---- table card ---- */
+.tablecard{background:var(--card);color:var(--ink);border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:clamp(14px,2.2vmin,26px);display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.tablehead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:clamp(6px,1.2vmin,12px);flex:0 0 auto}
+.tablehead h2{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(22px,3vmin,34px);color:var(--brand-800)}
+.tablehead .hijri-today{font-size:clamp(14px,1.7vmin,20px);color:var(--muted);white-space:nowrap}
+.rows{flex:1 1 auto;min-height:0;overflow:auto}
+.prow{display:grid;grid-template-columns:1.5fr 1fr 1fr;align-items:center;
+  padding:clamp(10px,1.8vmin,18px) clamp(6px,.9vmin,10px);border-bottom:1px solid var(--line)}
+.prow.headrow{color:var(--muted);font-size:clamp(12px,1.3vmin,16px);letter-spacing:.08em;text-transform:uppercase;
+  border-bottom:2px solid var(--line);padding-bottom:10px}
+.prow .pname{display:flex;align-items:center;gap:9px;font-family:"Fraunces",Georgia,serif;font-weight:600;
+  font-size:clamp(20px,3vmin,34px);color:var(--ink)}
+.prow .pname .ar{font-family:"Amiri",serif;color:var(--muted);font-size:.82em}
+.prow .t{font-size:clamp(20px,3vmin,34px);font-weight:600}
+.prow.active{background:rgba(198,162,76,.14);border-radius:10px;border-bottom-color:transparent}
+.prow.active .pname{color:var(--brand-800)}
+.prow.jummahrow{background:rgba(198,162,76,.08)}
+.prow.info .pname{color:var(--muted);font-weight:500}
+.prow.info .t{color:var(--muted);font-weight:400}
+.badge{font-size:12px;letter-spacing:.06em;text-transform:uppercase;background:var(--gold);color:#3C0B2A;
+  padding:3px 9px;border-radius:99px;font-family:"Hanken Grotesk";font-weight:700}
+
+.jummahbanner{margin-top:clamp(8px,1.4vmin,14px);border-top:1px dashed var(--line);padding-top:clamp(10px,1.5vmin,16px);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 16px;
+  font-size:clamp(15px,1.9vmin,21px);color:var(--muted);flex:0 0 auto}
+.jummahbanner b{color:var(--brand-800)}
+.jummahbanner .times{display:flex;gap:16px}
+
+/* ---- footer strip ---- */
+.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.8vmin,20px);flex:0 0 auto}
+@media (max-width:640px){.strip{grid-template-columns:1fr}}
+.stripcard{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);border-radius:16px;
+  padding:clamp(18px,2.6vmin,30px);color:#F3EFE3;display:flex;flex-direction:column;gap:6px;cursor:pointer;
+  transition:background .15s ease;text-align:left;width:100%}
+.stripcard:hover,.stripcard:active{background:rgba(255,255,255,.11)}
+.stripcard .k{font-size:clamp(12px,1.4vmin,16px);letter-spacing:.1em;text-transform:uppercase;color:var(--gold-bright)}
+.stripcard .v{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(19px,2.6vmin,28px)}
+.stripcard .d{font-size:clamp(13px,1.6vmin,19px);color:#CDBEC7}
+
+/* ---- occasion overlay ---- */
+.occasion{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;text-align:center;padding:40px;cursor:pointer;
+  background:linear-gradient(175deg,var(--brand-900),var(--brand-700))}
+.occasion .ar{font-family:"Amiri",serif;font-weight:700;font-size:clamp(34px,7.6vmin,84px);color:var(--gold-bright)}
+.occasion .title{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(26px,5.6vmin,58px);color:#fff}
+.occasion .msg{max-width:640px;font-size:clamp(13.5px,1.7vmin,19px);color:#E7DCE2;line-height:1.5}
+.occasion .tap{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-bright);opacity:.75;margin-top:8px}
+
+/* ---- modal overlays (month / support / contact) ---- */
+.modalwrap{position:fixed;inset:0;z-index:50;background:rgba(38,27,34,.55);backdrop-filter:blur(3px);
+  display:flex;align-items:center;justify-content:center;padding:clamp(14px,3vw,40px)}
+.modal{background:var(--card);color:var(--ink);border-radius:20px;max-width:760px;width:100%;max-height:88vh;
+  display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.modal header{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line);flex:0 0 auto}
+.modal header h3{font-family:"Fraunces",Georgia,serif;font-weight:600;flex:1;font-size:24px;color:var(--brand-800)}
+.navbtn{border:1px solid var(--line);background:#fff;border-radius:8px;width:40px;height:40px;font-size:19px;
+  cursor:pointer;color:var(--brand-800)}
+.closebtn{border:none;background:var(--brand-800);color:#fff;border-radius:8px;padding:10px 18px;font-size:16px;
+  cursor:pointer;font-weight:600}
+.modalbody{overflow:auto;padding:6px 20px 22px}
+
+.monthtable{width:100%;border-collapse:collapse;font-size:17px}
+.monthtable th{position:sticky;top:0;background:var(--card);text-align:left;padding:10px 6px;border-bottom:2px solid var(--line);
+  color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:12px}
+.monthtable td{padding:9px 6px;border-bottom:1px solid var(--line)}
+.monthtable tr.today td{background:rgba(198,162,76,.16);font-weight:700}
+.monthtable tr.fri td{color:var(--brand-700)}
+
+.supportbody p{font-size:17px;line-height:1.6;color:var(--ink);margin-bottom:12px}
+.supportbody .tag{display:inline-block;background:var(--gold);color:#3C0B2A;font-size:13px;font-weight:700;
+  letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:99px;margin-bottom:10px}
+.bankgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;margin:16px 0;font-size:17px}
+.bankgrid div span{display:block}
+.bankgrid .k{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.bankgrid .v{font-weight:600;font-variant-numeric:tabular-nums;margin-top:3px}
+.linkbtn{display:inline-block;margin-top:8px;background:var(--brand-800);color:#fff;text-decoration:none;
+  padding:12px 20px;border-radius:10px;font-size:17px;font-weight:600}
+.contactrow{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--line);font-size:17px}
+.contactrow:last-child{border-bottom:none}
+.contactrow .k{color:var(--muted);width:88px;flex:0 0 auto;font-size:13px;text-transform:uppercase;letter-spacing:.05em}
+.contactrow a{color:var(--brand-800);text-decoration:none;font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="backdrop"></div>
+
+<div class="app">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="soundpill" id="sound-pill" type="button" hidden aria-label="Enable Adhan and Iqamah sound">
+        <span class="dot"></span><span id="sound-pill-label">Enable Adhan &amp; Iqamah sound</span>
+      </button>
+    </div>
+    <div class="topbar-center">
+      <img class="brandmark" src="logo-cream.png" alt="Taiyabah Masjid — Bolton Central Islamic Society">
+    </div>
+    <div class="topbar-right clockblock">
+      <div class="clock tnum" id="clock">--:--</div>
+      <div class="dateline" id="dateline">Loading…</div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="hero" id="hero">
+      <div class="hero-eyebrow">Next Jamā'ah</div>
+      <div class="hero-name display" id="hero-name">—</div>
+      <div class="hero-countdown tnum" id="hero-countdown">--:--:--</div>
+      <div class="hero-sub" id="hero-sub">—</div>
+    </section>
+
+    <section class="tablecard">
+      <div class="tablehead">
+        <h2>Today's Salah</h2>
+        <span class="hijri-today" id="hijri-today"></span>
+      </div>
+      <div class="prow headrow">
+        <span>Prayer</span><span>Begins</span><span>Jamā'ah</span>
+      </div>
+      <div class="rows" id="rows"></div>
+      <div class="jummahbanner" id="jummah-banner"></div>
+    </section>
+  </main>
+
+  <footer class="strip">
+    <button class="stripcard" id="btn-month" type="button">
+      <span class="k">Browse</span>
+      <span class="v">This month</span>
+      <span class="d">Full timetable, day by day</span>
+    </button>
+    <button class="stripcard" id="btn-support" type="button">
+      <span class="k">The New Build</span>
+      <span class="v" id="support-title">Support the appeal</span>
+      <span class="d" id="support-sub">Tap for ways to give</span>
+    </button>
+    <button class="stripcard" id="btn-contact" type="button">
+      <span class="k">Bolton BL1 8HD</span>
+      <span class="v">Visit or get in touch</span>
+      <span class="d">Address, phone &amp; email</span>
+    </button>
+  </footer>
+</div>
+
+<div class="occasion" id="occasion" role="button" tabindex="0" hidden
+     aria-label="Dismiss greeting">
+  <div class="ar" id="occasion-ar"></div>
+  <div class="title" id="occasion-title"></div>
+  <div class="msg" id="occasion-msg"></div>
+  <div class="tap">Tap anywhere — or press OK — to continue</div>
+</div>
+
+<div class="modalwrap" id="month-wrap" hidden>
+  <div class="modal">
+    <header>
+      <button class="navbtn" id="month-prev" type="button" aria-label="Previous month">&#8249;</button>
+      <h3 id="month-title">Month</h3>
+      <button class="navbtn" id="month-next" type="button" aria-label="Next month">&#8250;</button>
+      <button class="closebtn" id="month-close" type="button">Close</button>
+    </header>
+    <div class="modalbody">
+      <table class="monthtable">
+        <thead>
+          <tr><th>Date</th><th>Fajr</th><th>Sunrise</th><th>Zuhr</th><th>Asr</th><th>Maghrib</th><th>Isha</th></tr>
+        </thead>
+        <tbody id="month-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="modalwrap" id="support-wrap" hidden>
+  <div class="modal">
+    <header><h3>The New Build</h3><button class="closebtn" id="support-close" type="button">Close</button></header>
+    <div class="modalbody supportbody" id="support-body"></div>
+  </div>
+</div>
+
+<div class="modalwrap" id="contact-wrap" hidden>
+  <div class="modal">
+    <header><h3>Visit &amp; contact</h3><button class="closebtn" id="contact-close" type="button">Close</button></header>
+    <div class="modalbody">
+      <div class="contactrow"><span class="k">Address</span><span>31a Draycott Street, Bolton, BL1 8HD</span></div>
+      <div class="contactrow"><span class="k">Phone</span><a href="tel:01204535997">01204 535 997</a></div>
+      <div class="contactrow"><span class="k">Email</span><a href="mailto:info@taiyabahmasjid.com">info@taiyabahmasjid.com</a></div>
+      <div class="contactrow"><span class="k">Website</span><a href="https://www.taiyabahmasjid.com" target="_blank" rel="noopener">taiyabahmasjid.com</a></div>
+      <div class="contactrow"><span class="k">Charity</span><span>Bolton Central Islamic Society · No. 1041569</span></div>
+    </div>
+  </div>
+</div>
+
+<audio id="audio-adhan" src="audio/adhan-full.mp3" preload="auto"></audio>
+<audio id="audio-iqamah" src="audio/iqamah-short-PLACEHOLDER.mp3" preload="auto"></audio>
+
+<script>
+const DATA = __TIMETABLE_JSON__;
+const NEWBUILD = __NEWBUILD_JSON__;
+const OCCASIONS = __OCCASIONS_JSON__;
+
+const PRAYERS = [
+  {key:"fajr",    en:"Fajr",    ar:"الفجر"},
+  {key:"sunrise", en:"Sunrise", ar:"الشروق", info:true},
+  {key:"zuhr",    en:"Zuhr",    ar:"الظهر"},
+  {key:"asr",     en:"Asr",     ar:"العصر"},
+  {key:"maghrib", en:"Maghrib", ar:"المغرب"},
+  {key:"isha",    en:"Isha",    ar:"العشاء"},
+];
+const JAMAAT_ORDER = ["fajr","zuhr","asr","maghrib","isha"];
+const DOW = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const MON = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+function pad(n){ return String(n).padStart(2,"0"); }
+function ymd(d){ return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+function hm12(t){ let [h,m]=t.split(":").map(Number); const ap=h<12?"am":"pm"; let h12=h%12; if(h12===0)h12=12; return h12+":"+pad(m)+" "+ap; }
+function atToday(base,t){ const [h,m]=t.split(":").map(Number); const d=new Date(base); d.setHours(h,m,0,0); return d; }
+function dayRec(d){ return (DATA && DATA.days) ? DATA.days[ymd(d)] || null : null; }
+function addDays(d,n){ const r=new Date(d); r.setDate(r.getDate()+n); return r; }
+
+function computeNext(rec, baseDate, now){
+  for(const k of JAMAAT_ORDER){
+    const t = atToday(baseDate, rec.jamaat[k]);
+    if(t > now) return {key:k, at:t, tomorrow:false};
+  }
+  const tomorrow = addDays(baseDate,1);
+  const rec2 = dayRec(tomorrow);
+  if(!rec2) return null;
+  return {key:"fajr", at:atToday(tomorrow, rec2.jamaat.fajr), tomorrow:true, tomorrowRec:rec2};
+}
+
+function currentPeriodKey(rec, baseDate, now){
+  let current = null;
+  for(const k of JAMAAT_ORDER){
+    const t = atToday(baseDate, rec.begins[k]);
+    if(t <= now) current = k; else break;
+  }
+  return current;
+}
+
+function findNextFriday(fromDate){
+  let d = new Date(fromDate);
+  for(let i=0;i<8;i++){
+    if(d.getDay()===5){
+      const rec = dayRec(d);
+      if(rec && rec.jummah) return {date:new Date(d), rec};
+    }
+    d = addDays(d,1);
+  }
+  return null;
+}
+
+function parseHijri(str){
+  const m = str.match(/^(\d+)\s+(.+?)\s+(\d+)\s+AH$/);
+  if(!m) return null;
+  return {day:parseInt(m[1],10), month:m[2], year:parseInt(m[3],10)};
+}
+
+function getOccasion(now){
+  for(let back=0; back<=6; back++){
+    const d = addDays(now, -back);
+    const rec = dayRec(d);
+    if(!rec) continue;
+    const p = parseHijri(rec.hijri);
+    if(!p) continue;
+    if(OCCASIONS.ramadan && OCCASIONS.ramadan.enabled!==false && p.month==="Ramadan" && back===0) return OCCASIONS.ramadan;
+    if(OCCASIONS.eidFitr && OCCASIONS.eidFitr.enabled!==false && p.day===1 && p.month==="Shawwal"){
+      const dur = OCCASIONS.eidFitr.durationDays || 1; if(back<dur) return OCCASIONS.eidFitr;
+    }
+    if(OCCASIONS.eidAdha && OCCASIONS.eidAdha.enabled!==false && p.day===10 && p.month==="Dhul Hijjah"){
+      const dur = OCCASIONS.eidAdha.durationDays || 1; if(back<dur) return OCCASIONS.eidAdha;
+    }
+  }
+  return null;
+}
+
+/* ---------------- Adhan / Iqamah audio ---------------- */
+/* Full Adhan plays 15 minutes before each Jama'ah; the short Iqamah plays
+   exactly at Jama'ah time. On Fridays the Zuhr slot is replaced by the
+   first Jumu'ah — that's the only Jumu'ah given an audio trigger (see
+   README: home alerts follow the single congregational Jama'ah, not the
+   second overflow Jumu'ah). Each trigger fires once per calendar day. */
+const audioAdhan = document.getElementById('audio-adhan');
+const audioIqamah = document.getElementById('audio-iqamah');
+const soundPill = document.getElementById('sound-pill');
+const soundPillLabel = document.getElementById('sound-pill-label');
+const SOUND_KEY = 'taiyabah-sound-unlocked';
+let soundUnlocked = false;
+try { soundUnlocked = localStorage.getItem(SOUND_KEY) === '1'; } catch(e){}
+let firedTriggers = new Set();
+let firedForDate = null;
+
+function unlockSound(playConfirm){
+  soundUnlocked = true;
+  try { localStorage.setItem(SOUND_KEY, '1'); } catch(e){}
+  // Prime both elements with a play/pause cycle, directly inside this
+  // click handler, so the browser treats this origin as having
+  // user-engaged audio playback. iOS Safari in particular only grants
+  // this per page-load, tied to a real gesture — it is NOT reliably
+  // remembered across closing and reopening a Home Screen app, so this
+  // pill deliberately stays visible (as an "ON, tap to test" state)
+  // rather than disappearing, in case it needs tapping again.
+  [audioAdhan, audioIqamah].forEach(a=>{
+    const audible = playConfirm && a===audioIqamah;
+    a.muted = !audible;
+    a.currentTime = 0;
+    a.play().then(()=>{
+      if(!audible){ a.pause(); a.currentTime = 0; a.muted = false; }
+    }).catch(()=>{ a.muted = false; });
+  });
+  updateSoundPill();
+}
+function updateSoundPill(){
+  soundPill.hidden = false;
+  if(soundUnlocked){
+    soundPill.classList.add('on');
+    soundPillLabel.textContent = "Sound on · tap to test";
+  } else {
+    soundPill.classList.remove('on');
+    soundPillLabel.textContent = "Enable Adhan & Iqamah sound";
+  }
+}
+soundPill.addEventListener('click', ()=>unlockSound(true));
+
+function buildTriggersForDay(rec, baseDate){
+  const isFriday = baseDate.getDay()===5 && !!rec.jummah;
+  const list = [];
+  for(const k of JAMAAT_ORDER){
+    if(k==="zuhr" && isFriday){
+      list.push({id:"jumuah", at: atToday(baseDate, rec.jummah.first), type:"jamaat", label:"Jumu'ah"});
+    } else {
+      list.push({id:k, at: atToday(baseDate, rec.jamaat[k]), type:"jamaat", label:k});
+    }
+  }
+  const withAdhan = [];
+  for(const t of list){
+    withAdhan.push({id:t.id+":adhan", at:new Date(t.at.getTime()-15*60000), kind:"adhan", label:t.label});
+    withAdhan.push({id:t.id+":iqamah", at:t.at, kind:"iqamah", label:t.label});
+  }
+  return withAdhan;
+}
+
+/* A tab/Home-Screen app that's been backgrounded, or whose screen has
+   locked, has its timers frozen by the OS — a trigger due while that's
+   happening is simply not seen at the moment it happens. Rather than
+   silently lose it, a 3-minute catch-up window means reopening the app
+   shortly after still plays it late, which is far better than never for
+   a devotional reminder (unlike the mosque's own kiosk screens, which
+   care about second-perfect timing because someone's always watching
+   them). Retries each tick until it actually succeeds or the window
+   closes, in case play() is blocked once but not the next second. */
+const CATCHUP_WINDOW_MS = 3*60000;
+
+function checkAudioTriggers(rec, baseDate, now){
+  const dayKey = ymd(baseDate);
+  if(firedForDate !== dayKey){ firedForDate = dayKey; firedTriggers = new Set(); }
+  if(!soundUnlocked) return;
+  const triggers = buildTriggersForDay(rec, baseDate);
+  for(const t of triggers){
+    if(firedTriggers.has(t.id)) continue;
+    const diff = now - t.at;
+    if(diff >= 0 && diff < CATCHUP_WINDOW_MS){
+      const player = t.kind==="adhan" ? audioAdhan : audioIqamah;
+      player.currentTime = 0;
+      player.play().then(()=>{ firedTriggers.add(t.id); }).catch(()=>{ /* retry next tick */ });
+    } else if(diff >= CATCHUP_WINDOW_MS){
+      firedTriggers.add(t.id); // too late — give up quietly, don't retry forever
+    }
+  }
+}
+
+/* ---------------- render ---------------- */
+let lastOccasionKey = null;
+let occasionDismissed = false;
+
+function renderClock(now){
+  document.getElementById('clock').textContent = pad(now.getHours())+":"+pad(now.getMinutes());
+}
+
+function renderDateline(now, rec){
+  const g = DOW[now.getDay()]+" "+now.getDate()+" "+MON[now.getMonth()];
+  const h = rec ? rec.hijri.replace(" AH","") : "";
+  document.getElementById('dateline').innerHTML = g + (h?` <span class="dot">·</span> <span class="hijri">${h} AH</span>`:"");
+}
+
+function renderHero(rec, baseDate, now){
+  const next = computeNext(rec, baseDate, now);
+  const nameEl = document.getElementById('hero-name');
+  const cdEl = document.getElementById('hero-countdown');
+  const subEl = document.getElementById('hero-sub');
+  if(!next){
+    nameEl.innerHTML = "—";
+    cdEl.textContent = "--:--:--";
+    subEl.textContent = "Timetable ends here — an updated year is on its way.";
+    return;
+  }
+  const isFriday = next.key==="zuhr" && !next.tomorrow && baseDate.getDay()===5;
+  const meta = PRAYERS.find(p=>p.key===next.key);
+  const label = isFriday ? "Jumu'ah" : meta.en;
+  const arabic = isFriday ? "الجمعة" : meta.ar;
+  nameEl.innerHTML = `${label} <span class="ar">${arabic}</span>`;
+
+  const diff = Math.max(0, next.at - now);
+  const hh = Math.floor(diff/3600000);
+  const mm = Math.floor((diff%3600000)/60000);
+  const ss = Math.floor((diff%60000)/1000);
+  cdEl.textContent = pad(hh)+":"+pad(mm)+":"+pad(ss);
+
+  const atTimeStr = isFriday ? rec.jummah.first : (next.tomorrow ? next.tomorrowRec.jamaat.fajr : rec.jamaat[next.key]);
+  subEl.innerHTML = `Jamā'ah at <b>${hm12(atTimeStr)}</b>${next.tomorrow ? " · tomorrow" : ""}`;
+}
+
+function renderTable(rec, baseDate, now){
+  const rowsEl = document.getElementById('rows');
+  rowsEl.innerHTML = "";
+  const current = currentPeriodKey(rec, baseDate, now);
+  const isFriday = baseDate.getDay()===5 && !!rec.jummah;
+
+  for(const p of PRAYERS){
+    const row = document.createElement('div');
+    let cls = "prow";
+    if(p.info) cls += " info";
+    if(!p.info && current===p.key) cls += " active";
+
+    if(p.key==="zuhr" && isFriday){
+      cls += " jummahrow";
+      row.className = cls;
+      row.innerHTML = `
+        <span class="pname">Jumu'ah <span class="ar">الجمعة</span><span class="badge">Fri</span></span>
+        <span class="t tnum">${hm12(rec.begins.zuhr)}</span>
+        <span class="t tnum">${hm12(rec.jummah.first)} · ${hm12(rec.jummah.second)}</span>`;
+      rowsEl.appendChild(row);
+      continue;
+    }
+
+    row.className = cls;
+    const jamaat = p.info ? "—" : hm12(rec.jamaat[p.key]);
+    row.innerHTML = `
+      <span class="pname">${p.en} <span class="ar">${p.ar}</span></span>
+      <span class="t tnum">${hm12(rec.begins[p.key])}</span>
+      <span class="t tnum">${jamaat}</span>`;
+    rowsEl.appendChild(row);
+  }
+
+  document.getElementById('hijri-today').textContent = rec.hijri;
+}
+
+function renderJummahBanner(baseDate){
+  const nf = findNextFriday(baseDate);
+  const el = document.getElementById('jummah-banner');
+  if(!nf){ el.textContent = ""; return; }
+  const label = ymd(nf.date)===ymd(baseDate) ? "Today" : (DOW[nf.date.getDay()]+" "+nf.date.getDate()+" "+MON[nf.date.getMonth()]);
+  el.innerHTML = `<span>Next Jumu'ah <b>${label}</b></span>
+    <span class="times"><span>1st <b class="tnum">${hm12(nf.rec.jummah.first)}</b></span><span>2nd <b class="tnum">${hm12(nf.rec.jummah.second)}</b></span></span>`;
+}
+
+function renderOccasion(now){
+  const occ = getOccasion(now);
+  const key = occ ? (occ.title + occ.message) : null;
+  const el = document.getElementById('occasion');
+  if(occ && key !== lastOccasionKey){
+    occasionDismissed = false;
+    lastOccasionKey = key;
+  }
+  if(!occ){ lastOccasionKey = null; occasionDismissed = false; el.hidden = true; return; }
+  if(occasionDismissed){ el.hidden = true; return; }
+  document.getElementById('occasion-ar').textContent = occ.arabic || "";
+  document.getElementById('occasion-title').textContent = occ.title || "";
+  document.getElementById('occasion-msg').textContent = occ.message || "";
+  const wasHidden = el.hidden;
+  el.hidden = false;
+  // It covers the whole screen and is the only thing left to interact
+  // with, so on a remote it has to be what "OK" is pointing at.
+  if(wasHidden) el.focus();
+}
+
+function tick(){
+  const now = new Date();
+  const rec = dayRec(now);
+  renderClock(now);
+  renderDateline(now, rec);
+  if(rec){
+    renderHero(rec, now, now);
+    renderTable(rec, now, now);
+    renderJummahBanner(now);
+    checkAudioTriggers(rec, now, now);
+  }
+  renderOccasion(now);
+}
+
+/* A <div role="button"> gets none of the keyboard activation a real
+   <button> gets for free, so Enter/Space are wired by hand. (It stays a
+   div because it's a full-bleed overlay, not a control in a row of
+   controls — making it a <button> fights every UA stylesheet instead.) */
+function dismissOccasion(){
+  const el = document.getElementById('occasion');
+  if(el.hidden) return;
+  occasionDismissed = true;
+  el.hidden = true;
+  focusAmbient();
+}
+document.getElementById('occasion').addEventListener('click', dismissOccasion);
+document.getElementById('occasion').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar' || e.key === 'Escape'){
+    e.preventDefault();
+    // Don't let Escape reach the document-level modal handler as well — an
+    // Eid overlay can appear on top of an already-open modal, and one key
+    // press should dismiss one thing.
+    e.stopPropagation();
+    dismissOccasion();
+  }
+});
+
+/* ---------------- modals: open/close, focus, D-pad ---------------- */
+/* All three overlays (month / New Build / contact) go through these two
+   helpers rather than each flipping .hidden itself, so they behave
+   identically for someone driving this with a TV remote: focus moves
+   inside on open, Tab cycles within the modal instead of escaping to the
+   page behind it, and Escape closes and hands focus back to whichever
+   button opened it. Add a fourth modal by calling these, not by copying
+   the old inline .hidden = false pattern. */
+const MODAL_IDS = ['month-wrap','support-wrap','contact-wrap'];
+const modalOpeners = {};
+
+function focusablesIn(root){
+  const sel = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+  return Array.from(root.querySelectorAll(sel))
+    .filter(el => !el.disabled && !el.hasAttribute('hidden') && el.offsetParent !== null);
+}
+
+function openModal(wrapId, triggerEl){
+  const wrap = document.getElementById(wrapId);
+  if(!wrap || !wrap.hidden) return;
+  modalOpeners[wrapId] = triggerEl || (document.activeElement !== document.body ? document.activeElement : null);
+  wrap.hidden = false;
+  const f = focusablesIn(wrap);
+  if(f.length) f[0].focus();
+}
+
+function closeModal(wrapId){
+  const wrap = document.getElementById(wrapId);
+  if(!wrap || wrap.hidden) return;
+  wrap.hidden = true;
+  const opener = modalOpeners[wrapId];
+  modalOpeners[wrapId] = null;
+  if(opener && document.contains(opener)) opener.focus();
+  else focusAmbient();
+}
+
+function openModalWrap(){
+  return MODAL_IDS.map(id => document.getElementById(id)).find(w => w && !w.hidden) || null;
+}
+
+/* Handled at document level rather than on each wrap so that Escape
+   still works if focus has somehow ended up outside the modal — on a
+   kiosk nobody is around to click the page to un-wedge it. */
+document.addEventListener('keydown', (e)=>{
+  // The occasion overlay sits above the modals and owns the keyboard while
+  // it's up; trapping Tab back into a modal underneath it would put focus
+  // somewhere invisible.
+  const occ = document.getElementById('occasion');
+  if(occ && !occ.hidden) return;
+  const wrap = openModalWrap();
+  if(!wrap) return;
+  if(e.key === 'Escape'){ e.preventDefault(); closeModal(wrap.id); return; }
+  if(e.key !== 'Tab') return;
+  const f = focusablesIn(wrap);
+  if(!f.length){ e.preventDefault(); return; }
+  const first = f[0], last = f[f.length-1];
+  if(!wrap.contains(document.activeElement)){ e.preventDefault(); first.focus(); return; }
+  if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+  else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+});
+
+for(const id of MODAL_IDS){
+  document.getElementById(id).addEventListener('click', (e)=>{ if(e.target.id === id) closeModal(id); });
+}
+
+/* Where focus should sit when nothing is open. Without this a remote's
+   first "OK" press does nothing at all, because a page that has never
+   been touched by a pointer has focus on <body>. */
+function focusAmbient(mark){
+  const occ = document.getElementById('occasion');
+  if(occ && !occ.hidden){ occ.focus(); return occ; }
+  let target;
+  if(!soundUnlocked && !soundPill.hidden) target = soundPill;
+  else target = document.getElementById('btn-month');
+  if(!target) return null;
+  target.focus();
+  if(mark){
+    // Chrome won't match :focus-visible for focus we placed ourselves
+    // before any key press, and an invisible starting position is the
+    // whole thing this is here to avoid. Drop it as soon as the user
+    // moves off it or reaches for the touchscreen.
+    target.classList.add('initfocus');
+    const clear = ()=>target.classList.remove('initfocus');
+    target.addEventListener('blur', clear, {once:true});
+    document.addEventListener('pointerdown', clear, {once:true});
+  }
+  return target;
+}
+
+/* ---------------- month browser ---------------- */
+let viewYear = null, viewMonth = null;
+
+function openMonth(triggerEl){
+  const now = new Date();
+  viewYear = now.getFullYear(); viewMonth = now.getMonth();
+  renderMonth();
+  openModal('month-wrap', triggerEl);
+}
+function closeMonth(){ closeModal('month-wrap'); }
+
+function renderMonth(){
+  const today = new Date();
+  const first = new Date(viewYear, viewMonth, 1);
+  const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
+  document.getElementById('month-title').textContent = MON[viewMonth]+" "+viewYear;
+  const body = document.getElementById('month-body');
+  body.innerHTML = "";
+  for(let day=1; day<=daysInMonth; day++){
+    const d = new Date(viewYear, viewMonth, day);
+    const rec = dayRec(d);
+    if(!rec) continue;
+    const tr = document.createElement('tr');
+    let cls = "";
+    if(ymd(d)===ymd(today)) cls += "today ";
+    if(d.getDay()===5) cls += "fri ";
+    tr.className = cls.trim();
+    const isFri = d.getDay()===5 && rec.jummah;
+    const zuhrCell = isFri ? (hm12(rec.jamaat.zuhr)+" / Jum'ah "+hm12(rec.jummah.first)) : hm12(rec.jamaat.zuhr);
+    tr.innerHTML = `<td>${DOW[d.getDay()].slice(0,3)} ${day}</td>
+      <td>${hm12(rec.jamaat.fajr)}</td>
+      <td>${hm12(rec.begins.sunrise)}</td>
+      <td>${zuhrCell}</td>
+      <td>${hm12(rec.jamaat.asr)}</td>
+      <td>${hm12(rec.jamaat.maghrib)}</td>
+      <td>${hm12(rec.jamaat.isha)}</td>`;
+    body.appendChild(tr);
+  }
+}
+
+document.getElementById('btn-month').addEventListener('click', (e)=>openMonth(e.currentTarget));
+document.getElementById('month-close').addEventListener('click', closeMonth);
+document.getElementById('month-prev').addEventListener('click', ()=>{
+  viewMonth--; if(viewMonth<0){ viewMonth=11; viewYear--; } renderMonth();
+});
+document.getElementById('month-next').addEventListener('click', ()=>{
+  viewMonth++; if(viewMonth>11){ viewMonth=0; viewYear++; } renderMonth();
+});
+
+/* ---------------- support (New Build) modal ---------------- */
+function renderSupport(){
+  const nb = NEWBUILD;
+  document.getElementById('support-title').textContent = nb.phaseTitle || "Support the appeal";
+  document.getElementById('support-sub').textContent = nb.phaseTag || "Tap for ways to give";
+  const b = nb.give.bank;
+  document.getElementById('support-body').innerHTML = `
+    <span class="tag">${nb.phaseTag}</span>
+    <p><strong>${nb.heading}</strong><br>${nb.tagline}</p>
+    <p>${nb.phaseDescription} Current needs: ${ (nb.needs||[]).join(", ") }.</p>
+    <div class="bankgrid">
+      <div><span class="k">Account name</span><span class="v">${b.accountName}</span></div>
+      <div><span class="k">Bank</span><span class="v">${b.bankName}</span></div>
+      <div><span class="k">Sort code</span><span class="v">${b.sortCode}</span></div>
+      <div><span class="k">Account number</span><span class="v">${b.accountNumber}</span></div>
+    </div>
+    <p style="font-size:12.5px;color:var(--muted)">${nb.give.giftAidNote}</p>
+    <a class="linkbtn" href="${nb.give.otherAmountUrl}" target="_blank" rel="noopener">Give online →</a>
+    <p style="font-size:11.5px;color:var(--muted);margin-top:10px">${nb.give.note}</p>`;
+}
+document.getElementById('btn-support').addEventListener('click', (e)=>openModal('support-wrap', e.currentTarget));
+document.getElementById('support-close').addEventListener('click', ()=>closeModal('support-wrap'));
+
+/* ---------------- contact modal ---------------- */
+document.getElementById('btn-contact').addEventListener('click', (e)=>openModal('contact-wrap', e.currentTarget));
+document.getElementById('contact-close').addEventListener('click', ()=>closeModal('contact-wrap'));
+
+/* ---------------- keep it awake & catch up on resume ---------------- */
+/* Screen Wake Lock stops the device dimming/locking while this page is
+   the active tab — the single biggest thing that keeps the audio
+   triggers actually reliable on a tablet/TV that's meant to be an
+   always-on ambient display. Not supported on iOS Safari at all
+   (as of this build), so on iPhone/iPad the device's own
+   Settings → Display → Auto-Lock still needs setting to "Never" for
+   this to behave like the always-on kiosk it's designed to be. */
+let wakeLock = null;
+async function requestWakeLock(){
+  if(!('wakeLock' in navigator)) return;
+  try{ wakeLock = await navigator.wakeLock.request('screen'); }catch(e){ /* denied or unsupported — silent */ }
+}
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState === 'visible'){
+    requestWakeLock();
+    tick(); // re-check immediately on resume, don't wait up to 1s for the next interval
+  }
+});
+window.addEventListener('focus', tick);
+
+/* ---------------- boot ---------------- */
+renderSupport();
+updateSoundPill();
+requestWakeLock();
+tick();
+focusAmbient(true);
+setInterval(tick, 1000);
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+
+/* daily reload just after 2am, so a device left running for weeks
+   (tablet on a kitchen counter, TV app left open) stays fresh — same
+   idea as the masjid's own signage screens. */
+(function scheduleDailyReload(){
+  const now = new Date();
+  const next = new Date(now);
+  next.setHours(2,0,0,0);
+  if(next <= now) next.setDate(next.getDate()+1);
+  setTimeout(()=>location.reload(), next - now + 2000);
+})();
+</script>
+</body>
+</html>

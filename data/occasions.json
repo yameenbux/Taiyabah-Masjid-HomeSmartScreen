@@ -1,0 +1,22 @@
+{
+  "ramadan": {
+    "enabled": true,
+    "title": "Ramadan Mubarak",
+    "arabic": "رَمَضَان مُبَارَك",
+    "message": "May this blessed month bring peace, patience and closeness to Allah for you and your family."
+  },
+  "eidFitr": {
+    "enabled": true,
+    "title": "Eid Mubarak",
+    "arabic": "عِيد مُبَارَك",
+    "message": "Taqabbal Allahu minna wa minkum — may Allah accept it from us and from you.",
+    "durationDays": 3
+  },
+  "eidAdha": {
+    "enabled": true,
+    "title": "Eid Mubarak",
+    "arabic": "عِيد مُبَارَك",
+    "message": "Taqabbal Allahu minna wa minkum — may Allah accept it from us and from you.",
+    "durationDays": 4
+  }
+}
