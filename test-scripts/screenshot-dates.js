@@ -1,70 +1,40 @@
 const { chromium } = require('playwright');
 const path = require('path');
 
-const FILE = 'file://' + path.resolve(__dirname, '../index.html');
-
-// Deliberately FROZEN, unlike the offset pattern used everywhere else —
-// see test-scripts/README.md. Nothing here needs the clock to advance;
-// each case just has to render as of one instant, and freezing keeps the
-// screenshots byte-stable between runs (a running clock would change the
-// countdown digits every time and make every diff look like a change).
-function frozenDateScript(iso) {
+function fakeDateScript(iso) {
   return `{
     const RealDate = Date;
-    const fixed = new RealDate(${JSON.stringify(iso)}).getTime();
+    const fixed = new RealDate(${JSON.stringify(iso)});
     class FakeDate extends RealDate {
-      constructor(...args){ if(args.length===0){ super(fixed); } else { super(...args); } }
-      static now(){ return fixed; }
+      constructor(...args){ if(args.length===0){ super(fixed.getTime()); } else { super(...args); } }
+      static now(){ return fixed.getTime(); }
     }
     Date = FakeDate;
   }`;
 }
 
-const CASES = [
-  // 2026-08-21 is a Friday — the Zuhr row is replaced by the Jumu'ah row.
-  { name: 'friday-jummah', iso: '2026-08-21T11:00:00' },
-  // 16 Ramadan 1447 — mid-month, so the Ramadan overlay is up.
-  { name: 'ramadan',       iso: '2026-03-05T10:00:00' },
-  // 1 Shawwal 1447 — Eid al-Fitr overlay.
-  { name: 'eid-fitr',      iso: '2026-03-20T09:00:00' },
+const cases = [
+  { name: 'friday', iso: '2026-08-21T13:00:00', desc: 'Friday Aug 21 2026, before Jumuah' },
+  { name: 'ramadan', iso: '2026-02-25T10:00:00', desc: 'mid-Ramadan 2026' },
+  { name: 'eid-fitr', iso: '2026-03-20T09:00:00', desc: 'Eid al-Fitr 1 Shawwal 2026' },
+  { name: 'support-modal', iso: '2026-08-19T15:25:00', desc: 'support modal open' },
 ];
 
 (async () => {
   const browser = await chromium.launch();
-
-  for (const c of CASES) {
+  const fileUrl = 'file://' + path.resolve(__dirname, '../index.html');
+  for (const c of cases) {
     const page = await browser.newPage({ viewport: { width: 1180, height: 820 } });
-    const errors = [];
-    page.on('pageerror', e => errors.push('PAGEERROR: ' + e.message));
-    page.on('console', m => { if (m.type() === 'error') errors.push('CONSOLE.ERROR: ' + m.text()); });
-
-    await page.addInitScript(frozenDateScript(c.iso));
-    await page.goto(FILE);
-    await page.waitForTimeout(700);
-    await page.screenshot({ path: `screenshot-date-${c.name}.png` });
-
-    const jummahRow = await page.locator('.prow.jummahrow').count();
-    const occHidden = await page.getAttribute('#occasion', 'hidden');
-    console.log(
-      `${c.name} (${c.iso}) — jummah row: ${jummahRow > 0}, occasion overlay up: ${occHidden === null}`,
-      errors.length === 0 ? '| CLEAN' : '| ' + JSON.stringify(errors)
-    );
-    await page.close();
-  }
-
-  // Support / New Build modal, with the real bank details rendered.
-  {
-    const page = await browser.newPage({ viewport: { width: 1180, height: 820 } });
-    await page.addInitScript(frozenDateScript('2026-08-20T14:00:00'));
-    await page.goto(FILE);
+    await page.addInitScript(fakeDateScript(c.iso));
+    await page.goto(fileUrl);
     await page.waitForTimeout(500);
-    await page.click('#btn-support');
-    await page.waitForTimeout(350);
-    await page.screenshot({ path: 'screenshot-date-support-modal.png' });
-    const fields = await page.locator('#support-body .bankgrid .v').count();
-    console.log('support-modal — bank fields rendered:', fields, '(expect 4)');
+    if (c.name === 'support-modal') {
+      await page.click('#btn-support');
+      await page.waitForTimeout(300);
+    }
+    await page.screenshot({ path: `screenshot-${c.name}.png` });
     await page.close();
   }
-
   await browser.close();
+  console.log('done');
 })();

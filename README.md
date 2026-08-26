@@ -125,7 +125,10 @@ Tab/Enter/D-pad navigation works structurally, but on top of that:
   around to click the page and un-wedge it.
 - The Ramadan/Eid occasion overlay is a `<div role="button" tabindex="0">` with an explicit Enter/Space
   keydown handler (divs don't get free keyboard activation the way real buttons do), and takes focus when it
-  first appears, since it covers everything else on screen.
+  first appears, since it covers everything else on screen. It is the one deliberate exception to the focus
+  ring: a ring says *which* of several targets is active, and this is one target filling the whole screen,
+  so all a ring does is put a gold border around an Eid greeting. `.occasion:focus` is explicitly
+  `outline:none` — the "tap anywhere — or press OK" line is the affordance. Don't "fix" it back.
 - On load, `focusAmbient(true)` puts focus on the sound pill (if it needs attention) or the first footer
   button — otherwise a remote's first "OK" press would do nothing, since nothing is focused by default
   without a prior pointer interaction. It's marked with a temporary `.initfocus` class because Chrome won't

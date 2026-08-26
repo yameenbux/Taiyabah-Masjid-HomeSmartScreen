@@ -69,15 +69,18 @@ a:focus-visible,
 }
 .stripcard:focus,.stripcard:focus-visible{ background:rgba(255,255,255,.13) }
 .soundpill:focus,.soundpill:focus-visible{ border-radius:99px }
-/* The occasion overlay fills the viewport, so an outline drawn 3px
-   outside it lands off-screen — inset the ring instead. */
-.occasion:focus,.occasion:focus-visible{ outline:none;box-shadow:inset 0 0 0 5px var(--gold-bright) }
+/* The occasion overlay takes focus when it appears (so "OK" dismisses it),
+   but it gets NO ring: a focus ring is there to say which of several
+   targets is active, and this is one target filling the whole screen. A
+   gold border around a full-bleed Eid greeting is just damage — the
+   "tap anywhere — or press OK" line is the affordance. */
+.occasion:focus,.occasion:focus-visible{ outline:none }
 /* Focus placed programmatically on load: Chrome won't match
    :focus-visible for it (no key press has happened yet), and an
    invisible starting position is exactly what this is meant to fix.
    Dropped again the moment the user actually moves or taps. */
 .initfocus{ outline:3px solid var(--gold-bright) !important;outline-offset:3px !important }
-.occasion.initfocus{ outline:none !important;box-shadow:inset 0 0 0 5px var(--gold-bright) }
+.occasion.initfocus{ outline:none !important }
 
 /* ---- backdrop (same recipe as the masjid's TV screens / app) ---- */
 .backdrop{position:fixed;inset:0;z-index:0;

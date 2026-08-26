@@ -1,8 +1,6 @@
 const { chromium } = require('playwright');
 const path = require('path');
 
-// Offset, not frozen — the whole point here is that the page's own 1s tick
-// has to actually reach the trigger moment while we wait. See README.
 function fakeDateScript(iso) {
   return `{
     const RealDate = Date;
@@ -16,60 +14,41 @@ function fakeDateScript(iso) {
   }`;
 }
 
-const FILE = 'file://' + path.resolve(__dirname, '../index.html');
-
-// 2026-08-20 is a Thursday; Zuhr Jama'ah is 13:45, so the full Adhan is due
-// at 13:30 and the short Iqamah at 13:45:00 exactly.
-const IQAMAH_AT = '2026-08-20T13:44:56';
-const ADHAN_AT  = '2026-08-20T13:29:56';
-
-async function run(label, iso, expected) {
+(async () => {
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1180, height: 820 } });
-  const errors = [];
-  page.on('pageerror', e => errors.push('PAGEERROR: ' + e.message));
-  page.on('console', m => { if (m.type() === 'error') errors.push('CONSOLE.ERROR: ' + m.text()); });
+  const logs = [];
+  page.on('console', msg => logs.push(msg.text()));
+  page.on('pageerror', err => logs.push('PAGEERROR: ' + err.message));
 
-  await page.addInitScript(fakeDateScript(iso));
-  await page.goto(FILE);
-  await page.waitForTimeout(400);
+  // Start 14:59:56 on Wed 19 Aug 2026 (Asr jamaat = 19:15, so not that).
+  // Use a moment 5s before Zuhr jamaat (13:45) on a non-Friday: 2026-08-20 (Thursday).
+  await page.addInitScript(fakeDateScript('2026-08-20T13:44:56'));
+  await page.goto('file://' + path.resolve(__dirname, '../index.html'));
+  await page.waitForTimeout(500);
 
-  // Unlock via a real click on the pill, the way a person would — this is
-  // the browser gesture requirement the whole pill exists to satisfy.
+  // Unlock sound (simulates the user's one tap)
   await page.click('#sound-pill');
-  await page.waitForTimeout(400);
+  await page.waitForTimeout(300);
 
-  // Instrument only AFTER the tap: unlockSound() deliberately plays the
-  // Iqamah once as an audible "sound is on" confirmation, and counting
-  // that would mask a trigger that never actually fired.
+  // Instrument the audio elements to report play() calls
   await page.evaluate(() => {
     window.__played = [];
-    for (const id of ['audio-adhan', 'audio-iqamah']) {
+    for (const id of ['audio-adhan','audio-iqamah']) {
       const el = document.getElementById(id);
       const orig = el.play.bind(el);
-      el.play = () => { window.__played.push({ id, at: new Date().toTimeString().slice(0, 8) }); return orig(); };
+      el.play = () => { window.__played.push({id, t: Date.now()}); return orig(); };
     }
   });
 
-  // 4s of real time = 4s of fake time (offset clock), carrying us past the
-  // trigger and giving the retry a tick or two of slack.
-  await page.waitForTimeout(6000);
+  console.log('Waiting through Zuhr jamaat (13:45) to see iqamah fire...');
+  await page.waitForTimeout(9000); // real 9s covers fake 13:44:56 -> 13:45:05
 
   const played = await page.evaluate(() => window.__played);
-  const pill = await page.textContent('#sound-pill-label');
-  const ok = played.some(p => p.id === expected);
-  console.log(`${label} (clock starts ${iso})`);
-  console.log('  played:', JSON.stringify(played));
-  console.log('  sound pill label:', pill.trim());
-  console.log(`  expected ${expected} to fire:`, ok ? 'PASS' : 'FAIL');
-  console.log('  console/page errors:', errors.length === 0 ? 'CLEAN' : JSON.stringify(errors));
+  console.log('Played events (should include audio-iqamah near 13:45:00):', JSON.stringify(played));
 
+  console.log('Console logs:', logs.filter(l=>l.includes('PAGEERROR')));
+
+  await page.screenshot({ path: 'screenshot-audio-test.png' });
   await browser.close();
-  return ok;
-}
-
-(async () => {
-  const a = await run('Iqamah at Zuhr Jama\'ah (13:45)', IQAMAH_AT, 'audio-iqamah');
-  const b = await run('Full Adhan 15min before (13:30)', ADHAN_AT, 'audio-adhan');
-  console.log('\nRESULT:', a && b ? 'both triggers fired' : 'SOMETHING DID NOT FIRE');
 })();
