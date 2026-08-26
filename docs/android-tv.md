@@ -1,6 +1,39 @@
-# Getting this onto an Android TV
+# Getting this onto a TV (Fire TV / Android TV)
 
-Everything here needs a **desktop with Android Studio**. There is no iPad route — the signing
+## The short way: run the build in CI
+
+`.github/workflows/android-tv-apk.yml` does all of this on a GitHub runner — no desktop, no Android
+Studio, no local SDK. **Actions → Build TV APK → Run workflow.** It publishes a signed APK as a GitHub
+Release, and that Release URL is what you type into the **Downloader** app on the stick.
+
+Because the app is a WebView wrapping the live site, you almost never rebuild: prayer times, audio fixes
+and layout changes reach the stick on their own. Rebuild only when the app *shell* changes — name, icon,
+banner, package id, or the TV manifest patches.
+
+Two files drive it, both checked in so the config is reviewable rather than buried in YAML:
+
+- `android-tv/twa-manifest.json` — the Bubblewrap config. **`fallbackType` must stay `webview`**: Fire OS
+  ships no Chrome, and a Custom Tabs TWA would open blank on the stick.
+- `android-tv/patch-manifest.py` — adds the three things no generator exposes (`LEANBACK_LAUNCHER`,
+  `android:banner`, and the leanback/touchscreen `uses-feature` entries). Idempotent, and verified against
+  real Bubblewrap output.
+
+**Signing.** With no secrets set, the workflow generates a throwaway key so the first build is installable
+immediately — but a later build then can't upgrade that install in place, you'd have to uninstall first.
+The key is never uploaded anywhere (this repo is public, and Actions artifacts on a public repo are
+downloadable by anyone). For stable upgrades, generate a keystore once and add `ANDROID_KEYSTORE_BASE64`
+(base64 of the .keystore file), `ANDROID_KEYSTORE_PASSWORD` and `ANDROID_KEY_PASSWORD` as repository
+secrets.
+
+**Fire OS check first.** Fire TV models from 2025 onward may run **Vega OS**, which is not Android and
+runs no APKs at all. Settings → My Fire TV → About. Fire OS 7 (Android 9) and Fire OS 8 (Android 11) are
+both fine.
+
+---
+
+## The long way: build it by hand
+
+Everything below needs a **desktop with Android Studio**. There is no iPad route — the signing
 step alone rules it out. Budget an hour the first time; after that, content changes reach the TV on
 their own (the app is a thin wrapper around the live URL) and you only rebuild for the app shell.
 
