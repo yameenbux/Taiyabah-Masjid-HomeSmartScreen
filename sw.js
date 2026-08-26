@@ -5,7 +5,14 @@
    launcher) like the companion app. Network-first for index.html so a
    published fix reaches the device quickly; cache-first for the large,
    rarely-changing audio files. */
-const CACHE = "taiyabah-home-v1";
+/* BUMP THIS whenever you replace a cached asset *at the same path* — a new
+   Adhan recording over audio/adhan-full.mp3, redrawn icons, an edited
+   manifest. Everything below except index.html is served cache-first and is
+   never revalidated, so without a bump an existing install keeps serving the
+   old file forever and you get a bug report you cannot reproduce. Renaming a
+   file to a new path is safe without a bump (new URL, not in the cache).
+   index.html is network-first, so page changes need no bump. */
+const CACHE = "taiyabah-home-v2";
 const SHELL = [
   "./",
   "./index.html",
@@ -14,7 +21,7 @@ const SHELL = [
   "./icon-192.png",
   "./icon-512.png",
   "./audio/adhan-full.mp3",
-  "./audio/iqamah-short-PLACEHOLDER.mp3",
+  "./audio/iqamah-short.mp3",
 ];
 
 self.addEventListener("install", (e) => {
