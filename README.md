@@ -108,6 +108,10 @@ adding if this isn't refreshed in time.
   "Keeping the audio alive" below.
 - **A near-silent audio loop plays continuously once sound is enabled**, and the device will show a media
   notification / lock-screen player for it. Both are deliberate — see below.
+- **Large landscape viewports get noticeably wider padding** (`2.5vh 2.5vw` above 1280px). That's the
+  Android TV overscan safe area — plenty of panels crop about 5% off every edge, and the guideline is
+  27px/48px at 1080p, which the default `clamp()` padding undershoots. It costs a little margin in a
+  desktop browser and saves the clock and footer buttons from being cut off on a TV.
 - **GitHub Pages serves via a case-sensitive filesystem.** A prior deploy broke because folders were named
   `Audio`/`Data` while the code references lowercase `audio`/`data`. If something 404s after a file move/rename
   via GitHub's web editor, check the actual resulting path (a web-editor rename previously left a stray
@@ -212,6 +216,12 @@ stop here.
 
 ### Android TV / Play Store: package with PWABuilder, not a local Gradle build
 
+**Step-by-step recipe: [`docs/android-tv.md`](docs/android-tv.md)** — the manifest block to paste, the
+keytool/gradle commands, asset links, sideloading, and the TV settings that make it behave as an
+always-on display. A stock PWABuilder package has four separate problems on a TV (unsigned; falls back
+to Custom Tabs, which TV has no browser for; no `LEANBACK_LAUNCHER` category so it never appears on the
+home screen; no banner). All four are read out of a real download in that document.
+
 The plan is a Trusted Web Activity (Chrome wrapper) via **pwabuilder.com**, not a native rewrite. A local
 Gradle/Bubblewrap build needs `dl.google.com`, `repo.maven.apache.org` and `services.gradle.org`.
 Measured from a sandboxed environment: maven and gradle resolve fine, **`dl.google.com` does not** — and
@@ -250,11 +260,17 @@ package is no longer the one Android checks. After uploading, go to Play Console
 copy the SHA-256 fingerprint, and add it to `assetlinks.json` alongside the original. Sideloading is the
 simple case — the key that signed the APK is the only fingerprint involved.
 
-The `assetlinks.json` prepared earlier alongside `twa-manifest.json` and the three Android TV banner images
-(320×180 / 480×270 / 640×360, built from the real logo on the brand gradient) is a **template**: its
-fingerprint can't be right, because a fingerprint is derived from a signing key that didn't exist when it was
-written. Use the one that comes out of the signed PWABuilder download. The banner images are still good —
-ask Yameen for `android-package.zip` rather than regenerating them.
+The `assetlinks.json` prepared earlier alongside `twa-manifest.json` is a **template**: its fingerprint
+can't be right, because a fingerprint is derived from a signing key that didn't exist when it was written.
+Generate it from your own key — `docs/android-tv.md` has the command.
+
+The three Android TV banner images no longer live only in that zip. `android-tv/make-banners.py`
+regenerates them from `logo-cream.png` and the same gradient recipe as the dashboard's own backdrop, so
+the launcher tile and the screen it opens actually match:
+
+```bash
+python3 android-tv/make-banners.py     # → android-tv/banner-{xhdpi,xxhdpi,xxxhdpi}-*.png
+```
 
 ### Other platforms
 
@@ -319,9 +335,9 @@ check in the build step is there for exactly that reason, don't remove it.
 2. `data/timetable-2026.json` needs a 2027 follow-up (or a multi-year file) before the year turns over.
 3. Custom domain (`home.taiyabahmasjid.com` or similar) — fixes the assetlinks.json root-domain problem
    properly and gives a nicer URL.
-4. Finish the Android TV package via PWABuilder (see above) — needs a *signed* build, which needs a desktop
-   browser. The leanback banner/intent-filter can then go straight into the bundled Gradle project. Note
-   that tablets don't need any of this: install the PWA from Chrome instead.
+4. Finish the Android TV package — needs a desktop with Android Studio (signing, plus the leanback
+   category and banner that PWABuilder doesn't expose). Full recipe in `docs/android-tv.md`; the banners
+   are in `android-tv/`. Tablets need none of it — install the PWA from Chrome instead.
 5. Amazon Alexa Show and confirmed Fire TV support — both fully unstarted.
 
 ## Credits
