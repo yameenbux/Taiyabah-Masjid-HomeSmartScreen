@@ -8,6 +8,19 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#3C0B2A">
+<!-- iOS reads these, not the web manifest's display mode, when deciding
+     whether a home-screen icon opens as a standalone app or inside Safari's
+     chrome. Without apple-mobile-web-app-capable an iPad install still shows
+     the address bar and gets the stricter autoplay rules of an ordinary tab —
+     which defeats most of the reason for installing it. mobile-web-app-capable
+     is the standardised spelling; Chrome warns if only the apple- one is set.
+     status-bar-style is "black" rather than "black-translucent" deliberately:
+     translucent puts content under the status bar, and this layout pads with
+     clamp() rather than env(safe-area-inset-*), so the clock would collide. -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Taiyabah Home">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">

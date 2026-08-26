@@ -201,11 +201,22 @@ If you add new interactive elements, wire them into this pattern rather than inv
 
 ### Tablets: install the PWA. Don't build an APK.
 
-This is the shortest path and it's easy to miss after reading the packaging notes below. The site is a PWA
-with `"display": "fullscreen"`, so on an Android tablet: open it in Chrome → menu → **Install app**. That
-gives a real home-screen app that launches fullscreen with **no address bar**, and installed PWAs get much
-more relaxed autoplay permissions than a loose browser tab — which is exactly what the Adhan needs. On
-iPad it's Share → Add to Home Screen.
+This is the shortest path and it's easy to miss after reading the packaging notes below. Installing gives a
+real home-screen app that launches fullscreen with **no address bar**, and installed PWAs get much more
+relaxed autoplay permissions than a loose browser tab — which is exactly what the Adhan needs.
+
+| Device | How |
+| --- | --- |
+| Android tablet | Chrome → ⋮ menu → **Install app** (or *Add to Home screen*) |
+| iPad / iPhone | **Safari** → Share → **Add to Home Screen**. Must be Safari; other iOS browsers don't install PWAs properly |
+
+Then **open it from the new home-screen icon** — not the browser tab — and tap the sound pill once. It
+should go green and read "Sound on · tap to test". That tap is what unlocks audio, and it's per-install.
+
+iOS decides standalone-vs-Safari-chrome from `apple-mobile-web-app-capable` in the `<head>`, **not** from
+the manifest's `display` field. Those meta tags are in `template.html`; don't strip them as redundant
+because the manifest already says `fullscreen`, and note that iOS snapshots this metadata when the icon is
+created — changing it means removing and re-adding the home-screen icon.
 
 No signing key, no keystore, no Play Console, no `assetlinks.json`, no APK. None of the packaging problems
 below apply to this route.
