@@ -1,0 +1,56 @@
+{
+  "eyebrow": "The New Build",
+  "heading": "Building a lasting home for Taiyabah Masjid.",
+  "tagline": "A purpose-built centre for prayer, learning and community life — designed with the community, funded by the community.",
+  "phaseTag": "Current appeal · Phase 3.3",
+  "phaseTitle": "Internal fixtures & fittings",
+  "phaseDescription": "Help make the masjid ready for salah, Qur'an and remembrance for generations to come.",
+  "needs": [
+    "Tiling",
+    "Carpets",
+    "Heating",
+    "Lighting",
+    "Electrical",
+    "Decor"
+  ],
+  "timeline": [
+    {
+      "date": "2018 – Ramadhan 2019",
+      "title": "Phase 1",
+      "status": "done"
+    },
+    {
+      "date": "December 2021",
+      "title": "Phase 2",
+      "status": "done"
+    },
+    {
+      "date": "2022",
+      "title": "Community fundraiser",
+      "status": "done"
+    },
+    {
+      "date": "Now · Phase 3.3",
+      "title": "Internal fixtures & fittings",
+      "status": "active"
+    },
+    {
+      "date": "What's next",
+      "title": "Full facilities complete",
+      "status": "upcoming"
+    }
+  ],
+  "give": {
+    "scanLabel": "Scan to give any amount",
+    "otherAmountUrl": "https://www.taiyabahmasjid.com/product/dome-donation/",
+    "giftAidNote": "If you're a UK taxpayer, please add Gift Aid — it adds 25p to every £1 at no cost to you.",
+    "bankHeading": "Or transfer directly",
+    "bank": {
+      "accountName": "Bolton Central Islamic Society (BCIS)",
+      "bankName": "HSBC",
+      "sortCode": "40-04-15",
+      "accountNumber": "02320258"
+    },
+    "note": "Bolton Central Islamic Society · Registered charity 1041569."
+  }
+}
