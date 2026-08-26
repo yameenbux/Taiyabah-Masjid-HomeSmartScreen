@@ -193,30 +193,70 @@ Tab/Enter/D-pad navigation works structurally, but on top of that:
 
 If you add new interactive elements, wire them into this pattern rather than inventing a new one.
 
-## Android TV packaging — in progress, use PWABuilder, not a local Android build
+## Getting it onto devices
 
-The plan is a Trusted Web Activity (Chrome wrapper) via **pwabuilder.com**, not a native rewrite. Do not
-attempt a local Gradle/Bubblewrap build unless you have confirmed working network access to
-`dl.google.com`, `repo.maven.apache.org`, and `services.gradle.org` — a prior attempt from a sandboxed
-environment hit a hard network wall there.
+### Tablets: install the PWA. Don't build an APK.
 
-Two things to know before touching this:
+This is the shortest path and it's easy to miss after reading the packaging notes below. The site is a PWA
+with `"display": "fullscreen"`, so on an Android tablet: open it in Chrome → menu → **Install app**. That
+gives a real home-screen app that launches fullscreen with **no address bar**, and installed PWAs get much
+more relaxed autoplay permissions than a loose browser tab — which is exactly what the Adhan needs. On
+iPad it's Share → Add to Home Screen.
 
-1. **Digital Asset Links are checked per-origin, not per-path.** Because the site lives at
-   `yameenbux.github.io/Taiyabah-Masjid-HomeSmartScreen/`, `.well-known/assetlinks.json` has to be reachable
-   at the *root* of `yameenbux.github.io` — a separate `yameenbux.github.io`-named repo, not this one.
-   Without it the packaged app still installs and works, it just shows Chrome's address bar instead of
-   looking fully native. **Recommended real fix: move this dashboard to a subdomain of taiyabahmasjid.com**
-   (e.g. `home.taiyabahmasjid.com`) so `.well-known/` is fully controllable at that domain's root.
-2. **PWABuilder's Android output is a precompiled, already-signed APK, not an editable source project.**
-   Adding the Android TV leanback banner + `LEANBACK_LAUNCHER` intent-filter requires opening the generated
-   project in Android Studio and rebuilding/re-signing with the same keystore — it's not a drop-a-PNG-in
-   edit. Treat that as a distinct follow-up task, not part of the initial build.
+No signing key, no keystore, no Play Console, no `assetlinks.json`, no APK. None of the packaging problems
+below apply to this route.
 
-A `twa-manifest.json`, an `assetlinks.json` template (package `com.taiyabahmasjid.homescreen`), and three
-Android TV banner images (320×180 / 480×270 / 640×360, built from the real logo on the brand gradient) were
-prepared separately and handed to Yameen — ask him for `android-package.zip` if you need them rather than
-regenerating from scratch.
+**The APK route buys exactly two things:** an Android TV launcher icon (TV has no "add to home screen", so
+it genuinely needs a packaged app) and Google Play distribution. If neither of those is what you're after,
+stop here.
+
+### Android TV / Play Store: package with PWABuilder, not a local Gradle build
+
+The plan is a Trusted Web Activity (Chrome wrapper) via **pwabuilder.com**, not a native rewrite. A local
+Gradle/Bubblewrap build needs `dl.google.com`, `repo.maven.apache.org` and `services.gradle.org`.
+Measured from a sandboxed environment: maven and gradle resolve fine, **`dl.google.com` does not** — and
+that's the one hosting the Android SDK and Gradle plugin, so the build dies there. Confirm that host is
+reachable before attempting it anywhere restricted.
+
+Known state of the generated package, read out of an actual PWABuilder download rather than assumed:
+
+- **Package ID is `com.taiyabahmasjid.homescreen`.** Verified present in the built `AndroidManifest.xml`.
+  This is permanent once published to Play — don't let PWABuilder's `io.github.<user>.twa` default through.
+- **The output can be unsigned.** PWABuilder has signed and unsigned modes; the unsigned one ships
+  `*-unsigned.apk` / `*-unsigned.aab` and a `Readme.html` redirecting to its `next-steps-unsigned.md`. An
+  unsigned APK **cannot be installed** and an unsigned AAB **cannot be uploaded to Play** — if you get
+  those filenames, the package is not usable and the signing option needs finding. (Its settings panel is
+  a long scrolling form; it renders poorly in mobile Safari, so use a desktop browser for this.)
+- **The download does include the Gradle source project** (`build.gradle`, `gradlew`, etc.), contrary to an
+  earlier note here that called the output a precompiled binary. That means the Android TV leanback banner
+  and `LEANBACK_LAUNCHER` intent-filter can be added in the generated project directly. Neither is present
+  in the default output — confirmed absent from the built manifest.
+- **Keep `signing.keystore` and `signing-key-info.txt` somewhere permanent and out of this public repo.**
+  Lose the key and the app can never be updated; leak it and someone else can ship updates as you.
+
+### Digital Asset Links — the address-bar problem
+
+**Checked per-origin, not per-path.** Because the site lives at
+`yameenbux.github.io/Taiyabah-Masjid-HomeSmartScreen/`, `.well-known/assetlinks.json` has to be reachable at
+the *root* of `yameenbux.github.io` — which means a separate repo literally named `yameenbux.github.io`, not
+this one. Without it the packaged app still installs and runs, it just shows Chrome's address bar; on newer
+Chrome it can also crash on launch. **Recommended real fix: move this dashboard to a subdomain of
+taiyabahmasjid.com** (e.g. `home.taiyabahmasjid.com`) so `.well-known/` is controllable at that origin's
+root.
+
+**If you publish through Google Play, this is a two-step job**, per PWABuilder's own `next-steps.md`: Play
+**re-signs the app** with its own key, so the fingerprint in the `assetlinks.json` that came with your
+package is no longer the one Android checks. After uploading, go to Play Console → Setup → App integrity,
+copy the SHA-256 fingerprint, and add it to `assetlinks.json` alongside the original. Sideloading is the
+simple case — the key that signed the APK is the only fingerprint involved.
+
+The `assetlinks.json` prepared earlier alongside `twa-manifest.json` and the three Android TV banner images
+(320×180 / 480×270 / 640×360, built from the real logo on the brand gradient) is a **template**: its
+fingerprint can't be right, because a fingerprint is derived from a signing key that didn't exist when it was
+written. Use the one that comes out of the signed PWABuilder download. The banner images are still good —
+ask Yameen for `android-package.zip` rather than regenerating them.
+
+### Other platforms
 
 **Amazon Fire TV is untested and likely doesn't work.** Fire OS doesn't ship Chrome or Google Play Services
 by default, and a Trusted Web Activity needs Chrome (or another Custom-Tabs-capable browser) present on the
@@ -279,8 +319,9 @@ check in the build step is there for exactly that reason, don't remove it.
 2. `data/timetable-2026.json` needs a 2027 follow-up (or a multi-year file) before the year turns over.
 3. Custom domain (`home.taiyabahmasjid.com` or similar) — fixes the assetlinks.json root-domain problem
    properly and gives a nicer URL.
-4. Finish the Android TV package via PWABuilder (see above), then the leanback banner/intent-filter as a
-   follow-up.
+4. Finish the Android TV package via PWABuilder (see above) — needs a *signed* build, which needs a desktop
+   browser. The leanback banner/intent-filter can then go straight into the bundled Gradle project. Note
+   that tablets don't need any of this: install the PWA from Chrome instead.
 5. Amazon Alexa Show and confirmed Fire TV support — both fully unstarted.
 
 ## Credits
