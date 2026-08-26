@@ -48,6 +48,13 @@ git clone https://github.com/yameenbux/Taiyabah-Masjid-HomeSmartScreen.git test-
   after a trigger with sound pre-unlocked → should still fire late, (2) opened 5.5 minutes after → past the
   window, should NOT fire, (3) sound never unlocked at all → should never fire, pill should still be visible.
   This is the script to run if you ever touch `CATCHUP_WINDOW_MS` or the trigger-retry logic.
+- **`test-keepalive.js`** — the near-silent audio keep-alive that stops a backgrounded tablet suspending
+  the trigger timers. Five checks: nothing plays before the pill is tapped (the keep-alive is not a way
+  around the autoplay gesture), one tap starts it looping and unmuted with `currentTime` actually advancing,
+  it restarts itself after an external pause (a phone call, another app taking audio focus), the sound pill
+  degrades to amber "Sound paused · tap to resume" instead of green when audio output is refused outright,
+  and the Media Session tile has a name. Run after any change to `startKeepAlive()`, `updateSoundPill()`, or
+  the `#audio-keepalive` element.
 - **`test-dpad.js`** — drives the page with actual `Tab`/`Enter`/`Escape` key presses to verify: initial
   focus lands somewhere sensible on load, Enter on a footer button opens its modal and moves focus inside,
   Escape closes a modal and restores focus to the button that opened it, Tab and Shift+Tab both wrap around
