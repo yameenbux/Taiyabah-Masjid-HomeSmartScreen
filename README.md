@@ -100,14 +100,70 @@ adding if this isn't refreshed in time.
   · tap to test" permanently, and tapping it when already unlocked plays an audible confirmation chime. An
   earlier version hid the pill once tapped with no feedback — that was the direct cause of a real missed Adhan
   in testing, don't reintroduce that pattern.
-- **Screen Wake Lock is requested on load and every `visibilitychange` back to visible.** It is NOT supported
-  on iOS Safari — there's no workaround for that in-browser; the device's own Settings → Display → Auto-Lock
-  has to be set to Never for iOS to behave like an always-on kiosk.
+- **Screen Wake Lock is requested on load, on every `visibilitychange` back to visible, and again whenever
+  the lock is released.** iOS Safari gained Wake Lock support in 16.4, so the older "iOS can't do this at
+  all" note in this README was out of date — but it changes less than it sounds like, because the spec
+  releases the lock whenever the document becomes hidden, and no web page can override the device's own
+  power settings. Setting Auto-Lock / screen timeout to Never on the device is still required. See
+  "Keeping the audio alive" below.
+- **A near-silent audio loop plays continuously once sound is enabled**, and the device will show a media
+  notification / lock-screen player for it. Both are deliberate — see below.
 - **GitHub Pages serves via a case-sensitive filesystem.** A prior deploy broke because folders were named
   `Audio`/`Data` while the code references lowercase `audio`/`data`. If something 404s after a file move/rename
   via GitHub's web editor, check the actual resulting path (a web-editor rename previously left a stray
   `Audio` prefix stuck onto a filename instead of cleanly replacing it) — don't assume the rename did what it
   looked like it did.
+
+## Keeping the audio alive on a device nobody is touching
+
+The failure mode: a tablet is left on the page, the screen dims, the OS backgrounds the browser, JS timers
+freeze, and the Adhan never fires — silently, with the page looking perfectly normal when you next pick it
+up. Three layers address this, and none of them is optional on its own.
+
+**1. Device power settings — mandatory, and no web page can substitute for them.** Nothing in a browser can
+override these:
+
+| Device | Setting |
+| --- | --- |
+| iPad / iPhone | Settings → Display & Brightness → Auto-Lock → **Never** |
+| Android tablet | Settings → Display → Screen timeout → longest available; disable any screen saver |
+| Android TV / Google TV | Settings → Device Preferences → Screen saver → **Never** / Off |
+| All | Leave it **plugged in** — most devices ignore "never sleep" on battery |
+
+**2. Screen Wake Lock**, requested on load, on return to visible, and on release. Keeps the screen on while
+the page is visible. Released automatically when the document becomes hidden, so it covers the "dims while
+you're looking at it" case, not the "someone pressed the power button" case.
+
+**3. A near-silent audio keep-alive loop** (`#audio-keepalive`, `startKeepAlive()`), started by the same tap
+that unlocks sound. This is the layer that covers the gap between "screen off" and "process suspended": a
+page with audio actively playing is treated by both iOS and Android as an active media session and is left
+running, so the 1-second trigger tick keeps ticking. Details worth knowing before you touch it:
+
+- The loop is a 0.5s WAV **inlined as a data URI** so it can't 404 and never waits on the network.
+- Its samples are about −90 dBFS rather than digital zero — deliberately, because some platforms won't count
+  an all-zero stream as active media. It is inaudible.
+- It must **not** be `muted`. A muted element is not active media and keeps nothing awake.
+- The OS will show a media notification / lock-screen player while it runs. `setUpMediaSession()` gives that
+  tile a name ("Adhan & Iqamah — standing by") rather than leaving an anonymous player someone taps stop on.
+- If it's paused from the lock screen, that's honoured — but the sound pill flips to amber
+  **"Sound paused · tap to resume"**, because the alternative is a green pill lying about a display that can
+  no longer sound the Adhan.
+- `tick()` restarts it if anything else stops it (a phone call, another app taking audio focus, a cold start
+  where the unlock flag survived in `localStorage` but the autoplay permission didn't).
+
+It doubles as the only honest signal the page has that audio output still works at all: if this loop won't
+play, the Adhan wouldn't either.
+
+**Why not Background Sync / Periodic Background Sync?** They cannot do this job, for three separate reasons:
+a service worker has no DOM and no `<audio>`, so it **cannot play audio at all**; one-shot Background Sync
+fires on connectivity being restored, not at a time you choose; and Periodic Background Sync is
+Chrome-only, requires an installed PWA, and lets the browser pick the interval — in practice hours, not
+"15 minutes before Maghrib". Web Push has the same service-worker audio problem, needs a server this project
+doesn't have, and notification sounds are short OS-chosen chimes, not a 3.4-minute Adhan. The keep-alive
+above is the approach that actually works from a static page.
+
+`tick()` also logs `[taiyabah] timers were suspended for ~Ns` whenever the gap between ticks exceeds 5s.
+That's the first thing to look for in a device's console if someone reports a missed prayer.
 
 ## D-pad / remote-control navigation
 
@@ -181,6 +237,9 @@ details on each script and setup (`npm install` + `npx playwright install chromi
   dates/states (Friday, Ramadan, Eid, support modal).
 - `test-audio.js` / `test-catchup.js` — verify Adhan/Iqamah actually fire at the right moment, including the
   3-minute catch-up window. Run these after touching `CATCHUP_WINDOW_MS` or the trigger-retry logic.
+- `test-keepalive.js` — the silent keep-alive loop: silent before unlock, playing and looping and unmuted
+  after one tap, self-healing after an external pause, and degrading the pill to an amber warning rather
+  than green when audio output is refused. Run after touching `startKeepAlive()` or `updateSoundPill()`.
 - `test-dpad.js` — drives the page with real Tab/Enter/Escape key presses to verify focus rings, modal focus
   trapping (both directions), focus restore-on-close, and backdrop click-to-close. Run after touching modal
   markup or the `openModal`/`closeModal` helpers.
