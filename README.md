@@ -69,7 +69,7 @@ data/
   occasions.json           ← Ramadan/Eid greeting text + duration rules
 audio/
   adhan-full.mp3           ← real ~3.4min recording, github.com/abodehq/Athan-MP3, no formal licence file
-  iqamah-short-PLACEHOLDER.mp3  ← REAL ~51s recording despite the filename — cosmetic rename still pending
+  iqamah-short.mp3         ← real ~51s recording (measured: 51.1s)
 logo-cream.png, logo-dark.png, icon-192.png, icon-512.png, apple-touch-icon.png
 test-scripts/              ← Playwright tests, see Testing section below
 ```
@@ -330,15 +330,13 @@ check in the build step is there for exactly that reason, don't remove it.
 
 ## Known open items
 
-1. Rename `audio/iqamah-short-PLACEHOLDER.mp3` → something clean now that it holds the real recording
-   (three references to update: `template.html`, `sw.js`'s `SHELL` list, and the rebuilt `index.html`).
-2. `data/timetable-2026.json` needs a 2027 follow-up (or a multi-year file) before the year turns over.
-3. Custom domain (`home.taiyabahmasjid.com` or similar) — fixes the assetlinks.json root-domain problem
+1. `data/timetable-2026.json` needs a 2027 follow-up (or a multi-year file) before the year turns over.
+2. Custom domain (`home.taiyabahmasjid.com` or similar) — fixes the assetlinks.json root-domain problem
    properly and gives a nicer URL.
-4. Finish the Android TV package — needs a desktop with Android Studio (signing, plus the leanback
+3. Finish the Android TV package — needs a desktop with Android Studio (signing, plus the leanback
    category and banner that PWABuilder doesn't expose). Full recipe in `docs/android-tv.md`; the banners
    are in `android-tv/`. Tablets need none of it — install the PWA from Chrome instead.
-5. Amazon Alexa Show and confirmed Fire TV support — both fully unstarted.
+4. Amazon Alexa Show and confirmed Fire TV support — both fully unstarted.
 
 ## Credits
 

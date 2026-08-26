@@ -21,7 +21,7 @@ const SHELL = [
   "./icon-192.png",
   "./icon-512.png",
   "./audio/adhan-full.mp3",
-  "./audio/iqamah-short-PLACEHOLDER.mp3",
+  "./audio/iqamah-short.mp3",
 ];
 
 self.addEventListener("install", (e) => {
