@@ -399,6 +399,44 @@ const JAMAAT_ORDER = ["fajr","zuhr","asr","maghrib","isha"];
 const DOW = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const MON = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
+/* ---------------- the masjid's clock, not the device's ----------------
+   Every screen must show Bolton's prayer times regardless of how its own
+   clock is configured. A Fire Stick set up on a different timezone — a
+   factory default, a reset, a stick that was somewhere else when it was
+   first booted — would otherwise display a full set of plausible, wrong
+   times, on a display nobody is checking against anything. That is the
+   worst kind of wrong: silent, confident and unnoticed for weeks.
+
+   masjidNow() returns a Date whose *local* getters read back the masjid's
+   wall clock, so every getHours()/ymd()/setHours() call downstream keeps
+   working untouched. On a correctly-configured device it is a no-op. */
+const MASJID_TZ = "Europe/London";
+let masjidTzFormatter = null;
+try {
+  masjidTzFormatter = new Intl.DateTimeFormat("en-GB", {
+    timeZone: MASJID_TZ, hourCycle: "h23",
+    year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit"
+  });
+} catch(e){ /* no Intl or unknown zone — fall back to the device clock */ }
+
+function masjidNow(){
+  const real = new Date();
+  if(!masjidTzFormatter) return real;
+  try {
+    const p = {};
+    for(const part of masjidTzFormatter.formatToParts(real)) p[part.type] = part.value;
+    return new Date(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second, real.getMilliseconds());
+  } catch(e){ return real; }
+}
+
+/* Whether this device's own clock already agrees with the masjid's, and by
+   how much. Reported once at boot so a misconfigured stick is diagnosable
+   from the logs instead of by noticing Maghrib is an hour out. */
+function deviceClockOffsetMinutes(){
+  return Math.round((masjidNow().getTime() - Date.now()) / 60000);
+}
+
 function pad(n){ return String(n).padStart(2,"0"); }
 function ymd(d){ return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
 function hm12(t){ let [h,m]=t.split(":").map(Number); const ap=h<12?"am":"pm"; let h12=h%12; if(h12===0)h12=12; return h12+":"+pad(m)+" "+ap; }
@@ -736,7 +774,7 @@ function renderOccasion(now){
 let lastTickAt = null;
 
 function tick(){
-  const now = new Date();
+  const now = masjidNow();
 
   const gap = lastTickAt === null ? 0 : now.getTime() - lastTickAt;
   lastTickAt = now.getTime();
@@ -882,7 +920,7 @@ function focusAmbient(mark){
 let viewYear = null, viewMonth = null;
 
 function openMonth(triggerEl){
-  const now = new Date();
+  const now = masjidNow();
   viewYear = now.getFullYear(); viewMonth = now.getMonth();
   renderMonth();
   openModal('month-wrap', triggerEl);
@@ -890,7 +928,7 @@ function openMonth(triggerEl){
 function closeMonth(){ closeModal('month-wrap'); }
 
 function renderMonth(){
-  const today = new Date();
+  const today = masjidNow();
   const first = new Date(viewYear, viewMonth, 1);
   const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
   document.getElementById('month-title').textContent = MON[viewMonth]+" "+viewYear;
@@ -991,6 +1029,12 @@ renderSupport();
    again without waiting for a tap. It may be refused (a cold start has no
    user gesture yet), which is precisely why the pill flips to
    "Sound paused · tap to resume" rather than claiming everything is fine. */
+(function reportClock(){
+  const drift = deviceClockOffsetMinutes();
+  const zone = (()=>{ try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch(e){ return "unknown"; } })();
+  console.info("[taiyabah] device timezone " + zone + "; showing " + MASJID_TZ +
+    (drift === 0 ? " (device already agrees)" : " (correcting by " + drift + " min)"));
+})();
 if(soundUnlocked){ startKeepAlive(); setUpMediaSession(); }
 updateSoundPill();
 requestWakeLock();
@@ -1008,7 +1052,7 @@ if('serviceWorker' in navigator){
    (tablet on a kitchen counter, TV app left open) stays fresh — same
    idea as the masjid's own signage screens. */
 (function scheduleDailyReload(){
-  const now = new Date();
+  const now = masjidNow();
   const next = new Date(now);
   next.setHours(2,0,0,0);
   if(next <= now) next.setDate(next.getDate()+1);

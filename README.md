@@ -106,6 +106,11 @@ adding if this isn't refreshed in time.
   releases the lock whenever the document becomes hidden, and no web page can override the device's own
   power settings. Setting Auto-Lock / screen timeout to Never on the device is still required. See
   "Keeping the audio alive" below.
+- **The clock is the masjid's, not the device's.** `masjidNow()` renders everything in `Europe/London`
+  whatever timezone the device is set to, so a Fire Stick left on a factory default still shows Bolton's
+  times. Without it a misconfigured stick displays a full set of plausible, wrong times on a screen nobody
+  is checking — verified: pre-fix, a device on `Australia/Sydney` showed the wrong day and the wrong next
+  prayer. It's a no-op on a correctly-configured device, and the detected timezone is logged at boot.
 - **A near-silent audio loop plays continuously once sound is enabled**, and the device will show a media
   notification / lock-screen player for it. Both are deliberate — see below.
 - **Large landscape viewports get noticeably wider padding** (`2.5vh 2.5vw` above 1280px). That's the
@@ -322,6 +327,9 @@ details on each script and setup (`npm install` + `npx playwright install chromi
   dates/states (Friday, Ramadan, Eid, support modal).
 - `test-audio.js` / `test-catchup.js` — verify Adhan/Iqamah actually fire at the right moment, including the
   3-minute catch-up window. Run these after touching `CATCHUP_WINDOW_MS` or the trigger-retry logic.
+- `test-timezone.js` — loads the page with the browser pinned to five different device timezones and
+  asserts every one shows identical prayer data. Run after touching `masjidNow()` or anything date-related.
+  It has teeth: against a pre-`masjidNow()` build three of the five fail.
 - `test-keepalive.js` — the silent keep-alive loop: silent before unlock, playing and looping and unmuted
   after one tap, self-healing after an external pause, and degrading the pill to an amber warning rather
   than green when audio output is refused. Run after touching `startKeepAlive()` or `updateSoundPill()`.

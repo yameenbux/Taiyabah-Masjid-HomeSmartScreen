@@ -14,6 +14,10 @@ npm install
 npx playwright install chromium
 ```
 
+Every script pins the browser to `Europe/London` via Playwright's `timezoneId`, so results don't depend
+on the timezone of the machine running them — and so the naive timestamps in the fake-Date helpers mean
+what they look like they mean (masjid local time).
+
 That second command downloads Playwright's own managed Chromium — the scripts used to hardcode a path to a
 sandbox-specific pre-installed browser (`/opt/pw-browsers/...`); that's been removed, they now just call
 `chromium.launch()` with no arguments, which works anywhere Playwright is installed normally.
@@ -55,6 +59,12 @@ git clone https://github.com/yameenbux/Taiyabah-Masjid-HomeSmartScreen.git test-
   degrades to amber "Sound paused · tap to resume" instead of green when audio output is refused outright,
   and the Media Session tile has a name. Run after any change to `startKeepAlive()`, `updateSoundPill()`, or
   the `#audio-keepalive` element.
+- **`test-timezone.js`** — the fleet check. Loads the page with Playwright's `timezoneId` set to five
+  different device timezones (London, UTC, New York, Karachi, Sydney) and asserts all five render
+  identical prayer data, proving `masjidNow()` renders Bolton's times regardless of how a given Fire
+  Stick's clock is configured. Confirms the override actually applied before comparing, so a silently
+  ignored `timezoneId` can't produce a false pass, and tolerates the clock differing by a minute
+  boundary. Run after any change to `masjidNow()` or the date helpers.
 - **`test-dpad.js`** — drives the page with actual `Tab`/`Enter`/`Escape` key presses to verify: initial
   focus lands somewhere sensible on load, Enter on a footer button opens its modal and moves focus inside,
   Escape closes a modal and restores focus to the button that opened it, Tab and Shift+Tab both wrap around
