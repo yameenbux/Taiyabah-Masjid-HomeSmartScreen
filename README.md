@@ -106,6 +106,11 @@ adding if this isn't refreshed in time.
   releases the lock whenever the document becomes hidden, and no web page can override the device's own
   power settings. Setting Auto-Lock / screen timeout to Never on the device is still required. See
   "Keeping the audio alive" below.
+- **The clock is the masjid's, not the device's.** `masjidNow()` renders everything in `Europe/London`
+  whatever timezone the device is set to, so a Fire Stick left on a factory default still shows Bolton's
+  times. Without it a misconfigured stick displays a full set of plausible, wrong times on a screen nobody
+  is checking — verified: pre-fix, a device on `Australia/Sydney` showed the wrong day and the wrong next
+  prayer. It's a no-op on a correctly-configured device, and the detected timezone is logged at boot.
 - **A near-silent audio loop plays continuously once sound is enabled**, and the device will show a media
   notification / lock-screen player for it. Both are deliberate — see below.
 - **Large landscape viewports get noticeably wider padding** (`2.5vh 2.5vw` above 1280px). That's the
@@ -285,9 +290,27 @@ python3 android-tv/make-banners.py     # → android-tv/banner-{xhdpi,xxhdpi,xxx
 
 ### Other platforms
 
-**Amazon Fire TV is untested and likely doesn't work.** Fire OS doesn't ship Chrome or Google Play Services
-by default, and a Trusted Web Activity needs Chrome (or another Custom-Tabs-capable browser) present on the
-device to render at all. Don't promise Fire TV compatibility without actually testing on a Fire TV device.
+**Amazon Fire TV — still untested, but the blocker is removable.** Fire OS is Android underneath and
+installs APKs happily; what it lacks is Chrome and Play Services, and a Trusted Web Activity needs a
+Custom-Tabs-capable browser to render. That kills a *stock* TWA build. It does not kill this app, because
+`WebViewFallbackActivity` is already bundled in the generated package (verified in the dex) — building with
+`fallbackType: webview` renders in Fire OS's own WebView and never asks for Chrome at all.
+
+Two useful consequences of going WebView on Fire TV:
+
+- **Digital Asset Links stop mattering.** Asset links exist to remove the address bar from a Custom Tabs
+  TWA. A WebView has no address bar, so the whole `yameenbux.github.io/.well-known/` problem — the one
+  pushing toward a custom domain — simply doesn't apply to this build.
+- Fire TV needs the same `LEANBACK_LAUNCHER` category as Android TV for a sideloaded app to appear in the
+  launcher, so the manifest patch in `docs/android-tv.md` covers both platforms unchanged.
+
+**Check the device before building anything.** Fire TV models from 2025 onward may run **Vega OS**, Amazon's
+Linux-based replacement for Fire OS. Vega does not run Android apps at all, and no APK will ever install on
+one. Settings → My Fire TV → About will say. Fire OS 7 (Android 9) and Fire OS 8 (Android 11) are both fine
+against this app's `minSdk 23`.
+
+Still genuinely untested on hardware — don't promise it to anyone until an APK has actually run on the
+mosque's stick.
 
 Amazon Alexa Show is a separate, unstarted problem — it needs an APL skill, this HTML can't be embedded
 directly there.
@@ -304,6 +327,9 @@ details on each script and setup (`npm install` + `npx playwright install chromi
   dates/states (Friday, Ramadan, Eid, support modal).
 - `test-audio.js` / `test-catchup.js` — verify Adhan/Iqamah actually fire at the right moment, including the
   3-minute catch-up window. Run these after touching `CATCHUP_WINDOW_MS` or the trigger-retry logic.
+- `test-timezone.js` — loads the page with the browser pinned to five different device timezones and
+  asserts every one shows identical prayer data. Run after touching `masjidNow()` or anything date-related.
+  It has teeth: against a pre-`masjidNow()` build three of the five fail.
 - `test-keepalive.js` — the silent keep-alive loop: silent before unlock, playing and looping and unmuted
   after one tap, self-healing after an external pause, and degrading the pill to an amber warning rather
   than green when audio output is refused. Run after touching `startKeepAlive()` or `updateSoundPill()`.

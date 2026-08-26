@@ -17,7 +17,7 @@ function fakeDateScript(iso) {
 const FILE = 'file://' + path.resolve(__dirname, 'live-check/index.html');
 
 async function withPage(browser, iso, fn) {
-  const page = await browser.newPage({ viewport: { width: 1180, height: 820 } });
+  const page = await browser.newPage({ viewport: { width: 1180, height: 820 }, timezoneId: 'Europe/London' });
   const errors = [];
   page.on('pageerror', e => errors.push('PAGEERROR: ' + e.message));
   page.on('console', m => { if (m.type() === 'error') errors.push('CONSOLE.ERROR: ' + m.text()); });
@@ -84,7 +84,7 @@ async function withPage(browser, iso, fn) {
 
   // Screenshots at three sizes
   for (const [name, w, h] of [['portrait', 810, 1080], ['landscape', 1180, 820], ['tv', 1920, 1080]]) {
-    const page = await browser.newPage({ viewport: { width: w, height: h } });
+    const page = await browser.newPage({ viewport: { width: w, height: h }, timezoneId: 'Europe/London' });
     await page.goto(FILE);
     await page.waitForTimeout(900);
     await page.screenshot({ path: `screenshot-audit-${name}.png` });

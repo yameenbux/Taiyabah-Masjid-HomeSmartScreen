@@ -11,7 +11,7 @@ const sizes = [
   const browser = await chromium.launch();
   const fileUrl = 'file://' + path.resolve(__dirname, '../index.html');
   for (const s of sizes) {
-    const page = await browser.newPage({ viewport: { width: s.width, height: s.height } });
+    const page = await browser.newPage({ viewport: { width: s.width, height: s.height }, timezoneId: 'Europe/London' });
     await page.goto(fileUrl);
     await page.waitForTimeout(1200);
     await page.screenshot({ path: `screenshot-${s.name}.png` });

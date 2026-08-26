@@ -21,7 +21,7 @@ function fakeDateScript(iso) {
   // Zuhr jamaat is 13:45 today 2026-08-20), sound already unlocked from a
   // prior session (localStorage pre-set) -> should catch up and fire.
   {
-    const page = await browser.newPage({ viewport: { width: 1180, height: 820 } });
+    const page = await browser.newPage({ viewport: { width: 1180, height: 820 }, timezoneId: 'Europe/London' });
     await page.addInitScript(() => { try { localStorage.setItem('taiyabah-sound-unlocked','1'); } catch(e){} });
     await page.addInitScript(fakeDateScript('2026-08-20T13:32:00'));
     await page.goto('file://' + path.resolve(__dirname, '../index.html'));
@@ -45,7 +45,7 @@ function fakeDateScript(iso) {
   // Scenario 2: app opened 5 minutes AFTER the trigger (past the 3-min
   // catch-up window) -> should NOT fire.
   {
-    const page = await browser.newPage({ viewport: { width: 1180, height: 820 } });
+    const page = await browser.newPage({ viewport: { width: 1180, height: 820 }, timezoneId: 'Europe/London' });
     await page.addInitScript(() => { try { localStorage.setItem('taiyabah-sound-unlocked','1'); } catch(e){} });
     await page.addInitScript(fakeDateScript('2026-08-20T13:35:30'));
     await page.goto('file://' + path.resolve(__dirname, '../index.html'));
@@ -65,7 +65,7 @@ function fakeDateScript(iso) {
 
   // Scenario 3: never tapped sound pill (no localStorage) -> pill visible, nothing plays even at trigger time
   {
-    const page = await browser.newPage({ viewport: { width: 1180, height: 820 } });
+    const page = await browser.newPage({ viewport: { width: 1180, height: 820 }, timezoneId: 'Europe/London' });
     await page.addInitScript(fakeDateScript('2026-08-20T13:45:01'));
     await page.goto('file://' + path.resolve(__dirname, '../index.html'));
     await page.evaluate(() => {

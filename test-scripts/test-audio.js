@@ -16,7 +16,7 @@ function fakeDateScript(iso) {
 
 (async () => {
   const browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: 1180, height: 820 } });
+  const page = await browser.newPage({ viewport: { width: 1180, height: 820 }, timezoneId: 'Europe/London' });
   const logs = [];
   page.on('console', msg => logs.push(msg.text()));
   page.on('pageerror', err => logs.push('PAGEERROR: ' + err.message));

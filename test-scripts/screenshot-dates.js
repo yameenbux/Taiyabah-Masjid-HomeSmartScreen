@@ -24,7 +24,7 @@ const cases = [
   const browser = await chromium.launch();
   const fileUrl = 'file://' + path.resolve(__dirname, '../index.html');
   for (const c of cases) {
-    const page = await browser.newPage({ viewport: { width: 1180, height: 820 } });
+    const page = await browser.newPage({ viewport: { width: 1180, height: 820 }, timezoneId: 'Europe/London' });
     await page.addInitScript(fakeDateScript(c.iso));
     await page.goto(fileUrl);
     await page.waitForTimeout(500);

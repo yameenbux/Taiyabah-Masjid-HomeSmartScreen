@@ -1,6 +1,104 @@
-# Getting this onto an Android TV
+# Getting this onto a TV (Fire TV / Android TV)
 
-Everything here needs a **desktop with Android Studio**. There is no iPad route — the signing
+## The short way: run the build in CI
+
+`.github/workflows/android-tv-apk.yml` does all of this on a GitHub runner — no desktop, no Android
+Studio, no local SDK. **Actions → Build TV APK → Run workflow.** It publishes a signed APK as a GitHub
+Release, and that Release URL is what you type into the **Downloader** app on the stick.
+
+Because the app is a WebView wrapping the live site, you almost never rebuild: prayer times, audio fixes
+and layout changes reach the stick on their own. Rebuild only when the app *shell* changes — name, icon,
+banner, package id, or the TV manifest patches.
+
+Two files drive it, both checked in so the config is reviewable rather than buried in YAML:
+
+- `android-tv/twa-manifest.json` — the Bubblewrap config. **`fallbackType` must stay `webview`**: Fire OS
+  ships no Chrome, and a Custom Tabs TWA would open blank on the stick.
+- `android-tv/patch-manifest.py` — adds the three things no generator exposes (`LEANBACK_LAUNCHER`,
+  `android:banner`, and the leanback/touchscreen `uses-feature` entries). Idempotent, and verified against
+  real Bubblewrap output.
+
+**Signing.** With no secrets set, the workflow generates a throwaway key so the first build is installable
+immediately — but a later build then can't upgrade that install in place, you'd have to uninstall first.
+The key is never uploaded anywhere (this repo is public, and Actions artifacts on a public repo are
+downloadable by anyone). For stable upgrades, generate a keystore once and add `ANDROID_KEYSTORE_BASE64`
+(base64 of the .keystore file), `ANDROID_KEYSTORE_PASSWORD` and `ANDROID_KEY_PASSWORD` as repository
+secrets.
+
+**Fire OS check first.** Fire TV models from 2025 onward may run **Vega OS**, which is not Android and
+runs no APKs at all. Settings → My Fire TV → About. Fire OS 7 (Android 9) and Fire OS 8 (Android 11) are
+both fine.
+
+---
+
+## Running it on the mosque's sticks
+
+### Installing — the URL to type into Downloader
+
+Use the **`latest`** URL, not the one from a specific build. It always points at the newest APK, so it
+never changes and you can write it on a card by the screens:
+
+```
+https://github.com/yameenbux/Taiyabah-Masjid-HomeSmartScreen/releases/latest/download/taiyabah-tv.apk
+```
+
+On each stick, once:
+
+1. Settings → My Fire TV → **About** → confirm it says Fire OS 7 or 8 (Vega OS can't run this at all).
+2. Settings → My Fire TV → Developer Options → **Apps from Unknown Sources** → on.
+   If Developer Options isn't listed, go to About and click the device name seven times.
+3. Install **Downloader** from the Amazon Appstore, open it, enter the URL above, install.
+4. The app appears under **Your Apps & Channels**. Long-press it to move it to the front row.
+5. Open it and press **OK** on the sound pill — it takes focus on load, so it's where the remote lands.
+   It must read "Sound on · tap to test" before you walk away.
+
+Step 5 is per install and per device: browsers refuse to play audio without one real interaction, and
+nothing can remove that requirement.
+
+### Stopping it sleeping
+
+The app holds a Screen Wake Lock and plays a near-silent audio loop (which makes the OS treat it as
+active media). Neither can override the device's own settings, so on every stick:
+
+- Settings → Display & Sounds → **Screensaver** → Start after → longest available / off.
+- Settings → My Fire TV → **Sleep** → set as long as it allows, or Never if offered.
+- The TV itself must stay on and unmuted, on the right HDMI input. **The Adhan cannot sound through a TV
+  that is off** — for Fajr that means leaving the screens powered overnight.
+
+Wake Lock support inside a WebView is less certain than in Chrome. The audio keep-alive is the more
+reliable of the two mechanisms here, which is another reason step 5 above is not optional.
+
+### Managing them remotely
+
+Most changes need no visit and no rebuild. The app is a WebView pointed at the live site, so **anything
+that ships to `main` reaches every stick on its own** — prayer times, layout, audio timing, bug fixes.
+`sw.js` is network-first for the page, and there's a daily reload just after 2am, so a stick left running
+picks changes up within 24 hours without anyone touching it.
+
+Only the app *shell* needs a rebuild and reinstall: name, icon, banner, package id, or the TV manifest
+patches. That's the "Build TV APK" workflow again.
+
+For hands-on access, Fire TV supports ADB over the local network — Settings → My Fire TV → Developer
+Options → **ADB debugging**, then `adb connect <stick-ip>:5555`. That needs to be on the same network as
+the sticks, so it's for someone at the masjid, not genuinely remote. `adb logcat | grep taiyabah` will
+show the app's own diagnostics, including the timezone line and any timer-suspension warnings.
+
+### If a screen looks wrong
+
+The app logs its own health at boot and when it misbehaves. Over ADB:
+
+- `[taiyabah] device timezone <zone>; showing Europe/London (correcting by N min)` — printed every boot.
+  Times are corrected regardless, so this is diagnostic rather than a fault, but a large N means that
+  stick's clock is misconfigured and worth fixing.
+- `[taiyabah] timers were suspended for ~Ns — catching up` — the device slept. Check the settings above.
+- Sound pill amber and reading "Sound paused · tap to resume" — audio output is blocked and the Adhan
+  will not play. Press OK on it.
+
+---
+
+## The long way: build it by hand
+
+Everything below needs a **desktop with Android Studio**. There is no iPad route — the signing
 step alone rules it out. Budget an hour the first time; after that, content changes reach the TV on
 their own (the app is a thin wrapper around the live URL) and you only rebuild for the app shell.
 
