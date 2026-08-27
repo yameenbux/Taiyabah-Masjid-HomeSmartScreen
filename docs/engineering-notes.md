@@ -110,6 +110,13 @@ adding if this isn't refreshed in time.
   prayer. It's a no-op on a correctly-configured device, and the detected timezone is logged at boot.
 - **A near-silent audio loop plays continuously once sound is enabled**, and the device will show a media
   notification / lock-screen player for it. Both are deliberate — see below.
+- **Almost every `clamp()` in the layout has a deliberately low minimum.** Those floors are not
+  placeholders. A browser with its own chrome — Silk on a Fire TV — reports a viewport as short as
+  960x460, and the original floors (58px logo, 20px prayer times, 18px footer padding) added up to more
+  than the height available, so the rows area scrolled and Maghrib and Isha silently did not exist on a
+  screen nobody touches. Raising any of these floors reintroduces that. Verified from 1920x1080 down to
+  1024x480 with all six prayers visible; below roughly 900x420 the design genuinely cannot show six rows
+  legibly, which is well under any real TV. Nothing changes at 720p or above, where `vmin` dominates.
 - **Large landscape viewports get noticeably wider padding** (`2.5vh 2.5vw` above 1280px). That's the
   Android TV overscan safe area — plenty of panels crop about 5% off every edge, and the guideline is
   27px/48px at 1080p, which the default `clamp()` padding undershoots. It costs a little margin in a
