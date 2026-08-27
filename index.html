@@ -568,6 +568,46 @@ function stopKeepAlive(){
    the gap between calling play() and the promise settling. */
 function keepAliveStalled(){ return keepAliveWanted && keepAliveMissedTicks >= 3; }
 
+/* Some environments allow audio with no interaction at all. The Fire TV build
+   is one: it runs in an Android WebView, and android-browser-helper's
+   WebViewFallbackActivity calls setMediaPlaybackRequiresUserGesture(false).
+   On a screen bolted to a wall with no one to press anything, insisting on a
+   tap there is a barrier with no purpose — and if the app's data is ever
+   cleared, the display would go silent until somebody found a remote.
+
+   So: probe by actually trying to start the keep-alive, which is inaudible,
+   so nothing is heard either way. If the browser permits it we know audio
+   works and unlock ourselves. Where autoplay is blocked — a normal browser
+   tab, iOS — the promise rejects, nothing has played, and the pill stays
+   amber waiting for a tap exactly as before. This is a capability check, not
+   a way of sneaking round the autoplay rules. */
+let autoplayProbes = 0;
+function probeAutoplay(){
+  if(soundUnlocked || autoplayProbes >= 2) return;
+  autoplayProbes++;
+  audioKeepAlive.loop = true;
+  audioKeepAlive.play().then(()=>{
+    soundUnlocked = true;
+    try { localStorage.setItem(SOUND_KEY, '1'); } catch(e){}
+    keepAliveWanted = true;
+    keepAliveMissedTicks = 0;
+    setUpMediaSession();
+    updateSoundPill();
+    console.info("[taiyabah] autoplay permitted by this browser — sound enabled with no interaction");
+  }).catch((err)=>{
+    /* Two distinct reasons this rejects, and they need different responses.
+       NotAllowedError is the browser's autoplay policy: a real no, stop
+       asking, wait for the tap. Anything else at boot is usually just the
+       element not being ready yet, so try once more when it says it is.
+       The reason is logged either way — on a wall screen with an amber pill
+       this line is the only clue anyone gets. */
+    console.info("[taiyabah] autoplay probe refused: " + (err && err.name ? err.name : err));
+    if(!(err && err.name === "NotAllowedError") && autoplayProbes < 2){
+      audioKeepAlive.addEventListener("canplaythrough", ()=>probeAutoplay(), {once:true});
+    }
+  });
+}
+
 /* The OS will surface this as a media notification / lock-screen player
    whether we like it or not, so give it a name that explains itself rather
    than a blank tile someone taps "stop" on out of curiosity. */
@@ -1053,6 +1093,7 @@ renderSupport();
     (drift === 0 ? " (device already agrees)" : " (correcting by " + drift + " min)"));
 })();
 if(soundUnlocked){ startKeepAlive(); setUpMediaSession(); }
+else probeAutoplay();   // unattended screens (Fire TV) need no tap at all
 updateSoundPill();
 requestWakeLock();
 tick();
