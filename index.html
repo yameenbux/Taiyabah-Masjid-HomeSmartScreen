@@ -180,6 +180,22 @@ a:focus-visible,
   color:var(--gold-bright);letter-spacing:.01em;margin-top:2px}
 .hero-sub{font-size:clamp(16px,2vmin,24px);color:#E7DCE2}
 .hero-sub b{color:#fff}
+/* Studio credit. Deliberately absolute rather than a flex child: it takes no
+   layout space at all, so it cannot push the countdown around or change the
+   hero's height at any viewport. Sits in the hero's lower-right: every line in
+   the card is left-aligned, so that corner is empty at every viewport,
+   including the short hero of a portrait tablet where a lower-left credit
+   collided with the "Jamā'ah at ..." line. pointer-events:none keeps it out of the way of taps,
+   and it is plain text, not a link, so the D-pad tab order is unchanged. */
+.hero-credit{position:absolute;right:clamp(18px,3vmin,32px);bottom:clamp(14px,2.2vmin,24px);
+  font-size:clamp(9px,1.05vmin,13px);letter-spacing:.15em;text-transform:uppercase;
+  color:#E7DCE2;opacity:.34;pointer-events:none;white-space:nowrap;user-select:none}
+/* Below tablet width the hero is short enough that the countdown's own digits
+   reach the corner, and a credit there either collides or sits a few pixels
+   off it, which looks like a mistake rather than a signature. This is a shelf
+   and wall display; a phone-sized viewport is incidental, so drop it rather
+   than crowd the one number people are actually reading. */
+@media (max-width:420px){ .hero-credit{display:none} }
 
 /* ---- table card ---- */
 .tablecard{background:var(--card);color:var(--ink);border-radius:var(--radius);box-shadow:var(--shadow);
@@ -291,6 +307,7 @@ a:focus-visible,
       <div class="hero-name display" id="hero-name">—</div>
       <div class="hero-countdown tnum" id="hero-countdown">--:--:--</div>
       <div class="hero-sub" id="hero-sub">—</div>
+      <div class="hero-credit">Created by YSB Designs</div>
     </section>
 
     <section class="tablecard">

@@ -105,6 +105,14 @@ adding if this isn't refreshed in time.
   Android TV overscan safe area — plenty of panels crop about 5% off every edge, and the guideline is
   27px/48px at 1080p, which the default `clamp()` padding undershoots. It costs a little margin in a
   desktop browser and saves the clock and footer buttons from being cut off on a TV.
+- **The "Created by YSB Designs" credit is absolutely positioned, not a flex child.** That's what keeps it
+  from ever changing the hero's height or pushing the countdown around — it contributes no layout at any
+  viewport, verified across eight screen sizes. It sits lower-right because every line in that card is
+  left-aligned, so the right corner is the only one empty at *all* sizes; a lower-left version collided
+  with the "Jamā'ah at ..." line on a portrait tablet. It's plain text rather than a link so the D-pad tab
+  order is unchanged, and `pointer-events:none` keeps it clear of taps. Hidden below 420px, where the
+  countdown's own digits reach the corner and it would either collide or sit a few pixels off, which reads
+  as a mistake rather than a signature.
 - **GitHub Pages serves via a case-sensitive filesystem.** A prior deploy broke because folders were named
   `Audio`/`Data` while the code references lowercase `audio`/`data`. If something 404s after a file move/rename
   via GitHub's web editor, check the actual resulting path (a web-editor rename previously left a stray
