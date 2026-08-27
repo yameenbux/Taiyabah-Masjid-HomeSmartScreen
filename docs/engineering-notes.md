@@ -84,6 +84,15 @@ adding if this isn't refreshed in time.
   when a trigger should have fired (iOS aggressively suspends JS timers), it retries `play()` for up to 3
   minutes after the fact rather than silently missing it forever. There's also a `visibilitychange`/`focus`
   listener that re-checks immediately on resume instead of waiting for the next 1-second tick.
+- **The page unlocks its own audio where the browser allows it** (`probeAutoplay()`). The Fire TV build
+  runs in an Android WebView, and android-browser-helper's `WebViewFallbackActivity` calls
+  `setMediaPlaybackRequiresUserGesture(false)` — so on that platform audio needs no interaction at all, and
+  demanding a remote press on a wall screen would be a barrier with no purpose. The probe tries to start
+  the (inaudible) keep-alive; if it plays, audio works and we unlock. Where autoplay is blocked the promise
+  rejects, nothing was audible, and the pill goes on asking. It is a capability check, not a way round the
+  autoplay rules, and it distinguishes `NotAllowedError` (a real refusal — stop asking) from a
+  not-ready-yet failure at boot, which it retries once on `canplaythrough`. The reason is logged either
+  way: on a wall screen showing an amber pill, that line is the only clue anyone gets.
 - **The sound-enable pill never disappears.** It shows amber "Enable Adhan & Iqamah sound" or green "Sound on
   · tap to test" permanently, and tapping it when already unlocked plays an audible confirmation chime. An
   earlier version hid the pill once tapped with no feedback — that was the direct cause of a real missed Adhan
