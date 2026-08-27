@@ -17,20 +17,29 @@ or PWABuilder expose as an option:
 Idempotent: running it twice is a no-op, so a re-run of the workflow that
 resumes mid-way can't double-insert.
 
-    python3 android-tv/patch-manifest.py <path-to-AndroidManifest.xml>
+    python3 android-tv/patch-manifest.py <path-to-AndroidManifest.xml> [--kiosk]
+
+--kiosk additionally registers the app as a HOME screen (launcher). The device
+then boots straight into it and the Home button returns to it, so the Fire TV
+menu — which carries Amazon's video merchandising — is never shown. That is the
+point for a masjid wall display, but it is a one-way door in practice: with no
+other launcher installed there is no on-screen route back to Fire TV Settings.
+Read the recovery notes in docs/android-tv.md before building with it.
 """
 
 import re
 import sys
 
 LEANBACK = '<category android:name="android.intent.category.LEANBACK_LAUNCHER" />'
+KIOSK = ('<category android:name="android.intent.category.HOME" />\n'
+         '{i}<category android:name="android.intent.category.DEFAULT" />')
 FEATURES = (
     '    <uses-feature android:name="android.software.leanback" android:required="false" />\n'
     '    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />\n'
 )
 
 
-def patch(text):
+def patch(text, kiosk=False):
     changed = []
 
     # 1. LEANBACK_LAUNCHER next to every LAUNCHER category.
@@ -42,6 +51,18 @@ def patch(text):
         indent = launcher.group(1)
         text = text.replace(launcher.group(0), launcher.group(0) + "\n" + indent + LEANBACK, 1)
         changed.append("LEANBACK_LAUNCHER category")
+
+    # 1b. Kiosk: also answer HOME, so the device boots into this and the Home
+    #     button cannot reach the Fire TV menu.
+    if kiosk and "intent.category.HOME" not in text:
+        launcher = re.search(
+            r'([ \t]*)<category android:name="android\.intent\.category\.LEANBACK_LAUNCHER"\s*/>', text)
+        if not launcher:
+            raise SystemExit("FAIL: LEANBACK_LAUNCHER should have been added before the kiosk patch")
+        indent = launcher.group(1)
+        text = text.replace(launcher.group(0),
+                            launcher.group(0) + "\n" + indent + KIOSK.format(i=indent), 1)
+        changed.append("HOME category (kiosk launcher)")
 
     # 2. banner on <application>.
     if "android:banner" not in text:
@@ -63,13 +84,16 @@ def patch(text):
 
 
 def main():
-    if len(sys.argv) != 2:
+    args = sys.argv[1:]
+    kiosk = "--kiosk" in args
+    args = [a for a in args if a != "--kiosk"]
+    if len(args) != 1:
         raise SystemExit(__doc__)
-    path = sys.argv[1]
+    path = args[0]
     with open(path, encoding="utf-8") as f:
         original = f.read()
 
-    text, changed = patch(original)
+    text, changed = patch(original, kiosk=kiosk)
 
     if not changed:
         print("  already patched, nothing to do")
@@ -81,7 +105,10 @@ def main():
         print(f"  added {c}")
 
     # Fail loudly rather than shipping a package that silently isn't a TV app.
-    for needle in ("LEANBACK_LAUNCHER", "android:banner", "android.software.leanback"):
+    needles = ["LEANBACK_LAUNCHER", "android:banner", "android.software.leanback"]
+    if kiosk:
+        needles.append("android.intent.category.HOME")
+    for needle in needles:
         if needle not in text:
             raise SystemExit(f"FAIL: {needle} missing after patching")
 

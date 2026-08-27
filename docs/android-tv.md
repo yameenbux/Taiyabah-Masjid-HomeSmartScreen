@@ -55,6 +55,71 @@ On each stick, once:
 Step 5 is per install and per device: browsers refuse to play audio without one real interaction, and
 nothing can remove that requirement.
 
+### Booting straight into it, and never showing the Fire TV menu
+
+A masjid wall display shouldn't drop to Amazon's home screen — it merchandises films and trailers. Two
+levels of fix, and they are not equally safe.
+
+**Level 1 — autostart helper (reversible, recommended first).** Install an autostart app from the
+Appstore (search "autostart" / "launch on boot") and point it at Taiyabah Home. The stick then opens the
+app after every reboot. Amazon's launcher stays the home screen, so pressing **Home** still reaches it —
+fine when the remote lives in a drawer, and it leaves every recovery route intact. Try this first.
+
+A boot-completed receiver in the app itself would do the same job, but only on Fire OS 7 (Android 9);
+Android 10 onwards blocks starting an activity from the background, so it would quietly stop working on
+Fire OS 8. That's why it isn't built in.
+
+**Level 2 — kiosk mode (the real fix, and a one-way door).** Run the workflow with the **kiosk** input
+ticked. The app then registers as a HOME screen: the stick boots into it and the Home button returns to
+it, so the Fire TV menu is never reachable.
+
+> **Read this before ticking it.** With no other launcher installed there is **no on-screen route back to
+> Fire TV Settings**. If the app crashes or you need to change a device setting, the only ways back are:
+>
+> ```bash
+> adb connect <stick-ip>:5555
+> adb shell cmd package set-home-activity com.amazon.tv.launcher   # hand Home back to Amazon
+> adb uninstall com.taiyabahmasjid.homescreen                      # or remove the app entirely
+> ```
+>
+> **Set up adb access and confirm it works before deploying a kiosk build**, not after. Enable it at
+> Settings → My Fire TV → Developer Options → ADB debugging while you still can, and write the stick's IP
+> down. Failing that, a factory reset is the fallback.
+
+Kiosk builds are tagged `tv-build-N-kiosk` so they're distinguishable from standard ones, and the job
+summary repeats the recovery commands.
+
+**Fire OS may not honour it.** Amazon is restrictive about third-party launchers and behaviour differs by
+device and Fire OS version. Untested here — if the stick ignores the HOME category you'll simply get the
+standard behaviour back, which is a safe failure. Test on one stick before doing all of them.
+
+### The URL bar across the top of the app
+
+If the installed app shows a close button and `yameenbux.github.io` along the top, that is the **Custom
+Tabs toolbar**, and it means Android could not verify that this app owns that site.
+
+`fallbackType: webview` does not prevent it. That fallback only runs when *no* Custom Tabs provider
+exists — and Fire OS's Silk **does** provide Custom Tabs, so the TWA path is taken and the WebView is
+never reached. (`WebViewFallbackActivity` genuinely has no toolbar: it calls `setContentView(mWebView)`
+with nothing above it. It also can't be made the launcher directly, because it requires a `LAUNCH_URL`
+extra and would crash without one.)
+
+So on Fire TV, **asset links are what remove the bar** — they are not optional:
+
+1. Every build writes an `assetlinks.json` carrying the fingerprint of the key that signed it. It's
+   attached to the Release next to the APK, uploaded as an artifact, and printed in the job summary.
+2. Create a repo named **exactly** `yameenbux.github.io`, enable Pages on it, and put that file at
+   `.well-known/assetlinks.json`, so it serves from
+   `https://yameenbux.github.io/.well-known/assetlinks.json`.
+3. Force-stop and reopen the app. The bar should be gone.
+
+> **Set the keystore secrets first.** Without `ANDROID_KEYSTORE_BASE64` the build signs with a throwaway
+> key, so the fingerprint — and therefore this file — changes on every build and the bar returns each
+> time. Setting a stable key once makes this a one-off job.
+
+A custom domain (`home.taiyabahmasjid.com`) would avoid the separate repo entirely, since `.well-known/`
+would then sit at a root you control.
+
 ### Stopping it sleeping
 
 The app holds a Screen Wake Lock and plays a near-silent audio loop (which makes the OS treat it as

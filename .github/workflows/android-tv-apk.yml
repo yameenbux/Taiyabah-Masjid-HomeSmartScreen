@@ -18,6 +18,11 @@ on:
         description: "What changed in this build (shown on the Release)"
         required: false
         default: "Rebuilt from the current live site."
+      kiosk:
+        description: "Kiosk mode: boot straight into this app and make Home return to it, so the Fire TV menu is never shown. Read docs/android-tv.md first — there is no on-screen way back to Fire TV Settings afterwards."
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: write        # needed to publish the Release
@@ -119,7 +124,16 @@ jobs:
         run: bubblewrap update --skipVersionUpgrade
 
       - name: Patch the manifest for TV launchers
-        run: python3 android-tv/patch-manifest.py "$TWA_DIR/app/src/main/AndroidManifest.xml"
+        env:
+          KIOSK: ${{ inputs.kiosk }}
+        run: |
+          set -euo pipefail
+          if [ "$KIOSK" = "true" ]; then
+            echo "::warning::Kiosk build: this app registers as a HOME screen. The stick will boot into it and Home will return to it, with no on-screen route back to Fire TV Settings. Recovery is via adb — see docs/android-tv.md."
+            python3 android-tv/patch-manifest.py "$TWA_DIR/app/src/main/AndroidManifest.xml" --kiosk
+          else
+            python3 android-tv/patch-manifest.py "$TWA_DIR/app/src/main/AndroidManifest.xml"
+          fi
 
       - name: Install the TV launcher banners
         run: |
@@ -156,6 +170,31 @@ jobs:
             || { echo "FAIL: APK is not v2-signed; it will not install"; exit 1; }
           echo "v2 signature confirmed"
 
+      # The Custom Tabs toolbar (a close button and the URL across the top) is
+      # shown until Android can verify the app owns the site. Fire OS's Silk
+      # DOES provide Custom Tabs, so the TWA path is taken and the WebView
+      # fallback never runs — which means asset links, not the fallback, are
+      # what remove that bar. Emit the exact file needed, since its fingerprint
+      # comes from whichever key just signed this build.
+      - name: Emit assetlinks.json for this build
+        run: |
+          set -euo pipefail
+          BT="$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)"
+          HEX="$("$BT/apksigner" verify --print-certs taiyabah-tv.apk \
+                 | grep -m1 -i 'SHA-256 digest' | sed 's/.*: *//' | tr -d ' ' | tr 'a-f' 'A-F')"
+          FP="$(echo "$HEX" | sed 's/../&:/g; s/:$//')"
+          python3 - "$FP" > assetlinks.json <<'PY'
+          import json, sys
+          json.dump([{
+            "relation": ["delegate_permission/common.handle_all_urls"],
+            "target": {"namespace": "android_app",
+                       "package_name": "com.taiyabahmasjid.homescreen",
+                       "sha256_cert_fingerprints": [sys.argv[1]]}
+          }], sys.stdout, indent=2)
+          PY
+          echo "FINGERPRINT=$FP" >> "$GITHUB_ENV"
+          cat assetlinks.json
+
       - name: Job summary
         run: |
           {
@@ -164,6 +203,13 @@ jobs:
             echo "- Package: \`$PACKAGE_ID\`"
             echo "- Version code: \`$GITHUB_RUN_NUMBER\`"
             echo "- Renderer: WebView (Fire OS has no Chrome, so a Custom Tabs TWA would open blank)"
+            if [ "${{ inputs.kiosk }}" = "true" ]; then
+              echo "- **Kiosk build**: registers as a HOME screen. Boots into the app; Home returns to it."
+              echo "  Recovery is adb only — \`adb shell cmd package set-home-activity com.amazon.tv.launcher\`"
+              echo "  or \`adb uninstall $PACKAGE_ID\`. Set up adb access *before* deploying this."
+            else
+              echo "- Standard build (Fire TV menu remains the home screen)"
+            fi
             echo
             if [ "${{ steps.key.outputs.stable }}" = "true" ]; then
               echo "Signed with the stored keystore, so this upgrades an existing install in place."
@@ -172,6 +218,20 @@ jobs:
               echo "> **cannot upgrade it** — you would have to uninstall first. To fix, generate a"
               echo "> keystore once and add \`ANDROID_KEYSTORE_BASE64\`, \`ANDROID_KEYSTORE_PASSWORD\`"
               echo "> and \`ANDROID_KEY_PASSWORD\` as repository secrets. See \`docs/android-tv.md\`."
+            fi
+            echo
+            echo "### Removing the URL bar at the top"
+            echo "Deploy this as \`https://yameenbux.github.io/.well-known/assetlinks.json\`"
+            echo "(a repo named exactly \`yameenbux.github.io\`), then reopen the app:"
+            echo
+            echo '```json'
+            cat assetlinks.json
+            echo '```'
+            if [ "${{ steps.key.outputs.stable }}" != "true" ]; then
+              echo
+              echo "> **This fingerprint will change on the next build**, because no keystore secret is set"
+              echo "> and a throwaway key was used. Set \`ANDROID_KEYSTORE_BASE64\` first or you will be"
+              echo "> re-deploying this file every time."
             fi
             echo
             echo "### Install on the stick"
@@ -187,6 +247,7 @@ jobs:
           path: |
             taiyabah-tv.apk
             verify.txt
+            assetlinks.json
 
       - name: Publish a Release so Downloader has a URL
         env:
@@ -198,12 +259,13 @@ jobs:
         run: |
           set -euo pipefail
           TAG="tv-build-$GITHUB_RUN_NUMBER"
+          [ "${{ inputs.kiosk }}" = "true" ] && TAG="$TAG-kiosk"
           {
             printf '%s\n\n' "$RELEASE_NOTES"
             printf 'Package `%s`, version code `%s`, WebView renderer.\n' "$PACKAGE_ID" "$GITHUB_RUN_NUMBER"
             printf 'Install with Downloader on the Fire TV stick using the .apk link below.\n'
           } > notes.md
-          gh release create "$TAG" taiyabah-tv.apk \
+          gh release create "$TAG" taiyabah-tv.apk assetlinks.json \
             --title "TV APK build $GITHUB_RUN_NUMBER" \
             --notes-file notes.md
           echo "Paste this into Downloader on the stick:"
