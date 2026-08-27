@@ -112,8 +112,8 @@ a:focus-visible,
 
 /* ---- app shell ---- */
 .app{position:relative;z-index:1;height:100vh;height:100dvh;display:flex;flex-direction:column;
-  padding:clamp(14px,2.2vmin,34px) clamp(16px,3vmin,46px);
-  gap:clamp(12px,1.8vmin,22px);}
+  padding:clamp(9px,2.2vmin,34px) clamp(10px,3vmin,46px);
+  gap:clamp(7px,1.8vmin,22px);}
 /* TV overscan safe area. Plenty of panels still crop roughly 5% off every
    edge, and Android TV's design guidance asks for a 5% margin accordingly —
    27px vertical / 48px horizontal at 1080p. The default padding above lands
@@ -140,7 +140,7 @@ a:focus-visible,
 }
 /* Logo carries its own "Taiyabah Masjid" wordmark already — a second,
    literal text label next to it just repeated the name; dropped it. */
-.brandmark{height:clamp(58px,8.2vmin,108px);width:auto;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.25))}
+.brandmark{height:clamp(34px,8.2vmin,108px);width:auto;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.25))}
 .soundpill{display:flex;align-items:center;gap:10px;background:rgba(198,162,76,.16);
   border:1px solid rgba(198,162,76,.5);color:#F3EFE3;border-radius:99px;
   padding:12px 20px;font-size:clamp(13px,1.5vmin,18px);font-weight:600;cursor:pointer;white-space:nowrap}
@@ -180,22 +180,44 @@ a:focus-visible,
   color:var(--gold-bright);letter-spacing:.01em;margin-top:2px}
 .hero-sub{font-size:clamp(16px,2vmin,24px);color:#E7DCE2}
 .hero-sub b{color:#fff}
+/* Studio credit. Deliberately absolute rather than a flex child: it takes no
+   layout space at all, so it cannot push the countdown around or change the
+   hero's height at any viewport. Sits in the hero's lower-right: every line in
+   the card is left-aligned, so that corner is empty at every viewport,
+   including the short hero of a portrait tablet where a lower-left credit
+   collided with the "Jamā'ah at ..." line. pointer-events:none keeps it out of the way of taps,
+   and it is plain text, not a link, so the D-pad tab order is unchanged. */
+.hero-credit{position:absolute;right:clamp(18px,3vmin,32px);bottom:clamp(14px,2.2vmin,24px);
+  font-size:clamp(9px,1.05vmin,13px);letter-spacing:.15em;text-transform:uppercase;
+  color:#E7DCE2;opacity:.34;pointer-events:none;white-space:nowrap;user-select:none}
+/* Below tablet width the hero is short enough that the countdown's own digits
+   reach the corner, and a credit there either collides or sits a few pixels
+   off it, which looks like a mistake rather than a signature. This is a shelf
+   and wall display; a phone-sized viewport is incidental, so drop it rather
+   than crowd the one number people are actually reading. */
+@media (max-width:420px){ .hero-credit{display:none} }
 
 /* ---- table card ---- */
+/* Six prayer rows must always fit. A browser with its own chrome (Silk on
+   Fire TV) leaves a much shorter viewport than a full-screen app, and the
+   rows area is the thing that gets squeezed — it used to scroll, which on a
+   display nobody touches means Maghrib and Isha simply do not exist. The
+   clamp() floors above are set low enough that the table can compress
+   instead. Above 720p vmin dominates and none of it changes. */
 .tablecard{background:var(--card);color:var(--ink);border-radius:var(--radius);box-shadow:var(--shadow);
-  padding:clamp(14px,2.2vmin,26px);display:flex;flex-direction:column;min-height:0;overflow:hidden}
+  padding:clamp(10px,2.2vmin,26px);display:flex;flex-direction:column;min-height:0;overflow:hidden}
 .tablehead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:clamp(6px,1.2vmin,12px);flex:0 0 auto}
-.tablehead h2{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(22px,3vmin,34px);color:var(--brand-800)}
-.tablehead .hijri-today{font-size:clamp(14px,1.7vmin,20px);color:var(--muted);white-space:nowrap}
+.tablehead h2{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(15px,3vmin,34px);color:var(--brand-800)}
+.tablehead .hijri-today{font-size:clamp(10px,1.7vmin,20px);color:var(--muted);white-space:nowrap}
 .rows{flex:1 1 auto;min-height:0;overflow:auto}
 .prow{display:grid;grid-template-columns:1.5fr 1fr 1fr;align-items:center;
-  padding:clamp(10px,1.8vmin,18px) clamp(6px,.9vmin,10px);border-bottom:1px solid var(--line)}
-.prow.headrow{color:var(--muted);font-size:clamp(12px,1.3vmin,16px);letter-spacing:.08em;text-transform:uppercase;
-  border-bottom:2px solid var(--line);padding-bottom:10px}
+  padding:clamp(5px,1.8vmin,18px) clamp(4px,.9vmin,10px);border-bottom:1px solid var(--line)}
+.prow.headrow{color:var(--muted);font-size:clamp(9px,1.3vmin,16px);letter-spacing:.08em;text-transform:uppercase;
+  border-bottom:2px solid var(--line);padding-bottom:clamp(4px,1vmin,10px)}
 .prow .pname{display:flex;align-items:center;gap:9px;font-family:"Fraunces",Georgia,serif;font-weight:600;
-  font-size:clamp(20px,3vmin,34px);color:var(--ink)}
+  font-size:clamp(13px,3vmin,34px);color:var(--ink)}
 .prow .pname .ar{font-family:"Amiri",serif;color:var(--muted);font-size:.82em}
-.prow .t{font-size:clamp(20px,3vmin,34px);font-weight:600}
+.prow .t{font-size:clamp(13px,3vmin,34px);font-weight:600}
 .prow.active{background:rgba(198,162,76,.14);border-radius:10px;border-bottom-color:transparent}
 .prow.active .pname{color:var(--brand-800)}
 .prow.jummahrow{background:rgba(198,162,76,.08)}
@@ -204,9 +226,9 @@ a:focus-visible,
 .badge{font-size:12px;letter-spacing:.06em;text-transform:uppercase;background:var(--gold);color:#3C0B2A;
   padding:3px 9px;border-radius:99px;font-family:"Hanken Grotesk";font-weight:700}
 
-.jummahbanner{margin-top:clamp(8px,1.4vmin,14px);border-top:1px dashed var(--line);padding-top:clamp(10px,1.5vmin,16px);
-  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 16px;
-  font-size:clamp(15px,1.9vmin,21px);color:var(--muted);flex:0 0 auto}
+.jummahbanner{margin-top:clamp(5px,1.4vmin,14px);border-top:1px dashed var(--line);padding-top:clamp(6px,1.5vmin,16px);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px 16px;
+  font-size:clamp(11px,1.9vmin,21px);color:var(--muted);flex:0 0 auto}
 .jummahbanner b{color:var(--brand-800)}
 .jummahbanner .times{display:flex;gap:16px}
 
@@ -214,12 +236,12 @@ a:focus-visible,
 .strip{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.8vmin,20px);flex:0 0 auto}
 @media (max-width:640px){.strip{grid-template-columns:1fr}}
 .stripcard{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);border-radius:16px;
-  padding:clamp(18px,2.6vmin,30px);color:#F3EFE3;display:flex;flex-direction:column;gap:6px;cursor:pointer;
+  padding:clamp(9px,2.6vmin,30px);color:#F3EFE3;display:flex;flex-direction:column;gap:clamp(2px,.6vmin,6px);cursor:pointer;
   transition:background .15s ease;text-align:left;width:100%}
 .stripcard:hover,.stripcard:active{background:rgba(255,255,255,.11)}
-.stripcard .k{font-size:clamp(12px,1.4vmin,16px);letter-spacing:.1em;text-transform:uppercase;color:var(--gold-bright)}
-.stripcard .v{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(19px,2.6vmin,28px)}
-.stripcard .d{font-size:clamp(13px,1.6vmin,19px);color:#CDBEC7}
+.stripcard .k{font-size:clamp(9px,1.4vmin,16px);letter-spacing:.1em;text-transform:uppercase;color:var(--gold-bright)}
+.stripcard .v{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(13px,2.6vmin,28px)}
+.stripcard .d{font-size:clamp(10px,1.6vmin,19px);color:#CDBEC7}
 
 /* ---- occasion overlay ---- */
 .occasion{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -291,6 +313,7 @@ a:focus-visible,
       <div class="hero-name display" id="hero-name">—</div>
       <div class="hero-countdown tnum" id="hero-countdown">--:--:--</div>
       <div class="hero-sub" id="hero-sub">—</div>
+      <div class="hero-credit">Created by YSB Designs</div>
     </section>
 
     <section class="tablecard">
@@ -550,6 +573,46 @@ function stopKeepAlive(){
 /* Whether the keep-alive has been down long enough to be real rather than
    the gap between calling play() and the promise settling. */
 function keepAliveStalled(){ return keepAliveWanted && keepAliveMissedTicks >= 3; }
+
+/* Some environments allow audio with no interaction at all. The Fire TV build
+   is one: it runs in an Android WebView, and android-browser-helper's
+   WebViewFallbackActivity calls setMediaPlaybackRequiresUserGesture(false).
+   On a screen bolted to a wall with no one to press anything, insisting on a
+   tap there is a barrier with no purpose — and if the app's data is ever
+   cleared, the display would go silent until somebody found a remote.
+
+   So: probe by actually trying to start the keep-alive, which is inaudible,
+   so nothing is heard either way. If the browser permits it we know audio
+   works and unlock ourselves. Where autoplay is blocked — a normal browser
+   tab, iOS — the promise rejects, nothing has played, and the pill stays
+   amber waiting for a tap exactly as before. This is a capability check, not
+   a way of sneaking round the autoplay rules. */
+let autoplayProbes = 0;
+function probeAutoplay(){
+  if(soundUnlocked || autoplayProbes >= 2) return;
+  autoplayProbes++;
+  audioKeepAlive.loop = true;
+  audioKeepAlive.play().then(()=>{
+    soundUnlocked = true;
+    try { localStorage.setItem(SOUND_KEY, '1'); } catch(e){}
+    keepAliveWanted = true;
+    keepAliveMissedTicks = 0;
+    setUpMediaSession();
+    updateSoundPill();
+    console.info("[taiyabah] autoplay permitted by this browser — sound enabled with no interaction");
+  }).catch((err)=>{
+    /* Two distinct reasons this rejects, and they need different responses.
+       NotAllowedError is the browser's autoplay policy: a real no, stop
+       asking, wait for the tap. Anything else at boot is usually just the
+       element not being ready yet, so try once more when it says it is.
+       The reason is logged either way — on a wall screen with an amber pill
+       this line is the only clue anyone gets. */
+    console.info("[taiyabah] autoplay probe refused: " + (err && err.name ? err.name : err));
+    if(!(err && err.name === "NotAllowedError") && autoplayProbes < 2){
+      audioKeepAlive.addEventListener("canplaythrough", ()=>probeAutoplay(), {once:true});
+    }
+  });
+}
 
 /* The OS will surface this as a media notification / lock-screen player
    whether we like it or not, so give it a name that explains itself rather
@@ -1036,6 +1099,7 @@ renderSupport();
     (drift === 0 ? " (device already agrees)" : " (correcting by " + drift + " min)"));
 })();
 if(soundUnlocked){ startKeepAlive(); setUpMediaSession(); }
+else probeAutoplay();   // unattended screens (Fire TV) need no tap at all
 updateSoundPill();
 requestWakeLock();
 tick();

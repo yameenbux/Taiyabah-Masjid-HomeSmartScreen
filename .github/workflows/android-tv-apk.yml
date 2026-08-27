@@ -45,10 +45,18 @@ jobs:
       - name: Install Bubblewrap
         run: npm install -g @bubblewrap/cli@1.25.0
 
+      # The runner image ships an Android SDK but does not put sdkmanager on
+      # PATH, so this action is what makes it usable. It also sets ANDROID_HOME
+      # and accepts the licences, which the build needs before it can fetch
+      # anything.
+      - name: Set up the Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Install the SDK pieces the generated project asks for
         run: |
           set -euo pipefail
-          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          command -v sdkmanager || { echo "sdkmanager still not on PATH"; exit 1; }
           sdkmanager "platforms;android-36" "build-tools;36.0.0" "platform-tools"
 
       # Bubblewrap prompts to download its own JDK/SDK unless it already has

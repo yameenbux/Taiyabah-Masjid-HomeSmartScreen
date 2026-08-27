@@ -7,15 +7,34 @@ const ka = () => document.getElementById('audio-keepalive');
 (async () => {
   const browser = await chromium.launch();
 
-  // 1. Before the pill is tapped there should be no audio running at all —
-  //    the keep-alive is not a way to sneak around the autoplay gesture.
+  // 1. The Fire TV case. Its WebView calls setMediaPlaybackRequiresUserGesture(false),
+  //    so audio is permitted with no interaction; --autoplay-policy=no-user-gesture-required
+  //    is the same semantic in Chromium. On a screen bolted to a wall the page
+  //    has to enable itself, because nobody is there to press anything.
+  {
+    const tv = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
+    const page = await tv.newPage({ viewport: { width: 1180, height: 820 }, timezoneId: 'Europe/London' });
+    await page.goto(FILE);
+    await page.waitForTimeout(1200);
+    console.log('1. Autoplay permitted, no interaction — self-enabled:',
+      await page.evaluate(() => !document.getElementById('audio-keepalive').paused),
+      '| unlocked flag stored:', await page.evaluate(() => { try { return localStorage.getItem('taiyabah-sound-unlocked') === '1'; } catch(e){ return 'n/a'; } }),
+      '| pill:', (await page.textContent('#sound-pill-label')).trim());
+    await page.close();
+    await tv.close();
+  }
+
+  // 1b. An ordinary browser, where autoplay is blocked: nothing may play and
+  //     the pill must keep asking. The probe is a capability check, not a way
+  //     round the rules. This browser enforces the normal policy, so no stub
+  //     is needed — it is the real refusal.
   {
     const page = await browser.newPage({ viewport: { width: 1180, height: 820 }, timezoneId: 'Europe/London' });
     await page.goto(FILE);
-    await page.waitForTimeout(600);
-    console.log('1. Before unlock — keep-alive playing:',
-      await page.evaluate(() => !document.getElementById('audio-keepalive').paused),
-      '(expect false) | pill:', (await page.textContent('#sound-pill-label')).trim());
+    await page.waitForTimeout(1200);
+    console.log('1b. Autoplay blocked — stayed locked:',
+      await page.evaluate(() => { try { return localStorage.getItem('taiyabah-sound-unlocked') !== '1'; } catch(e){ return 'n/a'; } }),
+      '| pill:', (await page.textContent('#sound-pill-label')).trim(), '(must still ask)');
     await page.close();
   }
 

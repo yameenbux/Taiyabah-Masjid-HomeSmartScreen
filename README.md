@@ -190,10 +190,35 @@ Part of a wider *Taiyabah Masjid — Complete Overhaul*, alongside a website reb
 in-mosque signage. Branding, fonts and prayer data are shared with those sibling repositories rather than
 reinvented here.
 
-## Credits
+## Credits & ownership
 
-Built for Bolton Central Islamic Society. Prayer times, the Taiyabah Masjid name, and the masjid's logo
-belong to the charity. Adhan recording credited to the abodehq/Athan-MP3 collection — that repo carries no
-formal licence file, only a note that the collection is free to download, so treat the provenance as
-unverified rather than cleared for commercial use. Fine for a community masjid's own non-commercial home
-screen; worth knowing if this is ever redistributed more widely.
+**Designed and built by YSB Designs**, who own the source code, the interface design and the build
+tooling in this repository — the layout, the styling, the JavaScript, `build.py`, the test suite, the CI
+workflow and the Android packaging configuration. The on-screen credit in the countdown panel reflects
+this.
+
+**The masjid's own assets belong to Bolton Central Islamic Society**, not to YSB Designs:
+
+| Asset | Owner |
+| --- | --- |
+| Source code, design, build and test tooling | YSB Designs |
+| "Taiyabah Masjid" name and branding | Bolton Central Islamic Society |
+| Logo and icon artwork | Bolton Central Islamic Society |
+| Prayer timetable data (`data/timetable-2026.json`) | Bolton Central Islamic Society |
+| New Build appeal copy and bank details | Bolton Central Islamic Society |
+
+The masjid's name, logo and prayer times are used here with permission for the charity's own display.
+They are not covered by any licence granted over the code, and reusing this project elsewhere means
+replacing them.
+
+### Third-party assets
+
+- **Adhan recording** — from the [abodehq/Athan-MP3](https://github.com/abodehq/Athan-MP3) collection.
+  That repository carries no formal licence file, only a note that the collection is free to download, so
+  treat the provenance as **unverified rather than cleared for commercial use**. Fine for a community
+  masjid's own non-commercial display; worth knowing if this is ever redistributed more widely.
+- **Fonts** — Amiri, Fraunces and Hanken Grotesk, served from Google Fonts under the SIL Open Font Licence.
+
+> No `LICENSE` file has been added yet, which by default means all rights reserved. If YSB Designs wants
+> to grant others explicit terms over the code, that's a deliberate decision to make separately — the
+> masjid's assets above would need excluding from whatever is chosen.

@@ -84,6 +84,15 @@ adding if this isn't refreshed in time.
   when a trigger should have fired (iOS aggressively suspends JS timers), it retries `play()` for up to 3
   minutes after the fact rather than silently missing it forever. There's also a `visibilitychange`/`focus`
   listener that re-checks immediately on resume instead of waiting for the next 1-second tick.
+- **The page unlocks its own audio where the browser allows it** (`probeAutoplay()`). The Fire TV build
+  runs in an Android WebView, and android-browser-helper's `WebViewFallbackActivity` calls
+  `setMediaPlaybackRequiresUserGesture(false)` — so on that platform audio needs no interaction at all, and
+  demanding a remote press on a wall screen would be a barrier with no purpose. The probe tries to start
+  the (inaudible) keep-alive; if it plays, audio works and we unlock. Where autoplay is blocked the promise
+  rejects, nothing was audible, and the pill goes on asking. It is a capability check, not a way round the
+  autoplay rules, and it distinguishes `NotAllowedError` (a real refusal — stop asking) from a
+  not-ready-yet failure at boot, which it retries once on `canplaythrough`. The reason is logged either
+  way: on a wall screen showing an amber pill, that line is the only clue anyone gets.
 - **The sound-enable pill never disappears.** It shows amber "Enable Adhan & Iqamah sound" or green "Sound on
   · tap to test" permanently, and tapping it when already unlocked plays an audible confirmation chime. An
   earlier version hid the pill once tapped with no feedback — that was the direct cause of a real missed Adhan
@@ -101,10 +110,25 @@ adding if this isn't refreshed in time.
   prayer. It's a no-op on a correctly-configured device, and the detected timezone is logged at boot.
 - **A near-silent audio loop plays continuously once sound is enabled**, and the device will show a media
   notification / lock-screen player for it. Both are deliberate — see below.
+- **Almost every `clamp()` in the layout has a deliberately low minimum.** Those floors are not
+  placeholders. A browser with its own chrome — Silk on a Fire TV — reports a viewport as short as
+  960x460, and the original floors (58px logo, 20px prayer times, 18px footer padding) added up to more
+  than the height available, so the rows area scrolled and Maghrib and Isha silently did not exist on a
+  screen nobody touches. Raising any of these floors reintroduces that. Verified from 1920x1080 down to
+  1024x480 with all six prayers visible; below roughly 900x420 the design genuinely cannot show six rows
+  legibly, which is well under any real TV. Nothing changes at 720p or above, where `vmin` dominates.
 - **Large landscape viewports get noticeably wider padding** (`2.5vh 2.5vw` above 1280px). That's the
   Android TV overscan safe area — plenty of panels crop about 5% off every edge, and the guideline is
   27px/48px at 1080p, which the default `clamp()` padding undershoots. It costs a little margin in a
   desktop browser and saves the clock and footer buttons from being cut off on a TV.
+- **The "Created by YSB Designs" credit is absolutely positioned, not a flex child.** That's what keeps it
+  from ever changing the hero's height or pushing the countdown around — it contributes no layout at any
+  viewport, verified across eight screen sizes. It sits lower-right because every line in that card is
+  left-aligned, so the right corner is the only one empty at *all* sizes; a lower-left version collided
+  with the "Jamā'ah at ..." line on a portrait tablet. It's plain text rather than a link so the D-pad tab
+  order is unchanged, and `pointer-events:none` keeps it clear of taps. Hidden below 420px, where the
+  countdown's own digits reach the corner and it would either collide or sit a few pixels off, which reads
+  as a mistake rather than a signature.
 - **GitHub Pages serves via a case-sensitive filesystem.** A prior deploy broke because folders were named
   `Audio`/`Data` while the code references lowercase `audio`/`data`. If something 404s after a file move/rename
   via GitHub's web editor, check the actual resulting path (a web-editor rename previously left a stray
