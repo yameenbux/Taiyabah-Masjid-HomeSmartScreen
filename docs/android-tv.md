@@ -93,6 +93,33 @@ summary repeats the recovery commands.
 device and Fire OS version. Untested here — if the stick ignores the HOME category you'll simply get the
 standard behaviour back, which is a safe failure. Test on one stick before doing all of them.
 
+### The URL bar across the top of the app
+
+If the installed app shows a close button and `yameenbux.github.io` along the top, that is the **Custom
+Tabs toolbar**, and it means Android could not verify that this app owns that site.
+
+`fallbackType: webview` does not prevent it. That fallback only runs when *no* Custom Tabs provider
+exists — and Fire OS's Silk **does** provide Custom Tabs, so the TWA path is taken and the WebView is
+never reached. (`WebViewFallbackActivity` genuinely has no toolbar: it calls `setContentView(mWebView)`
+with nothing above it. It also can't be made the launcher directly, because it requires a `LAUNCH_URL`
+extra and would crash without one.)
+
+So on Fire TV, **asset links are what remove the bar** — they are not optional:
+
+1. Every build writes an `assetlinks.json` carrying the fingerprint of the key that signed it. It's
+   attached to the Release next to the APK, uploaded as an artifact, and printed in the job summary.
+2. Create a repo named **exactly** `yameenbux.github.io`, enable Pages on it, and put that file at
+   `.well-known/assetlinks.json`, so it serves from
+   `https://yameenbux.github.io/.well-known/assetlinks.json`.
+3. Force-stop and reopen the app. The bar should be gone.
+
+> **Set the keystore secrets first.** Without `ANDROID_KEYSTORE_BASE64` the build signs with a throwaway
+> key, so the fingerprint — and therefore this file — changes on every build and the bar returns each
+> time. Setting a stable key once makes this a one-off job.
+
+A custom domain (`home.taiyabahmasjid.com`) would avoid the separate repo entirely, since `.well-known/`
+would then sit at a root you control.
+
 ### Stopping it sleeping
 
 The app holds a Screen Wake Lock and plays a near-silent audio loop (which makes the OS treat it as

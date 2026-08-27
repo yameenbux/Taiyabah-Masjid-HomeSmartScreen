@@ -170,6 +170,31 @@ jobs:
             || { echo "FAIL: APK is not v2-signed; it will not install"; exit 1; }
           echo "v2 signature confirmed"
 
+      # The Custom Tabs toolbar (a close button and the URL across the top) is
+      # shown until Android can verify the app owns the site. Fire OS's Silk
+      # DOES provide Custom Tabs, so the TWA path is taken and the WebView
+      # fallback never runs — which means asset links, not the fallback, are
+      # what remove that bar. Emit the exact file needed, since its fingerprint
+      # comes from whichever key just signed this build.
+      - name: Emit assetlinks.json for this build
+        run: |
+          set -euo pipefail
+          BT="$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)"
+          HEX="$("$BT/apksigner" verify --print-certs taiyabah-tv.apk \
+                 | grep -m1 -i 'SHA-256 digest' | sed 's/.*: *//' | tr -d ' ' | tr 'a-f' 'A-F')"
+          FP="$(echo "$HEX" | sed 's/../&:/g; s/:$//')"
+          python3 - "$FP" > assetlinks.json <<'PY'
+          import json, sys
+          json.dump([{
+            "relation": ["delegate_permission/common.handle_all_urls"],
+            "target": {"namespace": "android_app",
+                       "package_name": "com.taiyabahmasjid.homescreen",
+                       "sha256_cert_fingerprints": [sys.argv[1]]}
+          }], sys.stdout, indent=2)
+          PY
+          echo "FINGERPRINT=$FP" >> "$GITHUB_ENV"
+          cat assetlinks.json
+
       - name: Job summary
         run: |
           {
@@ -195,6 +220,20 @@ jobs:
               echo "> and \`ANDROID_KEY_PASSWORD\` as repository secrets. See \`docs/android-tv.md\`."
             fi
             echo
+            echo "### Removing the URL bar at the top"
+            echo "Deploy this as \`https://yameenbux.github.io/.well-known/assetlinks.json\`"
+            echo "(a repo named exactly \`yameenbux.github.io\`), then reopen the app:"
+            echo
+            echo '```json'
+            cat assetlinks.json
+            echo '```'
+            if [ "${{ steps.key.outputs.stable }}" != "true" ]; then
+              echo
+              echo "> **This fingerprint will change on the next build**, because no keystore secret is set"
+              echo "> and a throwaway key was used. Set \`ANDROID_KEYSTORE_BASE64\` first or you will be"
+              echo "> re-deploying this file every time."
+            fi
+            echo
             echo "### Install on the stick"
             echo "1. Fire TV: Settings → My Fire TV → Developer Options → **Apps from Unknown Sources** → on"
             echo "2. Install **Downloader** from the Amazon Appstore"
@@ -208,6 +247,7 @@ jobs:
           path: |
             taiyabah-tv.apk
             verify.txt
+            assetlinks.json
 
       - name: Publish a Release so Downloader has a URL
         env:
@@ -225,7 +265,7 @@ jobs:
             printf 'Package `%s`, version code `%s`, WebView renderer.\n' "$PACKAGE_ID" "$GITHUB_RUN_NUMBER"
             printf 'Install with Downloader on the Fire TV stick using the .apk link below.\n'
           } > notes.md
-          gh release create "$TAG" taiyabah-tv.apk \
+          gh release create "$TAG" taiyabah-tv.apk assetlinks.json \
             --title "TV APK build $GITHUB_RUN_NUMBER" \
             --notes-file notes.md
           echo "Paste this into Downloader on the stick:"
