@@ -55,6 +55,44 @@ On each stick, once:
 Step 5 is per install and per device: browsers refuse to play audio without one real interaction, and
 nothing can remove that requirement.
 
+### Booting straight into it, and never showing the Fire TV menu
+
+A masjid wall display shouldn't drop to Amazon's home screen — it merchandises films and trailers. Two
+levels of fix, and they are not equally safe.
+
+**Level 1 — autostart helper (reversible, recommended first).** Install an autostart app from the
+Appstore (search "autostart" / "launch on boot") and point it at Taiyabah Home. The stick then opens the
+app after every reboot. Amazon's launcher stays the home screen, so pressing **Home** still reaches it —
+fine when the remote lives in a drawer, and it leaves every recovery route intact. Try this first.
+
+A boot-completed receiver in the app itself would do the same job, but only on Fire OS 7 (Android 9);
+Android 10 onwards blocks starting an activity from the background, so it would quietly stop working on
+Fire OS 8. That's why it isn't built in.
+
+**Level 2 — kiosk mode (the real fix, and a one-way door).** Run the workflow with the **kiosk** input
+ticked. The app then registers as a HOME screen: the stick boots into it and the Home button returns to
+it, so the Fire TV menu is never reachable.
+
+> **Read this before ticking it.** With no other launcher installed there is **no on-screen route back to
+> Fire TV Settings**. If the app crashes or you need to change a device setting, the only ways back are:
+>
+> ```bash
+> adb connect <stick-ip>:5555
+> adb shell cmd package set-home-activity com.amazon.tv.launcher   # hand Home back to Amazon
+> adb uninstall com.taiyabahmasjid.homescreen                      # or remove the app entirely
+> ```
+>
+> **Set up adb access and confirm it works before deploying a kiosk build**, not after. Enable it at
+> Settings → My Fire TV → Developer Options → ADB debugging while you still can, and write the stick's IP
+> down. Failing that, a factory reset is the fallback.
+
+Kiosk builds are tagged `tv-build-N-kiosk` so they're distinguishable from standard ones, and the job
+summary repeats the recovery commands.
+
+**Fire OS may not honour it.** Amazon is restrictive about third-party launchers and behaviour differs by
+device and Fire OS version. Untested here — if the stick ignores the HOME category you'll simply get the
+standard behaviour back, which is a safe failure. Test on one stick before doing all of them.
+
 ### Stopping it sleeping
 
 The app holds a Screen Wake Lock and plays a near-silent audio loop (which makes the OS treat it as

@@ -18,6 +18,11 @@ on:
         description: "What changed in this build (shown on the Release)"
         required: false
         default: "Rebuilt from the current live site."
+      kiosk:
+        description: "Kiosk mode: boot straight into this app and make Home return to it, so the Fire TV menu is never shown. Read docs/android-tv.md first — there is no on-screen way back to Fire TV Settings afterwards."
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: write        # needed to publish the Release
@@ -119,7 +124,16 @@ jobs:
         run: bubblewrap update --skipVersionUpgrade
 
       - name: Patch the manifest for TV launchers
-        run: python3 android-tv/patch-manifest.py "$TWA_DIR/app/src/main/AndroidManifest.xml"
+        env:
+          KIOSK: ${{ inputs.kiosk }}
+        run: |
+          set -euo pipefail
+          if [ "$KIOSK" = "true" ]; then
+            echo "::warning::Kiosk build: this app registers as a HOME screen. The stick will boot into it and Home will return to it, with no on-screen route back to Fire TV Settings. Recovery is via adb — see docs/android-tv.md."
+            python3 android-tv/patch-manifest.py "$TWA_DIR/app/src/main/AndroidManifest.xml" --kiosk
+          else
+            python3 android-tv/patch-manifest.py "$TWA_DIR/app/src/main/AndroidManifest.xml"
+          fi
 
       - name: Install the TV launcher banners
         run: |
@@ -164,6 +178,13 @@ jobs:
             echo "- Package: \`$PACKAGE_ID\`"
             echo "- Version code: \`$GITHUB_RUN_NUMBER\`"
             echo "- Renderer: WebView (Fire OS has no Chrome, so a Custom Tabs TWA would open blank)"
+            if [ "${{ inputs.kiosk }}" = "true" ]; then
+              echo "- **Kiosk build**: registers as a HOME screen. Boots into the app; Home returns to it."
+              echo "  Recovery is adb only — \`adb shell cmd package set-home-activity com.amazon.tv.launcher\`"
+              echo "  or \`adb uninstall $PACKAGE_ID\`. Set up adb access *before* deploying this."
+            else
+              echo "- Standard build (Fire TV menu remains the home screen)"
+            fi
             echo
             if [ "${{ steps.key.outputs.stable }}" = "true" ]; then
               echo "Signed with the stored keystore, so this upgrades an existing install in place."
@@ -198,6 +219,7 @@ jobs:
         run: |
           set -euo pipefail
           TAG="tv-build-$GITHUB_RUN_NUMBER"
+          [ "${{ inputs.kiosk }}" = "true" ] && TAG="$TAG-kiosk"
           {
             printf '%s\n\n' "$RELEASE_NOTES"
             printf 'Package `%s`, version code `%s`, WebView renderer.\n' "$PACKAGE_ID" "$GITHUB_RUN_NUMBER"
