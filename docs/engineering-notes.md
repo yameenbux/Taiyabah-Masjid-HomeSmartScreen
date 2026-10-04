@@ -129,7 +129,7 @@ adding if this isn't refreshed in time.
   Android TV overscan safe area — plenty of panels crop about 5% off every edge, and the guideline is
   27px/48px at 1080p, which the default `clamp()` padding undershoots. It costs a little margin in a
   desktop browser and saves the clock and footer buttons from being cut off on a TV.
-- **The "Created by YSB Designs" credit is absolutely positioned, not a flex child.** That's what keeps it
+- **The "Powered by MasjidOne" credit is absolutely positioned, not a flex child.** That's what keeps it
   from ever changing the hero's height or pushing the countdown around — it contributes no layout at any
   viewport, verified across eight screen sizes. It sits lower-right because every line in that card is
   left-aligned, so the right corner is the only one empty at *all* sizes; a lower-left version collided
@@ -137,6 +137,12 @@ adding if this isn't refreshed in time.
   order is unchanged, and `pointer-events:none` keeps it clear of taps. Hidden below 420px, where the
   countdown's own digits reach the corner and it would either collide or sit a few pixels off, which reads
   as a mistake rather than a signature.
+- **The MasjidOne mark falls back to a text wordmark when `masjidone-logo.svg` is absent**, handled in the
+  main script rather than an inline `onerror`. A wall display must never show a broken-image icon, and the
+  fallback means dropping the real logo into the repo root is the only step needed to switch to it —
+  no markup change. **If you add the logo, do not add it to `sw.js`'s `SHELL` list until the file is
+  actually committed:** `cache.addAll()` is atomic, so one 404 fails the whole service worker install and
+  takes offline support down with it.
 - **GitHub Pages serves via a case-sensitive filesystem.** A prior deploy broke because folders were named
   `Audio`/`Data` while the code references lowercase `audio`/`data`. If something 404s after a file move/rename
   via GitHub's web editor, check the actual resulting path (a web-editor rename previously left a stray

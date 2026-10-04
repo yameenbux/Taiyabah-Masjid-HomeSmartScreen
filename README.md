@@ -200,8 +200,8 @@ reinvented here.
 
 **Designed and built by YSB Designs**, who own the source code, the interface design and the build
 tooling in this repository — the layout, the styling, the JavaScript, `build.py`, the test suite, the CI
-workflow and the Android packaging configuration. The on-screen credit in the countdown panel reflects
-this.
+workflow and the Android packaging configuration. The screen itself carries only the MasjidOne platform
+credit; YSB Designs' ownership of the code is recorded here rather than on the display.
 
 **The masjid's own assets belong to Bolton Central Islamic Society**, not to YSB Designs:
 
