@@ -110,6 +110,14 @@ adding if this isn't refreshed in time.
   prayer. It's a no-op on a correctly-configured device, and the detected timezone is logged at boot.
 - **A near-silent audio loop plays continuously once sound is enabled**, and the device will show a media
   notification / lock-screen player for it. Both are deliberate — see below.
+- **Portrait tablets get their own override block, and it sits at the very end of the stylesheet.**
+  Everything here is sized from `vmin`, which in portrait is the *width* — so on a tall narrow screen the
+  header, hero and footer all inflate relative to the height available and the prayer table is what gets
+  squeezed out. Measured on an 810x1080 iPad the budget came to exactly 1080px with the table 61px short,
+  losing Maghrib and Isha below the fold. The logo, countdown and footer cards give that space back,
+  because the table is the content and they are decoration. The block's *position* is load-bearing: the
+  base rules it overrides are defined later in the file, so placed any earlier it loses on source order
+  and silently does nothing — which is exactly what happened on the first attempt.
 - **Almost every `clamp()` in the layout has a deliberately low minimum.** Those floors are not
   placeholders. A browser with its own chrome — Silk on a Fire TV — reports a viewport as short as
   960x460, and the original floors (58px logo, 20px prayer times, 18px footer padding) added up to more
@@ -121,7 +129,7 @@ adding if this isn't refreshed in time.
   Android TV overscan safe area — plenty of panels crop about 5% off every edge, and the guideline is
   27px/48px at 1080p, which the default `clamp()` padding undershoots. It costs a little margin in a
   desktop browser and saves the clock and footer buttons from being cut off on a TV.
-- **The "Created by YSB Designs" credit is absolutely positioned, not a flex child.** That's what keeps it
+- **The "Powered by MasjidOne" credit is absolutely positioned, not a flex child.** That's what keeps it
   from ever changing the hero's height or pushing the countdown around — it contributes no layout at any
   viewport, verified across eight screen sizes. It sits lower-right because every line in that card is
   left-aligned, so the right corner is the only one empty at *all* sizes; a lower-left version collided
@@ -129,6 +137,12 @@ adding if this isn't refreshed in time.
   order is unchanged, and `pointer-events:none` keeps it clear of taps. Hidden below 420px, where the
   countdown's own digits reach the corner and it would either collide or sit a few pixels off, which reads
   as a mistake rather than a signature.
+- **The MasjidOne mark falls back to a text wordmark when `masjidone-logo.svg` is absent**, handled in the
+  main script rather than an inline `onerror`. A wall display must never show a broken-image icon, and the
+  fallback means dropping the real logo into the repo root is the only step needed to switch to it —
+  no markup change. **If you add the logo, do not add it to `sw.js`'s `SHELL` list until the file is
+  actually committed:** `cache.addAll()` is atomic, so one 404 fails the whole service worker install and
+  takes offline support down with it.
 - **GitHub Pages serves via a case-sensitive filesystem.** A prior deploy broke because folders were named
   `Audio`/`Data` while the code references lowercase `audio`/`data`. If something 404s after a file move/rename
   via GitHub's web editor, check the actual resulting path (a web-editor rename previously left a stray

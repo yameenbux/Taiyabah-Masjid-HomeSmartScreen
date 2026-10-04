@@ -180,7 +180,7 @@ a:focus-visible,
   color:var(--gold-bright);letter-spacing:.01em;margin-top:2px}
 .hero-sub{font-size:clamp(16px,2vmin,24px);color:#E7DCE2}
 .hero-sub b{color:#fff}
-/* Studio credit. Deliberately absolute rather than a flex child: it takes no
+/* Platform + studio credit. Deliberately absolute rather than a flex child: it takes no
    layout space at all, so it cannot push the countdown around or change the
    hero's height at any viewport. Sits in the hero's lower-right: every line in
    the card is left-aligned, so that corner is empty at every viewport,
@@ -188,8 +188,21 @@ a:focus-visible,
    collided with the "Jamā'ah at ..." line. pointer-events:none keeps it out of the way of taps,
    and it is plain text, not a link, so the D-pad tab order is unchanged. */
 .hero-credit{position:absolute;right:clamp(18px,3vmin,32px);bottom:clamp(14px,2.2vmin,24px);
-  font-size:clamp(9px,1.05vmin,13px);letter-spacing:.15em;text-transform:uppercase;
-  color:#E7DCE2;opacity:.34;pointer-events:none;white-space:nowrap;user-select:none}
+  display:flex;align-items:center;gap:clamp(5px,.7vmin,9px);
+  color:#E7DCE2;pointer-events:none;white-space:nowrap;user-select:none}
+.hero-credit .prefix{font-size:clamp(8px,.92vmin,11px);letter-spacing:.15em;text-transform:uppercase;opacity:.3}
+.hero-credit .mark{height:clamp(13px,1.7vmin,22px);width:auto;display:block;opacity:.55}
+/* Text fallback, shown only if the logo file is missing. Keeps the credit
+   looking deliberate on a masjid wall rather than leaving a broken-image
+   icon there, and means dropping masjidone-logo.svg into the repo is the
+   only step needed to switch to the real mark. */
+.hero-credit .wordmark{font-size:clamp(10px,1.2vmin,15px);letter-spacing:.04em;opacity:.45;font-weight:600}
+/* Two lines rather than one: joined with a separator the string runs long
+   enough to reach the countdown digits on a short viewport, which is the
+   collision this corner was chosen to avoid. Stacking keeps the width at
+   roughly one line's worth. The platform is the brand a congregation sees,
+   so it leads; the studio sits under it, dimmer and smaller. */
+
 /* Below tablet width the hero is short enough that the countdown's own digits
    reach the corner, and a credit there either collides or sits a few pixels
    off it, which looks like a mistake rather than a signature. This is a shelf
@@ -285,6 +298,23 @@ a:focus-visible,
 .contactrow:last-child{border-bottom:none}
 .contactrow .k{color:var(--muted);width:88px;flex:0 0 auto;font-size:13px;text-transform:uppercase;letter-spacing:.05em}
 .contactrow a{color:var(--brand-800);text-decoration:none;font-weight:600}
+/* Portrait / stacked layout. Everything here is sized from vmin, which in
+   portrait is the *width* — so on a tall narrow screen the header, hero and
+   footer all inflate relative to the height actually available, and the
+   prayer table is what gets squeezed out. Measured on an 810x1080 tablet the
+   budget came to exactly 1080px with the table 61px short, losing Maghrib and
+   Isha below the fold.
+   The table is the content; the logo, countdown and footer cards are
+   decoration, so they give the space back. Landscape and TV are untouched. */
+@media (max-width:860px) and (orientation:portrait){
+  .brandmark{height:clamp(30px,5.6vmin,56px)}
+  .clock{font-size:clamp(30px,5.4vmin,56px)}
+  .hero{padding:clamp(14px,2.2vmin,24px)}
+  .hero-countdown{font-size:clamp(40px,7.6vmin,84px)}
+  .hero-name{font-size:clamp(28px,5.2vmin,52px)}
+  .stripcard{padding:clamp(8px,1.8vmin,18px)}
+  .stripcard .v{font-size:clamp(13px,2.1vmin,22px)}
+}
 </style>
 </head>
 <body>
@@ -313,7 +343,11 @@ a:focus-visible,
       <div class="hero-name display" id="hero-name">—</div>
       <div class="hero-countdown tnum" id="hero-countdown">--:--:--</div>
       <div class="hero-sub" id="hero-sub">—</div>
-      <div class="hero-credit">Created by YSB Designs</div>
+      <div class="hero-credit">
+        <span class="prefix">Powered by</span>
+        <img class="mark" id="brand-mark" src="masjidone-logo.svg" alt="MasjidOne">
+        <span class="wordmark" id="brand-word" hidden>MasjidOne</span>
+      </div>
     </section>
 
     <section class="tablecard">
@@ -1085,6 +1119,19 @@ document.addEventListener('visibilitychange', ()=>{
   }
 });
 window.addEventListener('focus', tick);
+
+/* The MasjidOne mark falls back to a text wordmark if the logo file isn't
+   present, so the credit never renders as a broken image on a wall screen
+   and adding masjidone-logo.svg is the only step needed to show the real
+   mark. Both states are styled; neither affects layout. */
+(function brandMark(){
+  const img = document.getElementById('brand-mark');
+  const word = document.getElementById('brand-word');
+  if(!img || !word) return;
+  const useWordmark = ()=>{ img.hidden = true; word.hidden = false; };
+  if(img.complete && img.naturalWidth === 0) useWordmark();
+  img.addEventListener('error', useWordmark, {once:true});
+})();
 
 /* ---------------- boot ---------------- */
 renderSupport();
