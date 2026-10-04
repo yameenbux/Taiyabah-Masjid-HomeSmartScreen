@@ -110,6 +110,14 @@ adding if this isn't refreshed in time.
   prayer. It's a no-op on a correctly-configured device, and the detected timezone is logged at boot.
 - **A near-silent audio loop plays continuously once sound is enabled**, and the device will show a media
   notification / lock-screen player for it. Both are deliberate — see below.
+- **Portrait tablets get their own override block, and it sits at the very end of the stylesheet.**
+  Everything here is sized from `vmin`, which in portrait is the *width* — so on a tall narrow screen the
+  header, hero and footer all inflate relative to the height available and the prayer table is what gets
+  squeezed out. Measured on an 810x1080 iPad the budget came to exactly 1080px with the table 61px short,
+  losing Maghrib and Isha below the fold. The logo, countdown and footer cards give that space back,
+  because the table is the content and they are decoration. The block's *position* is load-bearing: the
+  base rules it overrides are defined later in the file, so placed any earlier it loses on source order
+  and silently does nothing — which is exactly what happened on the first attempt.
 - **Almost every `clamp()` in the layout has a deliberately low minimum.** Those floors are not
   placeholders. A browser with its own chrome — Silk on a Fire TV — reports a viewport as short as
   960x460, and the original floors (58px logo, 20px prayer times, 18px footer padding) added up to more
