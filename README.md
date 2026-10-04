@@ -101,7 +101,12 @@ Then open it from the new icon and **tap the sound pill once** — it should tur
 
 Set the device's screen timeout to **Never** and leave it plugged in, or it will sleep.
 
-**Put it on a TV:** see [`docs/android-tv.md`](docs/android-tv.md).
+**Put it on a TV:**
+
+| Setup | Guide |
+| --- | --- |
+| A small PC per screen (recommended — no app to build or sign) | [`docs/kiosk-windows.md`](docs/kiosk-windows.md) |
+| Fire TV / Android TV stick | [`docs/android-tv.md`](docs/android-tv.md) |
 
 ## Run it locally
 
@@ -169,7 +174,8 @@ test-scripts/          ← Playwright test suite
 | Document | What's in it |
 | --- | --- |
 | [`docs/engineering-notes.md`](docs/engineering-notes.md) | Architecture, the data model, and every deliberate decision that might look like a bug. **Read before editing** |
-| [`docs/android-tv.md`](docs/android-tv.md) | Building, signing and installing the TV app; Fire TV setup; remote management |
+| [`docs/kiosk-windows.md`](docs/kiosk-windows.md) | Running a screen on a Windows mini PC: kiosk browser, never-sleep, auto-start, Tailscale remote access |
+| [`docs/android-tv.md`](docs/android-tv.md) | The Fire TV / Android TV app: building, signing, installing, asset links |
 | [`test-scripts/README.md`](test-scripts/README.md) | What each test covers and how the fake-clock pattern works |
 
 ---
