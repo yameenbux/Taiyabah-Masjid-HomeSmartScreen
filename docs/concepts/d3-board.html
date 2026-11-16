@@ -1,0 +1,102 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>D3 — Board</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* A departure board. Near-black, strict grid, everything visible at once,
+   no hero image, no curves. Grotesk only — no serif anywhere, which is
+   what makes it read as an instrument rather than a brochure. */
+:root{--bg:#140610;--line:#36202F;--ink:#F7F3EA;--dim:#9E889A;--gold:#DCBB63;--amber:#E8A33D;--live:#7FC08F}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:"Hanken Grotesk",sans-serif;background:var(--bg);color:var(--ink);
+  -webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.app{height:100vh;display:grid;grid-template-rows:auto 1fr auto;gap:0}
+.bar{display:flex;align-items:center;justify-content:space-between;padding:16px 34px;
+  border-bottom:1px solid var(--line)}
+.lock{display:flex;align-items:center;gap:16px}
+.mark{height:36px}
+.sys{font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--dim)}
+.sys b{color:var(--live)}
+.utc{display:flex;align-items:baseline;gap:22px}
+.utc .c{font-size:34px;font-weight:700;letter-spacing:-.01em}
+.utc .c s{text-decoration:none;color:var(--gold);font-size:.52em;font-weight:600}
+.utc .d{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);text-align:right;line-height:1.6}
+.main{display:grid;grid-template-columns:400px 1fr;min-height:0}
+/* Left rail: the single live value, plus the standing facts under it. */
+.rail{border-right:1px solid var(--line);padding:30px 34px;display:flex;flex-direction:column}
+.lab{font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--gold)}
+.nm{font-size:40px;font-weight:700;margin:12px 0 2px;letter-spacing:-.01em}
+.nm span{font-family:"Amiri",serif;font-weight:400;color:var(--gold);font-size:.78em;margin-left:.3em}
+.cd{font-size:84px;font-weight:800;letter-spacing:-.045em;line-height:1;margin:16px 0 6px}
+.at{font-size:15px;color:var(--dim);font-weight:500}
+.at b{color:var(--ink);font-weight:700}
+.prog{height:3px;background:#2A1522;margin:26px 0 30px;position:relative}
+.prog i{position:absolute;inset:0 auto 0 0;width:79%;background:var(--gold)}
+.meta{margin-top:auto;display:grid;gap:0}
+.m{display:flex;justify-content:space-between;padding:11px 0;border-top:1px solid var(--line);font-size:13px}
+.m span:first-child{color:var(--dim);font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:10px;align-self:center}
+.m span:last-child{font-weight:600}
+/* Right: the whole timetable as a board, nothing hidden. */
+.board{display:flex;flex-direction:column;min-height:0}
+.hdr,.r{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.1fr;align-items:center;
+  padding:0 34px;border-bottom:1px solid var(--line)}
+.hdr{padding-top:13px;padding-bottom:13px;font-size:10px;font-weight:700;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--dim);background:#1A0916}
+.r{flex:1 1 0;min-height:0}
+.r .p{font-size:26px;font-weight:700}
+.r .p i{font-family:"Amiri",serif;font-style:normal;font-weight:400;color:var(--gold);font-size:.74em;margin-left:.34em}
+.r .v{font-size:24px;font-weight:500;color:#D7C3D2}
+.r .j{font-size:26px;font-weight:700;color:var(--gold)}
+.r .s{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);text-align:right}
+.r.now{background:linear-gradient(90deg,rgba(232,163,61,.17),rgba(232,163,61,.02))}
+.r.now .s{color:var(--amber)}
+.r.next .s{color:var(--live)}
+.r.info .p,.r.info .v{color:var(--dim)}
+.r.info .j{color:#5C4756;font-weight:500}
+.ft{display:flex;align-items:center;justify-content:space-between;padding:13px 34px;
+  border-top:1px solid var(--line);font-size:11px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim)}
+.acts{display:flex;gap:10px}
+.a{border:1px solid var(--line);background:#1C0A17;color:var(--ink);border-radius:4px;
+  padding:9px 16px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+.a.go{background:var(--gold);border-color:var(--gold);color:#2A0E20}
+</style></head><body>
+<div class="app">
+  <div class="bar">
+    <div class="lock"><img class="mark" src="../../logo-cream.png" alt="Taiyabah Masjid">
+      <span class="sys">Bolton BL1 8HD · Adhan <b>armed</b></span></div>
+    <div class="utc"><div class="c">16:00<s>04</s></div>
+      <div class="d">Monday 16 November<br>6 Jumada al-Thani 1448</div></div>
+  </div>
+
+  <div class="main">
+    <div class="rail">
+      <div class="lab">Next jamā'ah</div>
+      <div class="nm">Maghrib<span>المغرب</span></div>
+      <div class="cd">00:15:55</div>
+      <div class="at">at <b>4:16 pm</b> · adhan and jamā'ah together</div>
+      <div class="prog"><i></i></div>
+      <div class="meta">
+        <div class="m"><span>Now</span><span>Asr · began 2:21 pm</span></div>
+        <div class="m"><span>Daylight</span><span>7:38 am — 4:16 pm</span></div>
+        <div class="m"><span>Jumu'ah</span><span>Fri 20 Nov · 12:45 &amp; 1:40 pm</span></div>
+        <div class="m"><span>Appeal</span><span>New build · Phase 3.3</span></div>
+      </div>
+    </div>
+
+    <div class="board">
+      <div class="hdr"><span>Prayer</span><span>Begins</span><span>Jamā'ah</span><span style="text-align:right">Status</span></div>
+      <div class="r"><span class="p">Fajr<i>الفجر</i></span><span class="v">5:52 am</span><span class="j">7:00 am</span><span class="s">Done</span></div>
+      <div class="r info"><span class="p">Sunrise<i>الشروق</i></span><span class="v">7:38 am</span><span class="j">—</span><span class="s">Done</span></div>
+      <div class="r"><span class="p">Zuhr<i>الظهر</i></span><span class="v">12:01 pm</span><span class="j">12:45 pm</span><span class="s">Done</span></div>
+      <div class="r now"><span class="p">Asr<i>العصر</i></span><span class="v">2:21 pm</span><span class="j">3:00 pm</span><span class="s">Now</span></div>
+      <div class="r next"><span class="p">Maghrib<i>المغرب</i></span><span class="v">4:16 pm</span><span class="j">4:16 pm</span><span class="s">In 15 min</span></div>
+      <div class="r"><span class="p">Isha<i>العشاء</i></span><span class="v">5:54 pm</span><span class="j">7:30 pm</span><span class="s">Later</span></div>
+    </div>
+  </div>
+
+  <div class="ft">
+    <div class="acts"><button class="a">This month</button><button class="a go">Support the new build</button><button class="a">Visit &amp; contact</button></div>
+    <div>Powered by MasjidOne</div>
+  </div>
+</div></body></html>
