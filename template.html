@@ -33,10 +33,10 @@
   --gold:#C6A24C;
   --gold-bright:#DCBB63;
   --paper:#F5F1E8;
-  --card:#EDE1C8;
+  --card:#FCFAF3;
   --ink:#261B22;
   --muted:#7C6E77;
-  --line:#D8CAA5;
+  --line:#E4DECF;
   --danger:#B4532F;
   --radius:18px;
   --shadow:0 1px 2px rgba(60,11,42,.06), 0 12px 30px -18px rgba(60,11,42,.35);
@@ -102,13 +102,11 @@ a:focus-visible,
     radial-gradient(90% 55% at 50% 112%, rgba(119,33,87,.55), transparent 60%),
     linear-gradient(175deg, var(--brand-900), var(--brand-800) 55%, var(--brand-700));
 }
-.backdrop::after{
-  content:"";position:absolute;inset:-20px;opacity:.055;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon fill='%23C6A24C' points='50,2 57.3,32.4 83.9,16.1 67.6,42.7 98,50 67.6,57.3 83.9,83.9 57.3,67.6 50,98 42.7,67.6 16.1,83.9 32.4,57.3 2,50 32.4,42.7 16.1,16.1 42.7,32.4'/%3E%3C/svg%3E");
-  background-size:9vmin 9vmin;background-repeat:repeat;
-  animation:driftMotif 260s linear infinite;
-}
-@keyframes driftMotif{from{background-position:0 0}to{background-position:820px 410px}}
+/* The eight-point star tile that used to sit over the gradient has gone.
+   The masjid's in-mosque screens run the same three-layer gradient with
+   nothing on top, and side by side the plain ground reads calmer and lets
+   the gold hairlines on the cards carry the ornament instead. Restoring it
+   is one rule, but then the two sets of screens no longer match. */
 
 /* ---- app shell ---- */
 .app{position:relative;z-index:1;height:100vh;height:100dvh;display:flex;flex-direction:column;
@@ -126,14 +124,17 @@ a:focus-visible,
 }
 
 /* ---- header ---- */
-/* Logo centred, sound control on the left, clock/date on the right —
-   sized up well beyond typical web defaults throughout this page: a
-   good few of the masjid's congregation are older and this is meant to
-   be read from across a room on a TV, not held close like a phone. */
+/* Logo and society name centred, sound control on the left, clock on the
+   right. The lockup (calligraphy + wordmark + "Bolton Central Islamic
+   Society" in gold caps) is lifted from the masjid's in-mosque screens so
+   a phone on a kitchen worktop and the screen in the foyer introduce
+   themselves the same way. Sized up well beyond typical web defaults
+   throughout this page: a good few of the congregation are older and this
+   is meant to be read from across a room on a TV, not held close. */
 .topbar{display:grid;grid-template-columns:1fr auto 1fr;grid-template-areas:"left center right";
   align-items:center;row-gap:10px;column-gap:clamp(10px,1.6vmin,18px);flex:0 0 auto}
 .topbar-left{grid-area:left;display:flex;justify-content:flex-start;min-width:0}
-.topbar-center{grid-area:center;display:flex;align-items:center;gap:clamp(12px,1.8vmin,20px);justify-content:center}
+.topbar-center{grid-area:center;display:flex;align-items:center;gap:clamp(12px,1.8vmin,24px);justify-content:center}
 .topbar-right{grid-area:right;justify-self:end}
 @media (max-width:820px){
   .topbar{grid-template-columns:1fr 1fr;grid-template-areas:"center center" "left right"}
@@ -141,6 +142,11 @@ a:focus-visible,
 /* Logo carries its own "Taiyabah Masjid" wordmark already — a second,
    literal text label next to it just repeated the name; dropped it. */
 .brandmark{height:clamp(34px,8.2vmin,108px);width:auto;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.25))}
+.brandsub{font-size:clamp(10px,1.5vmin,20px);font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--gold-bright);opacity:.85;text-align:left;line-height:1.3;max-width:11em}
+/* Below tablet width the lockup has to share one line with the sound pill
+   and the clock, and the society name is the part a reader already knows. */
+@media (max-width:1100px){ .brandsub{display:none} }
 .soundpill{display:flex;align-items:center;gap:10px;background:rgba(198,162,76,.16);
   border:1px solid rgba(198,162,76,.5);color:#F3EFE3;border-radius:99px;
   padding:12px 20px;font-size:clamp(13px,1.5vmin,18px);font-weight:600;cursor:pointer;white-space:nowrap}
@@ -153,108 +159,204 @@ a:focus-visible,
   #sound-pill-label{display:none}
   .soundpill{padding:12px}
 }
+/* Clock: minutes in cream, seconds raised and in gold, exactly as on the
+   in-mosque screens. The seconds are what tells someone at a glance that
+   the screen is live rather than a photograph of a timetable. */
 .clockblock{text-align:right}
-.clock{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(34px,7vmin,76px);color:#F3EFE3;line-height:1}
+.clock{display:flex;align-items:flex-start;justify-content:flex-end;gap:.12em;
+  font-family:"Fraunces",Georgia,serif;font-weight:600;color:#F3EFE3;line-height:1}
+.clock .hm{font-size:clamp(34px,7vmin,76px)}
+.clock .ss{font-size:clamp(14px,2.6vmin,30px);font-weight:500;color:var(--gold-bright);
+  margin-top:clamp(3px,.7vmin,9px)}
 .dateline{font-size:clamp(14px,1.8vmin,22px);color:#D9C9D2;margin-top:4px}
 .dateline .hijri{color:var(--gold-bright)}
 .dateline .dot{margin:0 6px;opacity:.5}
 
-/* ---- main two-pane layout ---- */
-.layout{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:1fr;gap:clamp(12px,2vmin,24px)}
-@media (min-width:860px) and (orientation:landscape){
-  .layout{grid-template-columns:minmax(320px,38%) 1fr}
+/* ---- main column ---- */
+/* The in-mosque timetable screen is a single centred column — next jamā'ah
+   across the full width, then one card per prayer spread edge to edge
+   underneath. The home screen used to be two panes with a solid cream
+   table on the right, which was the one element that refused to sit in the
+   same family as the foyer screens. Same column here, so the two match. */
+.layout{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:clamp(8px,1.6vmin,22px)}
+
+/* ---- next jamā'ah ---- */
+/* Translucent over the gradient with a gold hairline, never a filled panel:
+   the in-mosque recipe. Horizontal on a wide screen (label+name | at | in),
+   stacked once there isn't the width for three columns. */
+.nextcard{flex:0 0 auto;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  gap:clamp(16px,3.4vw,80px);
+  background:linear-gradient(180deg,rgba(252,250,243,.09),rgba(252,250,243,.04));
+  border:1px solid rgba(198,162,76,.35);border-radius:22px;
+  padding:clamp(10px,2.8vmin,44px) clamp(20px,4vw,96px);
+  box-shadow:0 20px 60px -30px rgba(0,0,0,.6)}
+.nc-k{font-size:clamp(10px,1.35vmin,20px);font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gold-bright);margin-bottom:.5em}
+.nc-name{font-family:"Fraunces",Georgia,serif;font-weight:600;color:#FBF8F0;line-height:1.05;
+  font-size:clamp(26px,5.2vmin,86px);display:flex;align-items:baseline;gap:.35em;flex-wrap:wrap}
+.nc-name .ar{font-family:"Amiri",serif;font-size:.7em;color:var(--gold-bright)}
+.nc-v{font-family:"Fraunces",Georgia,serif;font-weight:600;color:#FBF8F0;line-height:1;
+  font-size:clamp(28px,5.6vmin,96px)}
+.nc-note{font-size:clamp(11px,1.4vmin,18px);color:#D9C9D2;margin-top:.45em}
+.nc-divider{width:1px;align-self:stretch;background:rgba(198,162,76,.35);flex:0 0 auto}
+.nc-lead,.nc-at,.nc-in{min-width:0}
+/* Below the width that fits three columns the divider lines would be
+   hairlines between squashed numbers, so the card stacks instead and the
+   dividers become full-width rules. */
+@media (max-width:900px){
+  .nextcard{flex-direction:column;gap:clamp(6px,1.4vmin,14px);text-align:center;
+    padding:clamp(12px,2.2vmin,24px) clamp(16px,4vw,32px)}
+  .nextcard .nc-name{justify-content:center}
+  .nc-divider{width:60%;height:1px;align-self:center}
 }
 
-/* ---- hero: next jama'ah ---- */
-.hero{background:linear-gradient(165deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
-  border:1px solid rgba(255,255,255,.14);border-radius:var(--radius);
-  padding:clamp(18px,3vmin,32px);display:flex;flex-direction:column;justify-content:center;gap:clamp(6px,1vmin,10px);
-  position:relative;overflow:hidden;min-height:0}
-.hero::before{content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(120% 100% at 100% 0%,rgba(198,162,76,.16),transparent 62%)}
-.hero-eyebrow{font-size:clamp(13px,1.5vmin,18px);letter-spacing:.16em;text-transform:uppercase;color:var(--gold-bright)}
-.hero-name{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(34px,6.6vmin,66px);color:#FBF8F0;
-  display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-.hero-name .ar{font-family:"Amiri",serif;font-size:.68em;color:var(--gold-bright)}
-.hero-countdown{font-family:"Fraunces",Georgia,serif;font-weight:500;font-size:clamp(46px,10vmin,110px);
-  color:var(--gold-bright);letter-spacing:.01em;margin-top:2px}
-.hero-sub{font-size:clamp(16px,2vmin,24px);color:#E7DCE2}
-.hero-sub b{color:#fff}
-/* Platform + studio credit. Deliberately absolute rather than a flex child: it takes no
-   layout space at all, so it cannot push the countdown around or change the
-   hero's height at any viewport. Sits in the hero's lower-right: every line in
-   the card is left-aligned, so that corner is empty at every viewport,
-   including the short hero of a portrait tablet where a lower-left credit
-   collided with the "Jamā'ah at ..." line. pointer-events:none keeps it out of the way of taps,
-   and it is plain text, not a link, so the D-pad tab order is unchanged. */
-.hero-credit{position:absolute;right:clamp(18px,3vmin,32px);bottom:clamp(14px,2.2vmin,24px);
-  display:flex;align-items:center;gap:clamp(5px,.7vmin,9px);
-  color:#E7DCE2;pointer-events:none;white-space:nowrap;user-select:none}
-.hero-credit .prefix{font-size:clamp(8px,.92vmin,11px);letter-spacing:.15em;text-transform:uppercase;opacity:.3}
-.hero-credit .mark{height:clamp(13px,1.7vmin,22px);width:auto;display:block;opacity:.55}
+/* ---- today's prayers: one card each ---- */
+/* Six across on a wide screen, the way the foyer screen does it: every
+   salah name centred in its own card rather than pooled on the left of a
+   wide shared row. Two columns everywhere else — six stacked cards do not
+   fit the height of a portrait tablet, and this is the layout that has to
+   survive Maghrib and Isha never dropping below the fold. */
+.pgrid{flex:1 1 auto;min-height:0;display:grid;gap:clamp(6px,1.1vmin,20px);
+  grid-template-columns:repeat(2,1fr);grid-auto-rows:minmax(0,1fr)}
+@media (min-width:860px) and (orientation:landscape){
+  .pgrid{grid-template-columns:repeat(6,1fr)}
+}
+.pcard{min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:clamp(3px,1.1vmin,20px);
+  background:rgba(252,250,243,.045);
+  border:1px solid rgba(198,162,76,.4);
+  border-radius:20px;
+  padding:clamp(6px,2.2vmin,40px) clamp(5px,1vmin,18px)}
+/* The prayer we are inside right now. Gold wash plus a brighter edge —
+   strong enough to find from the back of a room without reading anything. */
+.pcard.active{background:linear-gradient(180deg,rgba(198,162,76,.28),rgba(198,162,76,.09));
+  border-color:rgba(198,162,76,.75)}
+.pc-name{display:flex;flex-direction:column;align-items:center;gap:.08em;min-width:0}
+.pc-en{font-family:"Fraunces",Georgia,serif;font-weight:600;color:#FBF8F0;line-height:1.1;
+  font-size:clamp(15px,4.2vmin,64px)}
+.pc-ar{font-family:"Amiri",serif;color:var(--gold-bright);line-height:1.2;
+  font-size:clamp(13px,3.2vmin,46px)}
+.pc-div{width:56%;height:1px;background:rgba(198,162,76,.32);flex:0 0 auto}
+.pc-times{display:flex;flex-direction:row;align-items:flex-start;justify-content:center;
+  gap:clamp(12px,5vw,44px);width:100%;flex-wrap:wrap}
+/* Stacked only in the six-across landscape row, where a card is tall and
+   narrow. This override MUST sit after the rule above, not up with the
+   .pgrid landscape rule where it was first written: a media query adds no
+   specificity, so from there the later unconditional rule simply won and
+   every card stayed in row mode. The wide names wrapped onto two lines
+   anyway and so looked stacked, which is why it read as correct — but
+   Sunrise's "7:45 am" and its em dash were narrow enough to fit one line,
+   and that one card in six laid itself out differently. nowrap keeps it
+   honest: if the column ever runs out of height the overflow is visible
+   to the viewport test rather than silently reflowing into two columns. */
+@media (min-width:860px) and (orientation:landscape){
+  .pc-times{flex-direction:column;align-items:center;gap:clamp(2px,1vmin,16px);flex-wrap:nowrap}
+}
+.pc-row{display:flex;flex-direction:column;align-items:center;gap:.1em}
+.pc-row .lab{font-size:clamp(8px,1.25vmin,18px);font-weight:600;letter-spacing:.13em;text-transform:uppercase;
+  color:rgba(245,241,232,.55);white-space:nowrap}
+.pc-row .v{font-family:"Fraunces",Georgia,serif;font-weight:600;color:var(--paper);line-height:1.1;
+  font-size:clamp(14px,3.4vmin,50px)}
+/* Jamā'ah is the time people are actually leaving the house for, so it is
+   the one that gets the gold and the extra size. */
+.pc-row.jamaah .lab{color:var(--gold-bright);opacity:.9}
+.pc-row.jamaah .v{color:var(--gold-bright);font-size:clamp(16px,4.2vmin,66px)}
+.pc-row .dash{opacity:.4;font-weight:400}
+/* Sunrise is not a prayer — it is on the card because people plan around
+   it, but it should never look like something with a jamā'ah. */
+.pcard.info .pc-en{color:#E2D6DE;opacity:.85}
+.pcard.info .pc-row .v{opacity:.85}
+.pc-badge{font-size:clamp(8px,1vmin,13px);letter-spacing:.08em;text-transform:uppercase;background:var(--gold);
+  color:#3C0B2A;padding:2px 8px;border-radius:99px;font-weight:700;margin-top:.2em}
+
+/* ---- Jumu'ah banner ---- */
+/* A standing fixture under the cards, shown every day rather than only on
+   Fridays, so it reads as "here is when Jumu'ah is" the way a printed
+   plaque on the wall would. Same gold-wash bar as the in-mosque screens. */
+.jbanner{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
+  gap:clamp(6px,1.2vmin,16px) clamp(14px,2vw,32px);
+  background:linear-gradient(90deg,rgba(198,162,76,.22),rgba(198,162,76,.08));
+  border:1px solid rgba(198,162,76,.4);border-radius:18px;
+  padding:clamp(6px,1.2vmin,18px) clamp(16px,2.6vw,52px)}
+.jbanner-lead{display:flex;align-items:baseline;flex-wrap:wrap;gap:.5em clamp(10px,1.6vw,26px)}
+.jbanner .jb-k{display:flex;align-items:baseline;gap:.6em;font-size:clamp(10px,1.4vmin,22px);font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--gold-bright)}
+.jbanner .jb-ar{font-family:"Amiri",serif;font-size:clamp(14px,2vmin,32px);color:var(--paper);letter-spacing:0}
+.jbanner .jb-when{font-size:clamp(11px,1.5vmin,22px);color:#E7DCE2}
+.jbanner .jb-when b{color:#fff;font-weight:600}
+.jbanner-times{display:flex;align-items:baseline;gap:clamp(16px,2.4vw,44px)}
+.jbanner-time{display:flex;flex-direction:column;align-items:flex-end;gap:.15em}
+.jbanner-time .lab{font-size:clamp(8px,.95vmin,13px);font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(245,241,232,.6)}
+.jbanner-time .v{font-family:"Fraunces",Georgia,serif;font-weight:600;color:var(--paper);
+  font-size:clamp(15px,2.4vmin,46px)}
+
+/* ---- footer strip ---- */
+.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,1.4vmin,20px);flex:0 0 auto}
+@media (max-width:640px){.strip{grid-template-columns:1fr}}
+.stripcard{background:rgba(252,250,243,.045);border:1px solid rgba(198,162,76,.4);border-radius:18px;
+  padding:clamp(7px,2.2vmin,28px);color:#F3EFE3;display:flex;flex-direction:column;gap:clamp(2px,.6vmin,6px);cursor:pointer;
+  transition:background .15s ease,border-color .15s ease;text-align:left;width:100%}
+.stripcard:hover,.stripcard:active{background:rgba(252,250,243,.1);border-color:rgba(198,162,76,.6)}
+.stripcard .k{font-size:clamp(9px,1.3vmin,16px);font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-bright)}
+.stripcard .v{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(13px,2.4vmin,28px)}
+.stripcard .d{font-size:clamp(10px,1.5vmin,19px);color:#CDBEC7}
+
+/* ---- phones and other small viewports ---- */
+/* Everything above this point assumes a display: a tablet on a worktop, a
+   TV on a wall, something nobody touches, where the whole timetable has to
+   be on screen at once because scrolling it is not an option. A phone is
+   none of those things. Below this width there is not enough height for
+   six stacked cards, a stacked next-jama'ah card and three nav buttons,
+   and the honest answer is a normal page rather than six boxes quietly
+   squeezed until the times spill over their own borders.
+   So: each prayer becomes one compact row, name on the left and both
+   times on the right. */
+@media (max-width:560px){
+  .pgrid{grid-template-columns:1fr;grid-auto-rows:auto;gap:7px}
+  .pcard{flex-direction:row;align-items:center;justify-content:space-between;text-align:left;
+    gap:12px;padding:clamp(7px,2.2vw,14px) clamp(12px,3.6vw,20px);border-radius:14px}
+  .pc-name{flex-direction:row;align-items:baseline;gap:.45em;flex:1 1 auto}
+  .pc-en{font-size:clamp(16px,4.6vw,22px)}
+  .pc-ar{font-size:clamp(14px,4vw,20px)}
+  .pc-div{display:none}
+  .pc-times{width:auto;flex:0 0 auto;justify-content:flex-end;gap:clamp(16px,5.5vw,30px);flex-wrap:nowrap}
+  .pc-row{align-items:flex-end}
+  .pc-row .lab{font-size:10px}
+  .pc-row .v,.pc-row.jamaah .v{font-size:clamp(15px,4.2vw,20px)}
+  .pc-badge{margin-top:0}
+}
+/* And the safety net. On a viewport this small the page scrolls like any
+   other page, so a layout that doesn't quite fit can never clip a prayer
+   time — it just moves below the fold where a scroll reaches it. The
+   display sizes verified above never reach this rule, so a TV still gets
+   one locked screen with no scrollbar. */
+@media (max-width:640px),(max-height:460px){
+  html,body{overflow:auto}
+  .app{height:auto;min-height:100vh;min-height:100dvh}
+  .pgrid{grid-auto-rows:auto}
+  .pcard{min-height:3.4em}
+}
+
+/* ---- platform credit ---- */
+/* The in-mosque screens close with a centred line under everything else;
+   the credit sits in that slot rather than tucked into a corner of the
+   next-jamā'ah card, where on a wide screen it had the countdown digits
+   for company. Centred, dim, and out of the D-pad order — it is a
+   signature, not a control. */
+.sitefoot{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:clamp(5px,.7vmin,9px);
+  color:#E7DCE2;pointer-events:none;user-select:none;white-space:nowrap;
+  margin-top:clamp(2px,.5vmin,6px);opacity:.5}
+.sitefoot .prefix{font-size:clamp(8px,.95vmin,12px);font-weight:600;letter-spacing:.15em;text-transform:uppercase;opacity:.7}
+.sitefoot .mark{height:clamp(12px,1.6vmin,22px);width:auto;display:block}
 /* Text fallback, shown only if the logo file is missing. Keeps the credit
    looking deliberate on a masjid wall rather than leaving a broken-image
    icon there, and means dropping masjidone-logo.svg into the repo is the
    only step needed to switch to the real mark. */
-.hero-credit .wordmark{font-size:clamp(10px,1.2vmin,15px);letter-spacing:.04em;opacity:.45;font-weight:600}
-/* Two lines rather than one: joined with a separator the string runs long
-   enough to reach the countdown digits on a short viewport, which is the
-   collision this corner was chosen to avoid. Stacking keeps the width at
-   roughly one line's worth. The platform is the brand a congregation sees,
-   so it leads; the studio sits under it, dimmer and smaller. */
-
-/* Below tablet width the hero is short enough that the countdown's own digits
-   reach the corner, and a credit there either collides or sits a few pixels
-   off it, which looks like a mistake rather than a signature. This is a shelf
-   and wall display; a phone-sized viewport is incidental, so drop it rather
-   than crowd the one number people are actually reading. */
-@media (max-width:420px){ .hero-credit{display:none} }
-
-/* ---- table card ---- */
-/* Six prayer rows must always fit. A browser with its own chrome (Silk on
-   Fire TV) leaves a much shorter viewport than a full-screen app, and the
-   rows area is the thing that gets squeezed — it used to scroll, which on a
-   display nobody touches means Maghrib and Isha simply do not exist. The
-   clamp() floors above are set low enough that the table can compress
-   instead. Above 720p vmin dominates and none of it changes. */
-.tablecard{background:var(--card);color:var(--ink);border-radius:var(--radius);box-shadow:var(--shadow);
-  padding:clamp(10px,2.2vmin,26px);display:flex;flex-direction:column;min-height:0;overflow:hidden}
-.tablehead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:clamp(6px,1.2vmin,12px);flex:0 0 auto}
-.tablehead h2{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(15px,3vmin,34px);color:var(--brand-800)}
-.tablehead .hijri-today{font-size:clamp(10px,1.7vmin,20px);color:var(--muted);white-space:nowrap}
-.rows{flex:1 1 auto;min-height:0;overflow:auto}
-.prow{display:grid;grid-template-columns:1.5fr 1fr 1fr;align-items:center;
-  padding:clamp(5px,1.8vmin,18px) clamp(4px,.9vmin,10px);border-bottom:1px solid var(--line)}
-.prow.headrow{color:var(--muted);font-size:clamp(9px,1.3vmin,16px);letter-spacing:.08em;text-transform:uppercase;
-  border-bottom:2px solid var(--line);padding-bottom:clamp(4px,1vmin,10px)}
-.prow .pname{display:flex;align-items:center;gap:9px;font-family:"Fraunces",Georgia,serif;font-weight:600;
-  font-size:clamp(13px,3vmin,34px);color:var(--ink)}
-.prow .pname .ar{font-family:"Amiri",serif;color:var(--muted);font-size:.82em}
-.prow .t{font-size:clamp(13px,3vmin,34px);font-weight:600}
-.prow.active{background:rgba(198,162,76,.14);border-radius:10px;border-bottom-color:transparent}
-.prow.active .pname{color:var(--brand-800)}
-.prow.jummahrow{background:rgba(198,162,76,.08)}
-.prow.info .pname{color:var(--muted);font-weight:500}
-.prow.info .t{color:var(--muted);font-weight:400}
-.badge{font-size:12px;letter-spacing:.06em;text-transform:uppercase;background:var(--gold);color:#3C0B2A;
-  padding:3px 9px;border-radius:99px;font-family:"Hanken Grotesk";font-weight:700}
-
-.jummahbanner{margin-top:clamp(5px,1.4vmin,14px);border-top:1px dashed var(--line);padding-top:clamp(6px,1.5vmin,16px);
-  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px 16px;
-  font-size:clamp(11px,1.9vmin,21px);color:var(--muted);flex:0 0 auto}
-.jummahbanner b{color:var(--brand-800)}
-.jummahbanner .times{display:flex;gap:16px}
-
-/* ---- footer strip ---- */
-.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.8vmin,20px);flex:0 0 auto}
-@media (max-width:640px){.strip{grid-template-columns:1fr}}
-.stripcard{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);border-radius:16px;
-  padding:clamp(9px,2.6vmin,30px);color:#F3EFE3;display:flex;flex-direction:column;gap:clamp(2px,.6vmin,6px);cursor:pointer;
-  transition:background .15s ease;text-align:left;width:100%}
-.stripcard:hover,.stripcard:active{background:rgba(255,255,255,.11)}
-.stripcard .k{font-size:clamp(9px,1.4vmin,16px);letter-spacing:.1em;text-transform:uppercase;color:var(--gold-bright)}
-.stripcard .v{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(13px,2.6vmin,28px)}
-.stripcard .d{font-size:clamp(10px,1.6vmin,19px);color:#CDBEC7}
+.sitefoot .wordmark{font-size:clamp(10px,1.2vmin,15px);letter-spacing:.04em;font-weight:600}
+/* On a phone the vertical budget is spent on the six cards. */
+@media (max-height:520px){ .sitefoot{display:none} }
 
 /* ---- occasion overlay ---- */
 .occasion{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -308,10 +410,16 @@ a:focus-visible,
    decoration, so they give the space back. Landscape and TV are untouched. */
 @media (max-width:860px) and (orientation:portrait){
   .brandmark{height:clamp(30px,5.6vmin,56px)}
-  .clock{font-size:clamp(30px,5.4vmin,56px)}
-  .hero{padding:clamp(14px,2.2vmin,24px)}
-  .hero-countdown{font-size:clamp(40px,7.6vmin,84px)}
-  .hero-name{font-size:clamp(28px,5.2vmin,52px)}
+  .clock .hm{font-size:clamp(30px,5.4vmin,56px)}
+  .clock .ss{font-size:clamp(13px,2.2vmin,24px)}
+  .nextcard{padding:clamp(10px,1.8vmin,20px) clamp(14px,3vw,26px)}
+  .nc-v{font-size:clamp(26px,5.6vmin,62px)}
+  .nc-name{font-size:clamp(24px,5vmin,52px)}
+  .pcard{padding:clamp(5px,1.4vmin,20px) clamp(5px,1vmin,16px);gap:clamp(2px,.7vmin,10px)}
+  .pc-en{font-size:clamp(15px,3.6vmin,40px)}
+  .pc-ar{font-size:clamp(12px,2.8vmin,32px)}
+  .pc-row .v{font-size:clamp(13px,2.9vmin,32px)}
+  .pc-row.jamaah .v{font-size:clamp(15px,3.4vmin,38px)}
   .stripcard{padding:clamp(8px,1.8vmin,18px)}
   .stripcard .v{font-size:clamp(13px,2.1vmin,22px)}
 }
@@ -329,38 +437,37 @@ a:focus-visible,
       </button>
     </div>
     <div class="topbar-center">
-      <img class="brandmark" src="logo-cream.png" alt="Taiyabah Masjid — Bolton Central Islamic Society">
+      <img class="brandmark" src="logo-cream.png" alt="Taiyabah Masjid">
+      <span class="brandsub">Bolton Central Islamic Society</span>
     </div>
     <div class="topbar-right clockblock">
-      <div class="clock tnum" id="clock">--:--</div>
+      <div class="clock tnum"><span class="hm" id="clock-hm">--:--</span><span class="ss" id="clock-ss">--</span></div>
       <div class="dateline" id="dateline">Loading…</div>
     </div>
   </header>
 
   <main class="layout">
-    <section class="hero" id="hero">
-      <div class="hero-eyebrow">Next Jamā'ah</div>
-      <div class="hero-name display" id="hero-name">—</div>
-      <div class="hero-countdown tnum" id="hero-countdown">--:--:--</div>
-      <div class="hero-sub" id="hero-sub">—</div>
-      <div class="hero-credit">
-        <span class="prefix">Powered by</span>
-        <img class="mark" id="brand-mark" src="masjidone-logo.svg" alt="MasjidOne">
-        <span class="wordmark" id="brand-word" hidden>MasjidOne</span>
+    <section class="nextcard">
+      <div class="nc-lead">
+        <div class="nc-k">Next Jamā'ah</div>
+        <div class="nc-name" id="hero-name">—</div>
+      </div>
+      <div class="nc-divider"></div>
+      <div class="nc-at">
+        <div class="nc-k">At</div>
+        <div class="nc-v tnum" id="hero-at">--:--</div>
+        <div class="nc-note" id="hero-note" hidden></div>
+      </div>
+      <div class="nc-divider"></div>
+      <div class="nc-in">
+        <div class="nc-k">In</div>
+        <div class="nc-v tnum" id="hero-countdown">--:--:--</div>
       </div>
     </section>
 
-    <section class="tablecard">
-      <div class="tablehead">
-        <h2>Today's Salah</h2>
-        <span class="hijri-today" id="hijri-today"></span>
-      </div>
-      <div class="prow headrow">
-        <span>Prayer</span><span>Begins</span><span>Jamā'ah</span>
-      </div>
-      <div class="rows" id="rows"></div>
-      <div class="jummahbanner" id="jummah-banner"></div>
-    </section>
+    <section class="pgrid" id="pgrid"></section>
+
+    <div class="jbanner" id="jummah-banner"></div>
   </main>
 
   <footer class="strip">
@@ -380,6 +487,12 @@ a:focus-visible,
       <span class="d">Address, phone &amp; email</span>
     </button>
   </footer>
+
+  <div class="sitefoot">
+    <span class="prefix">Powered by</span>
+    <img class="mark" id="brand-mark" src="masjidone-logo.svg" alt="MasjidOne">
+    <span class="wordmark" id="brand-word" hidden>MasjidOne</span>
+  </div>
 </div>
 
 <div class="occasion" id="occasion" role="button" tabindex="0" hidden
@@ -764,7 +877,12 @@ let lastOccasionKey = null;
 let occasionDismissed = false;
 
 function renderClock(now){
-  document.getElementById('clock').textContent = pad(now.getHours())+":"+pad(now.getMinutes());
+  /* Two spans rather than one string: the seconds are raised and gold, the
+     way the in-mosque screens render them. Written straight into the two
+     child nodes instead of innerHTML so the once-a-second tick does not
+     reparse markup for the life of the display. */
+  document.getElementById('clock-hm').textContent = pad(now.getHours())+":"+pad(now.getMinutes());
+  document.getElementById('clock-ss').textContent = pad(now.getSeconds());
 }
 
 function renderDateline(now, rec){
@@ -776,18 +894,21 @@ function renderDateline(now, rec){
 function renderHero(rec, baseDate, now){
   const next = computeNext(rec, baseDate, now);
   const nameEl = document.getElementById('hero-name');
-  const cdEl = document.getElementById('hero-countdown');
-  const subEl = document.getElementById('hero-sub');
+  const atEl   = document.getElementById('hero-at');
+  const cdEl   = document.getElementById('hero-countdown');
+  const noteEl = document.getElementById('hero-note');
   if(!next){
-    nameEl.innerHTML = "—";
+    nameEl.innerHTML = "\u2014";
+    atEl.textContent = "--:--";
     cdEl.textContent = "--:--:--";
-    subEl.textContent = "Timetable ends here — an updated year is on its way.";
+    noteEl.textContent = "Timetable ends here";
+    noteEl.hidden = false;
     return;
   }
   const isFriday = next.key==="zuhr" && !next.tomorrow && baseDate.getDay()===5;
   const meta = PRAYERS.find(p=>p.key===next.key);
   const label = isFriday ? "Jumu'ah" : meta.en;
-  const arabic = isFriday ? "الجمعة" : meta.ar;
+  const arabic = isFriday ? "\u0627\u0644\u062c\u0645\u0639\u0629" : meta.ar;
   nameEl.innerHTML = `${label} <span class="ar">${arabic}</span>`;
 
   const diff = Math.max(0, next.at - now);
@@ -797,51 +918,83 @@ function renderHero(rec, baseDate, now){
   cdEl.textContent = pad(hh)+":"+pad(mm)+":"+pad(ss);
 
   const atTimeStr = isFriday ? rec.jummah.first : (next.tomorrow ? next.tomorrowRec.jamaat.fajr : rec.jamaat[next.key]);
-  subEl.innerHTML = `Jamā'ah at <b>${hm12(atTimeStr)}</b>${next.tomorrow ? " · tomorrow" : ""}`;
+  atEl.textContent = hm12(atTimeStr);
+  /* "tomorrow" only ever applies after Isha, and it changes what the time
+     on the card means, so it stays visible rather than being folded into
+     the time string where it would widen the card's middle column. */
+  noteEl.textContent = next.tomorrow ? "Tomorrow" : "";
+  noteEl.hidden = !next.tomorrow;
 }
 
 function renderTable(rec, baseDate, now){
-  const rowsEl = document.getElementById('rows');
-  rowsEl.innerHTML = "";
+  /* One card per prayer, matching the masjid's foyer screen: name and
+     Arabic stacked over a hairline, then Begins and Jam\u0101'ah underneath
+     with the jam\u0101'ah time in gold. Built as a detached fragment and
+     swapped in once, so a screen that re-renders on every minute boundary
+     never shows a half-filled grid. */
+  const gridEl = document.getElementById('pgrid');
+  const frag = document.createDocumentFragment();
   const current = currentPeriodKey(rec, baseDate, now);
   const isFriday = baseDate.getDay()===5 && !!rec.jummah;
 
   for(const p of PRAYERS){
-    const row = document.createElement('div');
-    let cls = "prow";
+    const card = document.createElement('div');
+    let cls = "pcard";
     if(p.info) cls += " info";
     if(!p.info && current===p.key) cls += " active";
+    card.className = cls;
 
     if(p.key==="zuhr" && isFriday){
-      cls += " jummahrow";
-      row.className = cls;
-      row.innerHTML = `
-        <span class="pname">Jumu'ah <span class="ar">الجمعة</span><span class="badge">Fri</span></span>
-        <span class="t tnum">${hm12(rec.begins.zuhr)}</span>
-        <span class="t tnum">${hm12(rec.jummah.first)} · ${hm12(rec.jummah.second)}</span>`;
-      rowsEl.appendChild(row);
+      card.innerHTML = `
+        <div class="pc-name">
+          <span class="pc-en">Jumu'ah</span>
+          <span class="pc-ar">\u0627\u0644\u062c\u0645\u0639\u0629</span>
+        </div>
+        <div class="pc-div"></div>
+        <div class="pc-times">
+          <div class="pc-row"><span class="lab">Begins</span><span class="v tnum">${hm12(rec.begins.zuhr)}</span></div>
+          <div class="pc-row jamaah"><span class="lab">Jam\u0101'ah</span><span class="v tnum">${hm12(rec.jummah.first)}</span></div>
+        </div>`;
+      frag.appendChild(card);
       continue;
     }
 
-    row.className = cls;
-    const jamaat = p.info ? "—" : hm12(rec.jamaat[p.key]);
-    row.innerHTML = `
-      <span class="pname">${p.en} <span class="ar">${p.ar}</span></span>
-      <span class="t tnum">${hm12(rec.begins[p.key])}</span>
-      <span class="t tnum">${jamaat}</span>`;
-    rowsEl.appendChild(row);
+    /* Sunrise has no jam\u0101'ah. An em dash holds the slot so all six cards
+       keep the same internal rhythm instead of one sitting short. */
+    const jamaat = p.info
+      ? '<span class="v dash">\u2014</span>'
+      : `<span class="v tnum">${hm12(rec.jamaat[p.key])}</span>`;
+    card.innerHTML = `
+      <div class="pc-name">
+        <span class="pc-en">${p.en}</span>
+        <span class="pc-ar">${p.ar}</span>
+      </div>
+      <div class="pc-div"></div>
+      <div class="pc-times">
+        <div class="pc-row"><span class="lab">Begins</span><span class="v tnum">${hm12(rec.begins[p.key])}</span></div>
+        <div class="pc-row jamaah"><span class="lab">Jam\u0101'ah</span>${jamaat}</div>
+      </div>`;
+    frag.appendChild(card);
   }
 
-  document.getElementById('hijri-today').textContent = rec.hijri;
+  gridEl.replaceChildren(frag);
 }
 
 function renderJummahBanner(baseDate){
   const nf = findNextFriday(baseDate);
   const el = document.getElementById('jummah-banner');
-  if(!nf){ el.textContent = ""; return; }
+  if(!nf){ el.hidden = true; el.textContent = ""; return; }
+  el.hidden = false;
   const label = ymd(nf.date)===ymd(baseDate) ? "Today" : (DOW[nf.date.getDay()]+" "+nf.date.getDate()+" "+MON[nf.date.getMonth()]);
-  el.innerHTML = `<span>Next Jumu'ah <b>${label}</b></span>
-    <span class="times"><span>1st <b class="tnum">${hm12(nf.rec.jummah.first)}</b></span><span>2nd <b class="tnum">${hm12(nf.rec.jummah.second)}</b></span></span>`;
+  el.innerHTML = `
+    <div class="jbanner-lead">
+      <div class="jb-k">Jumu'ah <span class="jb-ar">\u0627\u0644\u062c\u0645\u0639\u0629</span></div>
+      <div class="jb-when"><b>${label}</b></div>
+    </div>
+    <div class="jbanner-times">
+      <div class="jbanner-time"><span class="lab">1st</span><span class="v tnum">${hm12(nf.rec.jummah.first)}</span></div>
+      <div class="jbanner-time"><span class="lab">2nd</span><span class="v tnum">${hm12(nf.rec.jummah.second)}</span></div>
+    </div>`;
 }
 
 function renderOccasion(now){

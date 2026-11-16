@@ -24,12 +24,12 @@ const DEVICE_ZONES = [
     await page.waitForTimeout(700);
     const seen = await page.evaluate(() => ({
       deviceZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      clock: document.getElementById('clock').textContent.trim(),
+      clock: document.getElementById('clock-hm').textContent.trim(),
       dateline: document.getElementById('dateline').textContent.trim(),
       next: document.getElementById('hero-name').textContent.trim(),
-      jamaah: document.getElementById('hero-sub').textContent.trim(),
-      table: [...document.querySelectorAll('#rows .prow')]
-        .map(r => [...r.querySelectorAll('span')].map(s => s.textContent.trim()).join(' ')).join(' | '),
+      jamaah: document.getElementById('hero-at').textContent.trim(),
+      table: [...document.querySelectorAll('#pgrid .pcard')]
+        .map(c => [...c.querySelectorAll('.pc-en, .pc-row .v')].map(s => s.textContent.trim()).join(' ')).join(' | '),
     }));
     results.push({ zone, ...seen });
     await page.close();

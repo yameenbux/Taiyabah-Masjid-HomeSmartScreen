@@ -73,12 +73,29 @@ git clone https://github.com/yameenbux/Taiyabah-Masjid-HomeSmartScreen.git test-
   occasion overlay dismisses on Enter. Run this after any change to the modal markup or the
   `openModal`/`closeModal` helpers in `template.html`. Nine numbered checks — all should read `true` /
   the expected element id.
+- **`test-layout.js`** — the layout safety net. Renders the built `index.html` at ten viewport sizes
+  (1080p and 720p TVs, the shorter Fire TV Silk viewport, portrait tablets, phones in both orientations)
+  across five dates, and asserts: nothing inside a prayer card escapes that card's box, all six prayers are
+  present, nothing on a display-sized viewport runs past the edge or forces the page to scroll, and every
+  card in the row renders its times block at the same height. Exits non-zero on failure, so it can gate a
+  commit. Run after **any** change to layout CSS in `template.html`.
+
+  The last assertion is the one with history, and it is worth understanding before you weaken it. The
+  landscape rule that stacks Begins above Jamā'ah was originally written next to the `.pgrid` landscape
+  rule, earlier in the file than the base `.pc-times` rule. A media query adds no specificity, so the later
+  unconditional rule won and every card quietly stayed in row mode. It still *looked* right, because the
+  wide prayer names wrapped onto two lines anyway — but Sunrise, whose times are `7:45 am` and an em dash,
+  was narrow enough to fit one line, so one card in six was laid out differently. Comparing computed
+  `flex-direction` would have passed: it agreed on all six. Only comparing rendered heights catches it.
+  If you add an assertion here, prove it has teeth by reverting the fix and watching it fail.
 - **`audit.js`** — the broadest check, meant to run against a fresh clone of the *live* deployed site
   (see above), not the local build. Checks for console/page errors on load, confirms the Friday Jumu'ah row
   and Ramadan overlay render, confirms audio actually auto-fires unattended when the clock is faked to a
   trigger moment with sound pre-unlocked via `localStorage`, checks the Service Worker and Wake Lock APIs
   are present, and takes screenshots at three viewport sizes. This is the "did the actual deploy work"
-  script — run it after every push to `main`, not just after local changes.
+  script — run it after every push to `main`, not just after local changes. It reads
+  `test-scripts/live-check/index.html`, which is deliberately not committed (it is in `.gitignore`): clone
+  or download the deployed site into that folder first, otherwise the script fails on a missing file.
 
 ## The fake-Date pattern
 

@@ -78,6 +78,52 @@ timetable["days"]["YYYY-MM-DD"] = {
 or the app will silently have nothing to show. There is no fallback/error state for a missing date — worth
 adding if this isn't refreshed in time.
 
+## The visual language is shared with the in-mosque screens
+
+The home screen and the masjid's in-mosque screens (`Taiyabah-Mosque-Interactive-Screens` —
+`foyer.html`, `timetable.html` and their portrait twins) are two separate codebases that must look like
+one product. They already shared the palette tokens and all three typefaces (Amiri, Fraunces, Hanken
+Grotesk); what they did not share was the layout, and side by side the difference was obvious. The home
+screen has since been rebuilt in the in-mosque language. If you change one, change both.
+
+What the shared language actually is, in the order it matters:
+
+- **A flat gradient ground, nothing on top of it.** Three layers: a gold radial from above, a plum radial
+  from below, a `175deg` linear through `--brand-900 → 800 → 700`. The home screen used to tile a faint
+  eight-point star motif over this. It has gone — the in-mosque screens run the gradient bare, and beside
+  them the plain ground reads calmer. Restoring it is one rule, but then the two no longer match.
+- **Translucent cards, never filled panels.** `rgba(252,250,243,.045)` over the gradient with a
+  `1px solid rgba(198,162,76,.4)` gold hairline and a ~20px radius. The old home screen put the timetable
+  in a solid cream block (`--card` as a background), and that one element was what refused to sit in the
+  same family as the foyer screens. Nothing on the maroon ground should be opaque. `--card` is now only
+  for the modals, which are a different surface entirely.
+- **Gold is for labels and jamā'ah times only.** Micro-labels are uppercase Hanken Grotesk 600 at
+  `.13em`–`.18em` tracking in `--gold-bright`. Prayer names and beginning times are cream; the jamā'ah
+  time is gold and a size larger, because that is the time people leave the house for.
+- **The current prayer gets a gold wash,** `linear-gradient(180deg, rgba(198,162,76,.28), rgba(198,162,76,.09))`
+  with the border lifted to `.75` — findable from the back of a room without reading anything.
+- **Tokens that differ from the in-mosque set are bugs.** `--card` is `#FCFAF3` and `--line` is `#E4DECF`;
+  the home screen carried older, warmer values (`#EDE1C8` / `#D8CAA5`) until this change.
+
+## Layout rules that are load-bearing
+
+- **Six prayers must always be on screen, at every viewport, without scrolling** — on a display nobody
+  touches, a prayer below the fold does not exist. The grid is six across in landscape above 860px and two
+  columns everywhere else; six stacked cards do not fit the height of a portrait tablet.
+- **Below 560px wide each prayer becomes one compact row** (name left, both times right), and below 640px
+  wide or 460px tall the page is allowed to scroll like any ordinary page. A phone is not a display, and
+  the honest answer there is a scrollbar rather than six boxes quietly squeezed until the text spills over
+  its own borders. Every display size verified in testing stays above those thresholds, so a TV still gets
+  one locked screen.
+- **`.pc-times` stacks the two times only in the six-across landscape row.** That override must sit *after*
+  the base `.pc-times` rule in source order. A media query adds no specificity, so written earlier in the
+  file (next to the `.pgrid` landscape rule, which is where it went first) the later unconditional rule
+  simply wins and every card stays in row mode. It looked correct because the wide prayer names wrapped
+  onto two lines anyway — but Sunrise, whose only times are `7:45 am` and an em dash, was narrow enough to
+  fit one line, so exactly one card in six laid itself out differently. This is the second time source
+  order has silently broken a layout rule here; see the portrait block below.
+- **The portrait override block must stay at the very end of the stylesheet,** for the same reason.
+
 ## Things that look like bugs but are deliberate
 
 - **3-minute audio catch-up window** (`CATCHUP_WINDOW_MS` in the JS): if the tab/PWA was backgrounded exactly
@@ -336,6 +382,13 @@ details on each script and setup (`npm install` + `npx playwright install chromi
 - `test-keepalive.js` — the silent keep-alive loop: silent before unlock, playing and looping and unmuted
   after one tap, self-healing after an external pause, and degrading the pill to an amber warning rather
   than green when audio output is refused. Run after touching `startKeepAlive()` or `updateSoundPill()`.
+- **Viewport/overflow sweep** — the check that matters most after any layout change: render every display
+  size (1920x1080, 1280x720, the shorter 1280x672 Silk viewport, 960x540, portrait tablets, phones) across
+  several dates, and assert three things — no child of a prayer card escapes its card's box, nothing but the
+  phone sizes extends past the viewport, and every card in the row renders its times block at the same
+  height. The third is what catches the source-order trap above; comparing computed `flex-direction` is not
+  enough, because a wrapping row renders as two lines on one card and one line on the next and the computed
+  value agrees on both. Confirm any new assertion here has teeth by reverting the fix and watching it fail.
 - `test-dpad.js` — drives the page with real Tab/Enter/Escape key presses to verify focus rings, modal focus
   trapping (both directions), focus restore-on-close, and backdrop click-to-close. Run after touching modal
   markup or the `openModal`/`closeModal` helpers.
