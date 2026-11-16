@@ -80,21 +80,35 @@ function fakeDateScript(iso) {
       const found = await page.evaluate(() => {
         const winH = window.innerHeight, winW = window.innerWidth;
         // must match the breakpoints in template.html
-        const mayScroll = winW <= 640 || winH <= 460;
+        const mayScroll = winW <= 640 || winH <= 430;
         const probs = [];
 
-        document.querySelectorAll('.pcard').forEach((card, i) => {
-          const cb = card.getBoundingClientRect();
-          card.querySelectorAll('*').forEach(child => {
+        // No column of the times strip may overlap its neighbour.
+        const items = [...document.querySelectorAll('.t-item')];
+        items.forEach((item, i) => {
+          const a = item.getBoundingClientRect();
+          const b = items[i + 1]?.getBoundingClientRect();
+          if (b && b.top < a.bottom - 1 && b.left < a.right - 1)
+            probs.push(`times column ${i} overlaps ${i + 1}`);
+          item.querySelectorAll('*').forEach(child => {
             const r = child.getBoundingClientRect();
-            if (r.height && (r.bottom > cb.bottom + 1 || r.top < cb.top - 1)) {
-              probs.push(`card ${i} content escapes its box by ` +
-                `${Math.round(Math.max(r.bottom - cb.bottom, cb.top - r.top))}px`);
-            }
+            if (r.width && (r.right > a.right + 1 || r.left < a.left - 1))
+              probs.push(`times column ${i} text spills past its column`);
           });
         });
+        // The countdown must stay the dominant element — that is the whole
+        // point of the layout, and it is the first thing a well-meaning
+        // tweak to a clamp() will quietly break.
+        const cd = document.querySelector('.hero-count');
+        const rivals = ['.t-jamaah', '.quicklink .v', '.clock .hm', '.hero-name']
+          .map(sel => { const e = document.querySelector(sel);
+                        return e ? parseFloat(getComputedStyle(e).fontSize) : 0; });
+        const cdSize = cd ? parseFloat(getComputedStyle(cd).fontSize) : 0;
+        if (cdSize < Math.max(...rivals) * 1.6)
+          probs.push(`countdown ${Math.round(cdSize)}px is not dominant ` +
+            `(largest rival ${Math.round(Math.max(...rivals))}px)`);
 
-        for (const sel of ['.topbar','.nextcard','.pgrid','.jbanner','.strip','.sitefoot']) {
+        for (const sel of ['.chrome','.hero','.band','.times','.quicklinks','.footline']) {
           const el = document.querySelector(sel); if (!el) continue;
           const r = el.getBoundingClientRect();
           if (!mayScroll && r.bottom > winH + 1) probs.push(`${sel} runs ${Math.round(r.bottom - winH)}px past the bottom`);
@@ -106,16 +120,28 @@ function fakeDateScript(iso) {
         if (mayScroll && de.scrollHeight > winH + 1 && getComputedStyle(document.body).overflow === 'hidden')
           probs.push('content past the fold but body is overflow:hidden — unreachable');
 
-        const heights = [...document.querySelectorAll('.pc-times')]
+        // Every column of the strip must be laid out the same way. Comparing
+        // computed styles is not enough — a wrapping row renders as two lines
+        // on a wide name and one on a narrow one while the computed value
+        // agrees on both. Compare what actually got painted.
+        const heights = [...document.querySelectorAll('.t-item')]
           .map(e => Math.round(e.getBoundingClientRect().height));
         if (heights.length && Math.max(...heights) - Math.min(...heights) > 6)
-          probs.push(`cards render their times at different heights: ${heights.join(', ')}`);
+          probs.push(`times columns render at different heights: ${heights.join(', ')}`);
 
-        return { probs: [...new Set(probs)], cards: document.querySelectorAll('.pcard').length };
+        // The band must actually place its marker inside itself.
+        const band = document.querySelector('.band'), now = document.querySelector('.band-now');
+        if (band && now) {
+          const bb = band.getBoundingClientRect(), nb = now.getBoundingClientRect();
+          const c = nb.left + nb.width / 2;
+          if (c < bb.left - 1 || c > bb.right + 1) probs.push('band marker is outside the band');
+        }
+
+        return { probs: [...new Set(probs)], cards: document.querySelectorAll('.t-item').length };
       });
 
       cards = found.cards;
-      if (found.cards !== 6) problems.push(`${iso || 'today'}: ${found.cards} prayer cards, expected 6`);
+      if (found.cards !== 6) problems.push(`${iso || 'today'}: ${found.cards} times columns, expected 6`);
       problems.push(...found.probs.map(p => `${(iso || 'today').slice(0, 10)}: ${p}`));
     }
 
@@ -126,7 +152,7 @@ function fakeDateScript(iso) {
       unique.slice(0, 6).forEach(p => console.log(`        ${p}`));
       if (unique.length > 6) console.log(`        …and ${unique.length - 6} more`);
     } else {
-      console.log(`PASS  ${label.padEnd(17)} ${width}x${height}  (${cards} cards, ${DATES.length} dates)`);
+      console.log(`PASS  ${label.padEnd(17)} ${width}x${height}  (${cards} times, ${DATES.length} dates)`);
     }
     await ctx.close();
   }
@@ -134,6 +160,6 @@ function fakeDateScript(iso) {
   await browser.close();
   console.log(failures
     ? `\nRESULT: ${failures} viewport(s) with layout problems`
-    : `\nRESULT: every viewport renders all six prayers inside their boxes`);
+    : `\nRESULT: every viewport keeps the countdown dominant and all six prayers legible`);
   process.exitCode = failures ? 1 : 0;
 })();
