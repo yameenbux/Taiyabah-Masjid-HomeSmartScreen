@@ -105,6 +105,43 @@ What the shared language actually is, in the order it matters:
 - **Tokens that differ from the in-mosque set are bugs.** `--card` is `#FCFAF3` and `--line` is `#E4DECF`;
   the home screen carried older, warmer values (`#EDE1C8` / `#D8CAA5`) until this change.
 
+## The sky, and why the scrim is not negotiable
+
+The background is four photographs — night, pre-dawn, day, dusk — generated
+for this screen and cross-faded as the day passes. Which one shows is decided
+by *this masjid's own times* (`renderSky()`), not by a guess at the clock: at
+4:16pm in November the screen is already at dusk, and in June it is still full
+daylight at the same hour. That is the entire reason to drive it from the
+timetable rather than from hardcoded hours.
+
+The set is 47KB for all four because they are smooth gradients, so this costs a
+kiosk essentially nothing and still works offline.
+
+Things that will bite whoever touches this next:
+
+- **The scrim over the photographs is a contrast device, not decoration.**
+  Every piece of text on this page was measured against the *lightest pixel*
+  underneath it, on all four skies. The floor is 4.5:1 and the worst case is
+  5.37:1 (the footline over dawn). If you weaken `.sky-scrim`, re-measure;
+  do not eyeball it. The first attempt at this was scrimmed so hard the
+  photographs were invisible, and opening it up dropped the times strip to
+  3.56:1 over the day sky.
+- **`sky/day.webp` is deliberately darkened in the file**, pulled toward the
+  brand maroon. It is the one light image in the set, and it alone decided how
+  hard the scrim had to work; darkening the file instead let the dusk and dawn
+  photographs keep doing what they were generated for. Regenerate it and you
+  must re-darken it.
+- **The sky files are cached separately from the shell in `sw.js`.**
+  `cache.addAll()` is atomic, so a single missing sky in `SHELL` would fail the
+  whole install and leave the device with no offline shell at all. They go
+  through `Promise.allSettled` instead and are allowed to fail; the page falls
+  back to the plain gradient.
+- **Generated imagery is skies only** — no figures, no animals, no buildings,
+  no lettering. The first batch had hallucinated text burned into five of eight
+  images because the prompt ended "designed as a dark background behind cream
+  coloured text", which the model took as an instruction to draw cream text.
+  Do not describe the overlaid UI in an image prompt.
+
 ## Layout rules that are load-bearing
 
 - **Six prayers must always be on screen, at every viewport, without scrolling** — on a display nobody

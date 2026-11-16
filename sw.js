@@ -12,7 +12,7 @@
    old file forever and you get a bug report you cannot reproduce. Renaming a
    file to a new path is safe without a bump (new URL, not in the cache).
    index.html is network-first, so page changes need no bump. */
-const CACHE = "taiyabah-home-v2";
+const CACHE = "taiyabah-home-v3";
 const SHELL = [
   "./",
   "./index.html",
@@ -23,9 +23,24 @@ const SHELL = [
   "./audio/adhan-full.mp3",
   "./audio/iqamah-short.mp3",
 ];
+/* The four sky backgrounds, cached separately and allowed to fail. They are
+   a nice-to-have — the page falls back to the plain gradient without them —
+   and addAll() above is atomic, so one missing sky file in SHELL would take
+   the whole install down and leave the device with no offline shell at all.
+   47KB for the set, so caching them is close to free. */
+const SKY = [
+  "./sky/night.webp",
+  "./sky/dawn.webp",
+  "./sky/day.webp",
+  "./sky/dusk.webp",
+];
 
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)));
+  e.waitUntil((async () => {
+    const c = await caches.open(CACHE);
+    await c.addAll(SHELL);                                  // all or nothing
+    await Promise.allSettled(SKY.map((u) => c.add(u)));     // best effort
+  })());
   self.skipWaiting();
 });
 

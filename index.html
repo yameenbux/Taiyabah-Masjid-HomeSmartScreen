@@ -104,7 +104,7 @@ a:focus-visible,
 .occasion.initfocus{ outline:none !important }
 
 /* ---- backdrop (same recipe as the masjid's TV screens / app) ---- */
-.backdrop{position:fixed;inset:0;z-index:0;
+.backdrop{position:fixed;inset:0;z-index:-1;
   background:
     radial-gradient(130% 55% at 50% -8%, rgba(198,162,76,.16), transparent 60%),
     radial-gradient(90% 55% at 50% 112%, rgba(119,33,87,.55), transparent 60%),
@@ -115,6 +115,42 @@ a:focus-visible,
    nothing on top, and side by side the plain ground reads calmer and lets
    the gold hairlines on the cards carry the ornament instead. Restoring it
    is one rule, but then the two sets of screens no longer match. */
+
+/* ---- the live sky ---- */
+/* Four photographs of sky — night, pre-dawn, day, dusk — cross-fading as
+   the day actually passes, chosen from this masjid's own sunrise and
+   prayer times rather than from a clock guess. At 4:16pm in November the
+   screen is already at dusk; in June it is still full daylight at the same
+   hour. The whole set is 47KB because they are smooth gradients, so this
+   costs a kiosk almost nothing and still works offline.
+   Generated imagery: skies only, no figures, no buildings, no lettering. */
+.sky{position:fixed;inset:0;z-index:0;overflow:hidden;background:var(--brand-900)}
+.sky-layer{position:absolute;inset:0;background-size:cover;background-position:center 58%;
+  opacity:0;transition:opacity 3s ease-in-out;will-change:opacity;
+  animation:skyDrift 180s ease-in-out infinite alternate}
+.sky-layer.on{opacity:1}
+/* A very slow drift keeps a photograph from looking like a frozen JPEG on a
+   screen somebody passes fifty times a day. It also moves the pixels, which
+   is the cheapest burn-in insurance there is on a panel left on for months. */
+@keyframes skyDrift{from{transform:scale(1.04) translate3d(0,0,0)}
+                    to{transform:scale(1.11) translate3d(-1.5%,-1%,0)}}
+/* The scrim is not decoration: it is what guarantees the 4.5:1 contrast
+   floor no matter which photograph is behind it. The day sky is the light
+   one and sets how strong this has to be — measured, not guessed. Never
+   weaken it without re-measuring the text against the pixels underneath. */
+.sky-scrim{position:absolute;inset:0;
+  background:
+    /* a pool of shade exactly where the big type sits, so the countdown is
+       protected without flattening the whole photograph */
+    radial-gradient(54% 40% at 50% 37%,rgba(60,11,42,.74),rgba(60,11,42,0) 76%),
+    /* and a lighter touch elsewhere: enough at the top for the clock and at
+       the foot for the small print, open in the middle where the horizon is */
+    linear-gradient(180deg,rgba(60,11,42,.80) 0%,rgba(60,11,42,.30) 20%,
+      rgba(60,11,42,.16) 50%,rgba(60,11,42,.34) 72%,
+      rgba(60,11,42,.62) 88%,rgba(60,11,42,.84) 100%)}
+@media (prefers-reduced-motion:reduce){
+  .sky-layer{animation:none;transform:scale(1.02);transition:none}
+}
 
 /* ---- app shell ---- */
 .app{position:relative;z-index:1;height:100vh;height:100dvh;display:flex;flex-direction:column;
@@ -269,22 +305,52 @@ a:focus-visible,
 
 /* ---- 4. three ways in ---- */
 .quicklinks{flex:0 0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(7px,1.3vmin,18px)}
-.quicklink{background:rgba(247,243,234,.05);border:1px solid rgba(201,178,194,.16);
+.quicklink{position:relative;background:rgba(247,243,234,.06);border:1px solid rgba(201,178,194,.18);
   border-radius:14px;padding:clamp(7px,1.6vmin,20px) clamp(10px,1.8vmin,24px);
+  padding-right:clamp(26px,4vmin,54px);
   color:var(--on-1);display:flex;flex-direction:column;gap:clamp(1px,.3vmin,4px);
-  cursor:pointer;text-align:left;width:100%;
-  transition:background .15s ease,border-color .15s ease}
-.quicklink:hover,.quicklink:active{background:rgba(247,243,234,.1);border-color:rgba(198,162,76,.45)}
+  cursor:pointer;text-align:left;width:100%;backdrop-filter:blur(6px);
+  transition:background .18s ease,border-color .18s ease,transform .18s ease}
+.quicklink:hover{background:rgba(247,243,234,.12);border-color:rgba(198,162,76,.5);transform:translateY(-2px)}
+.quicklink:active{transform:translateY(0)}
+/* A chevron that leans out on hover. Three identical grey panels give no
+   reason to touch any of them; this is the cheapest honest signal that
+   something happens if you do. */
+.quicklink .go{position:absolute;right:clamp(10px,1.8vmin,24px);top:50%;margin-top:-.5em;
+  font-size:clamp(13px,1.9vmin,24px);line-height:1;color:var(--gold-bright);
+  opacity:.45;transition:opacity .18s ease,transform .18s ease}
+.quicklink:hover .go,.quicklink:focus-visible .go{opacity:1;transform:translateX(3px)}
+/* One of the three is a donation. It is the only thing on this screen we
+   actually want pressed, so it is the only one that looks like a button. */
+.quicklink.primary{background:linear-gradient(165deg,rgba(198,162,76,.26),rgba(198,162,76,.07));
+  border-color:rgba(198,162,76,.52)}
+.quicklink.primary:hover{background:linear-gradient(165deg,rgba(198,162,76,.34),rgba(198,162,76,.12));
+  border-color:rgba(198,162,76,.78)}
+.quicklink.primary .go{opacity:.8}
 .quicklink .k{font-size:clamp(8px,1.05vmin,14px);font-weight:600;letter-spacing:.15em;
   text-transform:uppercase;color:var(--gold-bright)}
 .quicklink .v{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(12px,1.9vmin,25px)}
 .quicklink .d{font-size:clamp(9px,1.25vmin,17px);color:var(--on-2)}
 
+/* ---- arrival ---- */
+/* One short staggered rise on load, in reading order. A display switched on
+   in a hall should look like it woke up rather than like it was always
+   there; it also covers the moment the sky photograph decodes. */
+@keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero,.daygroup,.quicklinks,.footline{animation:riseIn .75s cubic-bezier(.2,.7,.3,1) both}
+.hero{animation-delay:.06s}
+.daygroup{animation-delay:.2s}
+.quicklinks{animation-delay:.32s}
+.footline{animation-delay:.42s}
+@media (prefers-reduced-motion:reduce){
+  .hero,.daygroup,.quicklinks,.footline{animation:none}
+}
+
 /* ---- footline: Jumu'ah left, platform credit right ---- */
 /* Both are standing facts rather than live state, so they share one quiet
    line instead of taking a band and a footer each. */
 .footline{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
-  gap:clamp(8px,2vmin,24px);font-size:clamp(9px,1.2vmin,16px);color:var(--on-3);
+  gap:clamp(8px,2vmin,24px);font-size:clamp(9px,1.2vmin,16px);color:var(--on-2);
   margin-top:clamp(2px,.5vmin,6px)}
 .jumline{display:flex;align-items:baseline;gap:.5em;min-width:0}
 .jumline .k{font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--gold)}
@@ -397,6 +463,13 @@ a:focus-visible,
 <body>
 
 <div class="backdrop"></div>
+<div class="sky" aria-hidden="true">
+  <div class="sky-layer" id="sky-night" style="background-image:url('sky/night.webp')"></div>
+  <div class="sky-layer" id="sky-dawn"  style="background-image:url('sky/dawn.webp')"></div>
+  <div class="sky-layer" id="sky-day"   style="background-image:url('sky/day.webp')"></div>
+  <div class="sky-layer" id="sky-dusk"  style="background-image:url('sky/dusk.webp')"></div>
+  <div class="sky-scrim"></div>
+</div>
 
 <div class="app">
   <header class="chrome">
@@ -439,16 +512,19 @@ a:focus-visible,
       <span class="k">Browse</span>
       <span class="v">This month</span>
       <span class="d">Full timetable, day by day</span>
+      <span class="go" aria-hidden="true">›</span>
     </button>
-    <button class="quicklink" id="btn-support" type="button">
+    <button class="quicklink primary" id="btn-support" type="button">
       <span class="k">The New Build</span>
       <span class="v" id="support-title">Support the appeal</span>
       <span class="d" id="support-sub">Tap for ways to give</span>
+      <span class="go" aria-hidden="true">›</span>
     </button>
     <button class="quicklink" id="btn-contact" type="button">
       <span class="k">Bolton BL1 8HD</span>
       <span class="v">Visit or get in touch</span>
       <span class="d">Address, phone &amp; email</span>
+      <span class="go" aria-hidden="true">›</span>
     </button>
   </footer>
 
@@ -886,6 +962,27 @@ function renderHero(rec, baseDate, now){
     (next.tomorrow ? ` <span class="tomorrow">\u00b7 tomorrow</span>` : "");
 }
 
+/* Which sky is showing. Driven by this masjid's real sunrise and prayer
+   times, not by a guess at the clock: at 4:16pm the screen is already at
+   dusk in November and still in full daylight in June, which is the whole
+   reason to take it from the timetable. */
+let lastSkyPhase = null;
+function renderSky(rec, baseDate, now){
+  const t = now.getTime();
+  const at = k => atToday(baseDate, rec.begins[k]).getTime();
+  let phase;
+  if(t < at("fajr"))         phase = "night";
+  else if(t < at("sunrise")) phase = "dawn";
+  else if(t < at("asr"))     phase = "day";
+  else if(t < at("isha"))    phase = "dusk";
+  else                       phase = "night";
+  if(phase === lastSkyPhase) return;
+  lastSkyPhase = phase;
+  for(const p of ["night","dawn","day","dusk"]){
+    document.getElementById("sky-"+p).classList.toggle("on", p === phase);
+  }
+}
+
 /* The band and the times strip only change when the day changes or when
    we cross into a new prayer; the marker moves every second. Keyed so the
    tick loop stops rebuilding the whole strip 86,400 times a day — the
@@ -1005,6 +1102,7 @@ function tick(){
   if(rec){
     renderHero(rec, now, now);
     renderDay(rec, now, now);
+    renderSky(rec, now, now);
     renderJummahBanner(now);
     checkAudioTriggers(rec, now, now);
   }
