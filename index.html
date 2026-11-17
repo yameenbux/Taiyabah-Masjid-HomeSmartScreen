@@ -194,7 +194,14 @@ a:focus-visible,
 .chrome{flex:0 0 auto;display:flex;align-items:flex-start;justify-content:space-between;
   gap:clamp(12px,2vw,36px)}
 .chrome-left{display:flex;align-items:center;gap:clamp(12px,1.8vw,26px);min-width:0;flex-wrap:wrap}
-.brandmark{height:clamp(40px,6.4vmin,104px);width:auto;display:block;flex:0 0 auto}
+/* The masjid's own mark, and the only branding on the screen — sized as a
+   proportion of the display rather than as a web-page logo. The lockup
+   carries the calligraphy over a small "TAIYABAH / MASJID" wordmark, and it
+   is that wordmark, not the overall height, that decides whether this reads
+   from across a room: at 13vmin on a 1080p screen the mark is ~140px tall
+   and the wordmark lands around 30px. The source is 780x552, so even the
+   240px ceiling on a 4K panel is still under native width and stays sharp. */
+.brandmark{height:clamp(52px,13vmin,240px);width:auto;display:block;flex:0 0 auto}
 .soundpill{display:flex;align-items:center;gap:11px;background:rgba(198,162,76,.18);
   border:1px solid rgba(198,162,76,.55);color:var(--on-1);border-radius:99px;
   padding:clamp(11px,1.5vmin,19px) clamp(18px,2.4vmin,32px);
@@ -407,7 +414,11 @@ a:focus-visible,
    rules above and silently does nothing. That has now happened three
    times in this file; check the rendered size, not the source. */
 @media (max-width:860px) and (orientation:portrait){
-  .brandmark{height:clamp(30px,5vmin,58px)}
+  /* Matched to the landscape proportion rather than just scaled down: in
+     landscape the mark lands at roughly 0.8x the countdown's height, and at
+     min(7vh,13vw) portrait was sitting nearer 0.6x, which read as a smaller
+     logo on the device people actually hold. */
+  .brandmark{height:clamp(46px,min(9vh,15vw),150px)}
   .clock .hm{font-size:clamp(26px,min(4vh,5.6vw),50px)}
   .clock .ss{font-size:clamp(14px,min(1.9vh,2.6vw),24px)}
   .hero-count{font-size:clamp(54px,min(14vh,17.5vw),190px)}
