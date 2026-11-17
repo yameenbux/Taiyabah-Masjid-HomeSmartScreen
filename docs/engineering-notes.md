@@ -119,6 +119,18 @@ stale code beside it would send every scan to the wrong place and look
 completely fine on screen. segno is a build-time tool only and deliberately
 not a dependency of `build.py`, which stays standard-library.
 
+**It is dark modules on a light ground, and that is not a style choice.** The
+first version was cream modules on a translucent dark panel — it suited the
+sky, and it is an *inverted* code, which a meaningful share of readers simply
+will not resolve. A donation path that quietly fails for some people is worse
+than one that sits slightly less comfortably on the background. The tile is
+now solid cream baked into the SVG, with the quiet zone (`border=3`) part of
+the image so it scales with the code and cannot be squeezed by a later CSS
+change. Nothing is behind it and nothing around it: no panel, no shadow, no
+glow, and nothing translucent for the moving photograph to show through —
+least of all through the quiet zone, which is the one part of a QR that has
+to be plain.
+
 Three things decide whether it scans, and only one of them is the block size:
 
 - **Module count.** Error correction **L, not M** — M buys ~15% damage

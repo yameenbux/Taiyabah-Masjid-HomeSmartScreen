@@ -36,12 +36,23 @@ url = give.get("qrUrl") or give["otherAmountUrl"]
 # Trading damage tolerance nobody needs for 14% bigger squares is the right
 # way round here.
 qr = segno.make(url, error="l")
+# Dark modules on a light ground, the way the spec describes and the way
+# every scanner is written to expect. The first version was cream modules on
+# a dark panel, which looked better against the sky and is an INVERTED code:
+# plenty of readers, including some phone cameras, simply will not resolve
+# one. A donation path that quietly fails for a share of people is worse
+# than one that looks slightly less at home on the background.
+#
+# border=3 bakes the quiet zone into the image, so it scales with the code
+# and cannot be squeezed by a CSS change later. The spec asks for 4; 3 plus
+# the tile's own rounding is comfortable in practice and buys back module
+# size, which is what decides whether a camera resolves it at all.
 qr.save(
     ROOT / "donate-qr.svg",
     scale=1,
-    border=2,
-    dark="#F7F3EA",     # cream on transparent: this sits on the dark sky
-    light=None,
+    border=3,
+    dark="#3C0B2A",     # brand maroon, near-black against the tile
+    light="#F7F3EA",    # solid cream tile: no translucency to read through
 )
 
 # segno writes width/height and no viewBox, which means CSS can stretch the
