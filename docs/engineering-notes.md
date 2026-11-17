@@ -105,6 +105,47 @@ What the shared language actually is, in the order it matters:
 - **Tokens that differ from the in-mosque set are bugs.** `--card` is `#FCFAF3` and `--line` is `#E4DECF`;
   the home screen carried older, warmer values (`#EDE1C8` / `#D8CAA5`) until this change.
 
+## Horizon: the layout, and the sizes that are not decoration
+
+The home screen is a photograph of the sky with the content standing in the
+lower-left corner, like a title card. No panels, no cards, no boxes. The
+top-right two thirds are empty on purpose — that is where the sky is. The
+only drawn line is one hairline rule, and that rule is live: it fills from
+the beginning of Fajr to wherever the day has reached, carrying the
+information an earlier day-band used to take a whole element to show.
+
+**Everything is sized to be read across a room by someone not wearing their
+glasses.** That is why the type here is far larger than a web page would
+use. It is a wall display for a congregation with a lot of elderly people.
+`test-layout.js` enforces this and will fail the build-equivalent check if
+it regresses:
+
+- nothing inside `.app` may render below **15px** on a display (>=900px wide)
+  or **13px** on a phone;
+- every control must clear the **44px** touch-target minimum;
+- the countdown must stay at least **1.6x** its largest rival.
+
+The trap worth knowing: on a 1280x720 TV `vmin` is only 7.2px, so for the
+smaller text it is the clamp **floor** that binds, not the vmin term — and
+that is the case most likely to regress unnoticed, because it still looks
+correct on a 1080p mock. Check the rendered size, not the source.
+
+Two bugs this cost, both now covered by tests:
+
+- **A selector that no longer exists is silently skipped.** The layout test
+  was still checking `.band` after the band became `.rule`; `querySelector`
+  returned null and the check simply stopped running while reporting PASS.
+  It now fails loudly on a selector that matches nothing.
+- **A container can stay in bounds while its child runs off-screen.** The
+  chrome's own box was within the viewport on a phone while the hijri date
+  inside it overflowed and carried the clock out to x=446 on a 390px screen.
+  The test now checks every element under `.app` for horizontal overflow,
+  not just the six top-level containers.
+
+Horizon's own padding (5vw / 4.2vh) is comfortably outside the 5% band
+Android TV asks for, so the separate overscan override that used to live in
+the app shell is gone. Shrink those numbers and it has to come back.
+
 ## The sky, and why the scrim is not negotiable
 
 The background is four photographs — night, pre-dawn, day, dusk — generated

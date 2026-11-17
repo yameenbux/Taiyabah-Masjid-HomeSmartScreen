@@ -138,24 +138,29 @@ a:focus-visible,
    floor no matter which photograph is behind it. The day sky is the light
    one and sets how strong this has to be — measured, not guessed. Never
    weaken it without re-measuring the text against the pixels underneath. */
+/* Horizon puts every piece of type in the lower-left, so the shade goes
+   there and nowhere else — the photograph is the design and a blanket
+   scrim would be the thing that ruins it. Three parts: a thin band under
+   the chrome (the day sky is bright at the top), a wedge climbing out of
+   the bottom-left corner, and a floor because the times and the links run
+   the full width. Every value here was set by measuring text against the
+   lightest pixel beneath it on all four skies — see docs/engineering-notes.md.
+   Do not soften this without re-running that measurement. */
 .sky-scrim{position:absolute;inset:0;
   background:
-    /* a pool of shade exactly where the big type sits, so the countdown is
-       protected without flattening the whole photograph */
-    radial-gradient(54% 40% at 50% 37%,rgba(60,11,42,.74),rgba(60,11,42,0) 76%),
-    /* and a lighter touch elsewhere: enough at the top for the clock and at
-       the foot for the small print, open in the middle where the horizon is */
-    linear-gradient(180deg,rgba(60,11,42,.80) 0%,rgba(60,11,42,.30) 20%,
-      rgba(60,11,42,.16) 50%,rgba(60,11,42,.34) 72%,
-      rgba(60,11,42,.62) 88%,rgba(60,11,42,.84) 100%)}
+    linear-gradient(180deg,rgba(26,8,18,.70) 0%,rgba(26,8,18,.24) 11%,rgba(26,8,18,0) 21%),
+    linear-gradient(66deg,rgba(26,8,18,.86) 0%,rgba(26,8,18,.76) 28%,
+      rgba(26,8,18,.44) 48%,rgba(26,8,18,.10) 66%,rgba(26,8,18,0) 80%),
+    linear-gradient(0deg,rgba(26,8,18,.80) 0%,rgba(26,8,18,.48) 14%,
+      rgba(26,8,18,.12) 30%,rgba(26,8,18,0) 44%)}
 @media (prefers-reduced-motion:reduce){
   .sky-layer{animation:none;transform:scale(1.02);transition:none}
 }
 
 /* ---- app shell ---- */
 .app{position:relative;z-index:1;height:100vh;height:100dvh;display:flex;flex-direction:column;
-  padding:clamp(9px,2.2vmin,34px) clamp(10px,3vmin,46px);
-  gap:clamp(7px,1.8vmin,22px);}
+  padding:clamp(16px,4.2vh,70px) clamp(18px,5vw,110px) clamp(14px,3.4vh,54px);
+  gap:0;}
 /* TV overscan safe area. Plenty of panels still crop roughly 5% off every
    edge, and Android TV's design guidance asks for a 5% margin accordingly —
    27px vertical / 48px horizontal at 1080p. The default padding above lands
@@ -163,227 +168,187 @@ a:focus-visible,
    large landscape viewports switch to percentage padding that resolves to
    exactly the guideline. Costs a little margin on a desktop browser; beats
    the clock or the footer buttons being cut off on a TV nobody can adjust. */
-@media (min-width:1280px) and (orientation:landscape){
-  .app{padding:2.5vh 2.5vw}
-}
+/* Horizon's own padding is already 5vw / 4.2vh, comfortably outside the 5%
+   band Android TV asks for (27px vertical / 48px horizontal at 1080p), so
+   there is nothing extra to do for overscan here. Shrink those numbers and
+   this override has to come back. */
 
 /* =====================================================================
-   A SMART-HOME DISPLAY, NOT A WEB PAGE
+   HORIZON
    ---------------------------------------------------------------------
-   This screen lives on a kitchen tablet, an Echo Show or a wall TV. It is
-   read from across a room, for about a second, by someone holding a mug.
-   Amazon's multimodal guidance asks that the most important thing on a
-   screen be readable at 10 feet and the rest at 3, with a 4.5:1 contrast
-   floor; wall-panel practice puts the primary view at six to nine
-   elements with the status in the largest type, above everything else.
+   A photograph of the sky, with the screen's content standing in the
+   lower-left corner like a title card. No panels, no cards, no boxes
+   anywhere — the only drawn line is one hairline rule, and that rule is
+   live (it fills as the day passes). The top-right two thirds are left
+   deliberately empty so the sky has somewhere to be.
 
-   The earlier version of this page broke both rules: thirteen things
-   competing, six prayer cards all the same size, and nothing dominant. A
-   timetable is the wrong model. At any moment exactly one prayer matters
-   and one question is being asked — how long have I got — so that answer
-   is the whole top of the screen and everything else defers to it.
-
-   Element budget, in priority order:
-     1  the countdown            (the one thing readable at 10 feet)
-     2  which prayer, and when
-     3  the day band
-     4  the six times, quiet
-     5  three buttons, quieter
-     6  clock + logo             (chrome)
+   Everything is sized to be read across a room by someone who is not
+   wearing their glasses. That is the whole reason the type here is far
+   larger than a web page would use: this is a wall display for a
+   congregation, a good number of whom are elderly. When in doubt, bigger.
+   The floors in every clamp() below are what keep six prayers on a short
+   viewport; the ceilings are what let a 4K TV actually use its size.
    ===================================================================== */
 
-/* ---- chrome ---- */
-.chrome{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
-  gap:clamp(10px,2vmin,28px)}
-.chrome-left{display:flex;align-items:center;gap:clamp(10px,1.8vmin,22px);min-width:0}
-.brandmark{height:clamp(28px,5.4vmin,76px);width:auto;display:block;flex:0 0 auto}
-.soundpill{display:flex;align-items:center;gap:9px;background:rgba(198,162,76,.16);
-  border:1px solid rgba(198,162,76,.5);color:var(--on-1);border-radius:99px;
-  padding:clamp(7px,1.1vmin,13px) clamp(12px,1.8vmin,22px);
-  font-size:clamp(11px,1.3vmin,17px);font-weight:600;cursor:pointer;white-space:nowrap}
-.soundpill .dot{width:10px;height:10px;flex:0 0 auto;border-radius:50%;background:var(--gold-bright);
+/* ---- chrome: logo left, clock right, nothing in between ---- */
+.chrome{flex:0 0 auto;display:flex;align-items:flex-start;justify-content:space-between;
+  gap:clamp(12px,2vw,36px)}
+.chrome-left{display:flex;align-items:center;gap:clamp(12px,1.8vw,26px);min-width:0;flex-wrap:wrap}
+.brandmark{height:clamp(40px,6.4vmin,104px);width:auto;display:block;flex:0 0 auto}
+.soundpill{display:flex;align-items:center;gap:11px;background:rgba(198,162,76,.18);
+  border:1px solid rgba(198,162,76,.55);color:var(--on-1);border-radius:99px;
+  padding:clamp(11px,1.5vmin,19px) clamp(18px,2.4vmin,32px);
+  font-size:clamp(15px,1.75vmin,26px);font-weight:600;cursor:pointer;white-space:nowrap;
+  min-height:44px}
+.soundpill .dot{width:12px;height:12px;flex:0 0 auto;border-radius:50%;background:var(--gold-bright);
   animation:pulseDot 1.6s ease-in-out infinite}
-/* Unlocked is the quiet state: the pill stays on screen (an earlier build
-   hid it and that cost a real missed Adhan) but stops asking for anything. */
-.soundpill.on{background:transparent;border-color:rgba(201,178,194,.28);color:var(--on-2);cursor:default}
+.soundpill.on{background:rgba(247,243,234,.08);border-color:rgba(201,178,194,.3);color:var(--on-2);cursor:default}
 .soundpill.on .dot{background:#7FC08F;animation:none}
 @keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.28}}
-@media (max-width:620px){ #sound-pill-label{display:none} .soundpill{padding:9px} }
+@media (max-width:700px){ #sound-pill-label{display:none} .soundpill{padding:12px} }
 
-.clockblock{text-align:right;flex:0 0 auto}
+.clockblock{text-align:right;flex:1 1 auto;min-width:0}
 .clock{display:flex;align-items:flex-start;justify-content:flex-end;gap:.1em;
-  font-family:"Fraunces",Georgia,serif;font-weight:600;color:var(--on-1);line-height:1}
-.clock .hm{font-size:clamp(22px,3.6vmin,52px)}
-.clock .ss{font-size:clamp(11px,1.5vmin,21px);font-weight:500;color:var(--gold-bright);
-  margin-top:clamp(2px,.45vmin,7px)}
-.dateline{font-size:clamp(11px,1.4vmin,20px);color:var(--on-2);margin-top:3px}
+  font-family:"Fraunces",Georgia,serif;font-weight:300;color:var(--on-1);line-height:1}
+.clock .hm{font-size:clamp(34px,5.3vmin,88px);letter-spacing:.005em}
+.clock .ss{font-size:clamp(16px,2.3vmin,35px);font-weight:400;color:var(--gold-bright);
+  margin-top:clamp(3px,.6vmin,10px)}
+.dateline{font-size:clamp(15px,1.8vmin,28px);font-weight:500;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--on-2);margin-top:clamp(6px,.9vmin,13px)}
 .dateline .hijri{color:var(--gold-bright)}
-.dateline .dot{margin:0 5px;color:var(--on-3)}
+.dateline .dot{margin:0 7px;color:var(--on-3)}
 
-/* ---- stage ---- */
-.stage{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:center;
-  gap:clamp(16px,3.4vmin,54px)}
-.daygroup{flex:0 0 auto;display:flex;flex-direction:column;gap:clamp(6px,1.1vmin,16px)}
+/* ---- the block: everything left-aligned, pushed to the floor ---- */
+.stage{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:flex-end}
+.hero{max-width:min(72%,1500px);display:flex;flex-direction:column;align-items:flex-start;
+  text-align:left}
+.hero-k{font-size:clamp(15px,1.95vmin,30px);font-weight:600;letter-spacing:.4em;
+  text-transform:uppercase;color:var(--gold-bright);margin-bottom:clamp(14px,2vmin,32px)}
+.hero-name{font-family:"Fraunces",Georgia,serif;font-weight:300;color:var(--on-1);
+  font-size:clamp(34px,7.2vmin,124px);line-height:1;letter-spacing:-.012em;
+  display:flex;align-items:baseline;gap:.3em;flex-wrap:wrap}
+.hero-name .ar{font-family:"Amiri",serif;font-weight:400;font-size:.74em;color:var(--gold-bright)}
+/* The one number this screen exists to show. Thin and very large: at a
+   distance the weight matters far less than the size, and the light cut
+   is what keeps it from shouting over the photograph. */
+.hero-count{font-family:"Fraunces",Georgia,serif;font-weight:200;color:var(--on-1);
+  font-size:clamp(62px,18.5vmin,310px);line-height:.88;letter-spacing:-.045em;
+  margin:clamp(4px,.8vmin,14px) 0 clamp(10px,1.6vmin,26px) -.022em}
+.hero-at{font-size:clamp(19px,2.6vmin,42px);color:var(--on-2);font-weight:400;line-height:1.35}
+.hero-at b{color:var(--on-1);font-weight:600}
+.hero-at .tomorrow{color:var(--gold-bright);font-weight:600}
 
-/* ---- 1. the answer ---- */
-/* The countdown is the only thing on this page sized to be read at ten
-   feet. Everything else is deliberately a tier or more below it. */
-.hero{display:flex;flex-direction:column;align-items:center;text-align:center;
-  gap:clamp(2px,.5vmin,8px);flex:0 0 auto}
-.hero-k{font-size:clamp(10px,1.3vmin,18px);font-weight:600;letter-spacing:.22em;
-  text-transform:uppercase;color:var(--gold-bright)}
-.hero-name{font-family:"Fraunces",Georgia,serif;font-weight:600;color:var(--on-1);
-  font-size:clamp(24px,5.4vmin,78px);line-height:1.08;
-  display:flex;align-items:baseline;justify-content:center;gap:.36em;flex-wrap:wrap}
-.hero-name .ar{font-family:"Amiri",serif;font-size:.72em;color:var(--gold-bright)}
-.hero-count{font-family:"Fraunces",Georgia,serif;font-weight:600;color:var(--on-1);
-  font-size:clamp(52px,15.5vmin,228px);line-height:.94;letter-spacing:-.025em;
-  margin-top:clamp(-2px,-.4vmin,0px)}
-.hero-at{font-size:clamp(13px,2.1vmin,32px);color:var(--on-2);margin-top:clamp(2px,.7vmin,10px)}
-.hero-at b{color:var(--gold-bright);font-weight:600}
-/* After Isha the next jama'ah is tomorrow's Fajr, which changes what the
-   time means, so it is said rather than implied. */
-.hero-at .tomorrow{color:var(--on-3)}
+/* ---- the live rule ---- */
+/* The only line on the screen, and it does a job: it fills from Fajr to
+   wherever the day has got to. A plain divider would have been one more
+   piece of furniture; this is the same hairline carrying the information
+   the removed day-band used to. */
+.daygroup{flex:0 0 auto;margin-top:clamp(20px,3.4vmin,56px)}
+.rule{position:relative;height:2px;background:rgba(201,178,194,.26);overflow:visible}
+.rule-fill{position:absolute;left:0;top:0;bottom:0;width:0;
+  background:linear-gradient(90deg,rgba(198,162,76,.5),var(--gold-bright));
+  transition:width 1s linear}
+.rule-now{position:absolute;top:50%;width:clamp(10px,1.3vmin,18px);height:clamp(10px,1.3vmin,18px);
+  border-radius:50%;background:var(--gold-bright);transform:translate(-50%,-50%);left:0;
+  box-shadow:0 0 0 clamp(3px,.45vmin,7px) rgba(220,187,99,.22);transition:left 1s linear}
 
-/* ---- 2. the day band ---- */
-/* The signature of this screen, and the reason it is not a table. A
-   timetable prints six rows of equal height and throws away the one thing
-   a household actually feels: that the day is lopsided, and differently
-   lopsided in June than in November. Here the six prayers sit at their
-   true positions between the start of Fajr and the start of Isha, the
-   track fills as the day goes, and a marker rides it. In November the
-   afternoon is a cluster; in June Zuhr to Asr is a third of the band. You
-   read how far through the day you are without reading a single number. */
-.band{position:relative;flex:0 0 auto;height:clamp(26px,5vmin,62px);width:100%}
-.band-track,.band-fill{position:absolute;top:50%;transform:translateY(-50%);
-  height:clamp(4px,.75vmin,10px);border-radius:99px}
-.band-track{left:0;right:0;background:rgba(201,178,194,.18)}
-.band-fill{left:0;background:linear-gradient(90deg,rgba(198,162,76,.45),var(--gold));width:0}
-.band-tick{position:absolute;top:50%;transform:translate(-50%,-50%);
-  width:2px;height:clamp(11px,1.9vmin,24px);border-radius:2px;background:rgba(247,243,234,.5)}
-/* The prayer whose period we are in now gets the tall gold mark — the one
-   the marker is travelling through. */
-.band-tick.is-now{background:var(--gold-bright);height:clamp(17px,3vmin,36px);width:3px}
-.band-now{position:absolute;top:50%;transform:translate(-50%,-50%);left:0;
-  width:clamp(11px,1.7vmin,22px);height:clamp(11px,1.7vmin,22px);border-radius:50%;
-  background:var(--gold-bright);box-shadow:0 0 0 clamp(3px,.5vmin,6px) rgba(220,187,99,.2)}
-.band-now::after{content:"";position:absolute;inset:0;border-radius:50%;
-  background:var(--gold-bright);animation:bandPulse 2.8s ease-out infinite}
-@keyframes bandPulse{0%{transform:scale(1);opacity:.5}70%,100%{transform:scale(2.6);opacity:0}}
-/* The marker is already a position; the halo is decoration. */
-@media (prefers-reduced-motion:reduce){
-  .band-now::after{animation:none;display:none}
-  .soundpill .dot{animation:none}
-}
+/* ---- the six times: one row, no boxes ---- */
+.times{flex:0 0 auto;display:grid;grid-template-columns:repeat(6,1fr);
+  gap:clamp(10px,1.4vw,30px);margin-top:clamp(16px,2.4vmin,38px)}
+.t-item{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:clamp(2px,.5vmin,8px)}
+.t-name{display:flex;align-items:baseline;gap:.4em;flex-wrap:wrap;min-width:0}
+.t-en{font-size:clamp(15px,1.9vmin,29px);font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--on-2);line-height:1.3}
+.t-ar{font-family:"Amiri",serif;font-size:clamp(16px,2vmin,31px);color:var(--on-3);line-height:1.3}
+.t-jamaah{font-family:"Fraunces",Georgia,serif;font-weight:400;color:var(--on-1);
+  font-size:clamp(24px,3.2vmin,54px);line-height:1.1}
+.t-jamaah.none{color:var(--on-3)}
+.t-begins{font-size:clamp(16px,1.85vmin,28px);color:var(--on-3);line-height:1.3}
+/* Where we are now: the name goes gold and a rule appears under the time.
+   Two cues, so it survives a colour-blind reader and a sunlit screen. */
+.t-item.is-now .t-en{color:var(--gold-bright)}
+.t-item.is-now .t-jamaah{color:#fff;box-shadow:0 2px 0 -1px var(--gold-bright)}
 
-/* ---- 3. the six times ---- */
-/* Hairline-separated columns rather than six cards. Cards would be six
-   more objects at the same weight as each other, which is the mistake
-   this redesign exists to undo — these are a reference strip under the
-   answer, not the subject of the screen. */
-.times{flex:0 0 auto;display:grid;grid-template-columns:repeat(6,1fr)}
-.t-item{min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;
-  gap:clamp(1px,.25vmin,4px);padding:0 clamp(3px,.9vmin,16px);position:relative}
-.t-name{display:flex;align-items:baseline;justify-content:center;gap:.32em;flex-wrap:wrap;min-width:0}
-.t-en{font-family:"Fraunces",Georgia,serif;font-weight:600;color:var(--on-2);
-  font-size:clamp(12px,2.1vmin,30px);line-height:1.15}
-.t-ar{font-family:"Amiri",serif;color:var(--on-3);font-size:clamp(11px,1.8vmin,25px);line-height:1.2}
-.t-begins{font-family:"Fraunces",Georgia,serif;font-weight:500;color:var(--on-2);
-  font-size:clamp(12px,2vmin,29px);line-height:1.2}
-.t-jamaah{font-family:"Fraunces",Georgia,serif;font-weight:600;color:var(--gold-bright);
-  font-size:clamp(13px,2.3vmin,34px);line-height:1.2}
-.t-jamaah.none{color:var(--on-3);font-weight:400}
-.t-lab{font-size:clamp(8px,1vmin,13px);font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--on-3)}
-/* Where we are now. Two cues, not one: the name brightens AND a gold dot
-   appears above it, so the state survives a colour-blind reader and a
-   screen the sun is hitting. */
-.t-item.is-now .t-en,.t-item.is-now .t-begins{color:var(--on-1)}
-.t-item.is-now::before{content:"";position:absolute;top:clamp(-9px,-1.5vmin,-5px);left:50%;
-  transform:translateX(-50%);width:clamp(5px,.75vmin,9px);height:clamp(5px,.75vmin,9px);
-  border-radius:50%;background:var(--gold-bright)}
+/* ---- three ways in: text, not buttons ---- */
+/* Horizon has no panels, so these are underlined links — but they are the
+   only touch targets on the page, so they carry real padding to clear the
+   44px minimum and a focus ring the D-pad can land on. */
+.quicklinks{flex:0 0 auto;display:flex;align-items:center;gap:clamp(16px,2.6vw,56px);
+  flex-wrap:wrap;margin-top:clamp(18px,2.8vmin,44px)}
+.quicklink{background:none;border:none;color:var(--on-1);cursor:pointer;text-align:left;
+  font-size:clamp(18px,2.3vmin,37px);font-weight:500;line-height:1.2;
+  padding:clamp(9px,1.2vmin,18px) 0;min-height:44px;
+  border-bottom:2px solid rgba(201,178,194,.4);
+  transition:color .18s ease,border-color .18s ease}
+.quicklink:hover{color:#fff;border-bottom-color:var(--gold-bright)}
+.quicklink .v{font-weight:500}
+.quicklink .k,.quicklink .d{display:none}   /* Horizon carries no sub-labels */
+/* The appeal is the one thing we want pressed, so it is the one in gold. */
+.quicklink.primary{color:var(--gold-bright);border-bottom-color:var(--gold-bright);font-weight:600}
+.quicklink.primary:hover{color:#F2DCA0;border-bottom-color:#F2DCA0}
+.quicklink .go{margin-left:.5em;transition:transform .18s ease;display:inline-block}
+.quicklink:hover .go,.quicklink:focus-visible .go{transform:translateX(4px)}
 
-/* ---- 4. three ways in ---- */
-.quicklinks{flex:0 0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(7px,1.3vmin,18px)}
-.quicklink{position:relative;background:rgba(247,243,234,.06);border:1px solid rgba(201,178,194,.18);
-  border-radius:14px;padding:clamp(7px,1.6vmin,20px) clamp(10px,1.8vmin,24px);
-  padding-right:clamp(26px,4vmin,54px);
-  color:var(--on-1);display:flex;flex-direction:column;gap:clamp(1px,.3vmin,4px);
-  cursor:pointer;text-align:left;width:100%;backdrop-filter:blur(6px);
-  transition:background .18s ease,border-color .18s ease,transform .18s ease}
-.quicklink:hover{background:rgba(247,243,234,.12);border-color:rgba(198,162,76,.5);transform:translateY(-2px)}
-.quicklink:active{transform:translateY(0)}
-/* A chevron that leans out on hover. Three identical grey panels give no
-   reason to touch any of them; this is the cheapest honest signal that
-   something happens if you do. */
-.quicklink .go{position:absolute;right:clamp(10px,1.8vmin,24px);top:50%;margin-top:-.5em;
-  font-size:clamp(13px,1.9vmin,24px);line-height:1;color:var(--gold-bright);
-  opacity:.45;transition:opacity .18s ease,transform .18s ease}
-.quicklink:hover .go,.quicklink:focus-visible .go{opacity:1;transform:translateX(3px)}
-/* One of the three is a donation. It is the only thing on this screen we
-   actually want pressed, so it is the only one that looks like a button. */
-.quicklink.primary{background:linear-gradient(165deg,rgba(198,162,76,.26),rgba(198,162,76,.07));
-  border-color:rgba(198,162,76,.52)}
-.quicklink.primary:hover{background:linear-gradient(165deg,rgba(198,162,76,.34),rgba(198,162,76,.12));
-  border-color:rgba(198,162,76,.78)}
-.quicklink.primary .go{opacity:.8}
-.quicklink .k{font-size:clamp(8px,1.05vmin,14px);font-weight:600;letter-spacing:.15em;
-  text-transform:uppercase;color:var(--gold-bright)}
-.quicklink .v{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:clamp(12px,1.9vmin,25px)}
-.quicklink .d{font-size:clamp(9px,1.25vmin,17px);color:var(--on-2)}
+/* ---- the floor line ---- */
+.footline{flex:0 0 auto;display:flex;align-items:baseline;justify-content:space-between;
+  gap:clamp(12px,2.4vw,40px);margin-top:clamp(16px,2.4vmin,38px);
+  font-size:clamp(15px,1.7vmin,26px);color:var(--on-2);flex-wrap:wrap}
+.jumline{display:flex;align-items:baseline;gap:.6em;min-width:0}
+.jumline .k{font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-bright)}
+.jumline .v{color:var(--on-2)}
+.sitefoot{display:flex;align-items:center;gap:clamp(6px,.8vmin,11px);white-space:nowrap;
+  user-select:none;pointer-events:none;letter-spacing:.14em;text-transform:uppercase;
+  /* --on-2, not --on-3: measured at 4.64:1 over the dusk sky on the dimmer
+     token, which clears the floor but leaves nothing for a future sky swap
+     or a different crop. Still the quietest thing on the screen. */
+  font-size:clamp(15px,1.5vmin,22px);color:var(--on-2)}
+.sitefoot .mark{height:clamp(14px,1.8vmin,26px);width:auto;display:block;opacity:.85}
+/* Text fallback if the logo file is missing — keeps the credit deliberate
+   rather than leaving a broken-image icon on a masjid wall. */
+.sitefoot .wordmark{font-weight:600;letter-spacing:.04em;color:var(--on-2)}
 
 /* ---- arrival ---- */
-/* One short staggered rise on load, in reading order. A display switched on
-   in a hall should look like it woke up rather than like it was always
-   there; it also covers the moment the sky photograph decodes. */
-@keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.hero,.daygroup,.quicklinks,.footline{animation:riseIn .75s cubic-bezier(.2,.7,.3,1) both}
-.hero{animation-delay:.06s}
-.daygroup{animation-delay:.2s}
-.quicklinks{animation-delay:.32s}
-.footline{animation-delay:.42s}
+@keyframes riseIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.hero,.daygroup,.times,.quicklinks,.footline{animation:riseIn .8s cubic-bezier(.2,.7,.3,1) both}
+.hero{animation-delay:.08s}
+.daygroup{animation-delay:.24s}
+.times{animation-delay:.32s}
+.quicklinks{animation-delay:.42s}
+.footline{animation-delay:.5s}
 @media (prefers-reduced-motion:reduce){
-  .hero,.daygroup,.quicklinks,.footline{animation:none}
+  .hero,.daygroup,.times,.quicklinks,.footline{animation:none}
+  .rule-fill,.rule-now{transition:none}
 }
-
-/* ---- footline: Jumu'ah left, platform credit right ---- */
-/* Both are standing facts rather than live state, so they share one quiet
-   line instead of taking a band and a footer each. */
-.footline{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
-  gap:clamp(8px,2vmin,24px);font-size:clamp(9px,1.2vmin,16px);color:var(--on-2);
-  margin-top:clamp(2px,.5vmin,6px)}
-.jumline{display:flex;align-items:baseline;gap:.5em;min-width:0}
-.jumline .k{font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--gold)}
-.jumline .v{color:var(--on-2)}
-.sitefoot{display:flex;align-items:center;gap:clamp(4px,.6vmin,8px);white-space:nowrap;
-  user-select:none;pointer-events:none}
-.sitefoot .prefix{font-weight:600;letter-spacing:.15em;text-transform:uppercase}
-.sitefoot .mark{height:clamp(11px,1.5vmin,20px);width:auto;display:block;opacity:.8}
-/* Text fallback, shown only if the logo file is missing — keeps the credit
-   deliberate on a masjid wall rather than leaving a broken-image icon.
-   Dropping masjidone-logo.svg into the repo is the only step to switch. */
-.sitefoot .wordmark{font-weight:600;letter-spacing:.03em;color:var(--on-2)}
 
 /* ---- narrower screens ---- */
-/* Six hairline columns stop working long before a phone: the names wrap to
-   three lines and the rules start cutting through them. Three columns on a
-   tablet, two on a phone; the band and the answer are unchanged, because
-   they are the parts that still work at any width. */
-@media (max-width:900px){
-  .times{grid-template-columns:repeat(3,1fr);gap:clamp(10px,2.2vmin,22px) 0}
+/* The block widens as the screen narrows — on a phone there is no room for
+   an empty two thirds, so the title-card offset is dropped and the content
+   simply fills the width. The times wrap to three, then two. */
+@media (max-width:1100px){
+  .hero{max-width:88%}
+  .times{grid-template-columns:repeat(3,1fr);gap:clamp(12px,2.2vmin,26px) clamp(10px,2vw,28px)}
 }
-@media (max-width:520px){
-  .times{grid-template-columns:repeat(2,1fr);gap:clamp(10px,2.6vw,18px) 0}
-  .footline{flex-direction:column;align-items:flex-start;gap:5px}
+@media (max-width:620px){
+  /* The chrome stops being one row: the logo and the sound control keep the
+     first line, the clock and date take the second. Trying to fit a long
+     hijri date beside a logo at 390px is what pushed the clock off-screen. */
+  .chrome{flex-wrap:wrap;row-gap:clamp(8px,2.4vw,15px)}
+  .chrome-left{flex:0 0 auto;flex-wrap:nowrap}
+  .clockblock{flex:1 0 100%;text-align:left}
+  .clock{justify-content:flex-start}
+  .dateline{letter-spacing:.1em;margin-top:4px}
+  .hero{max-width:100%}
+  .times{grid-template-columns:repeat(2,1fr)}
+  .footline{flex-direction:column;align-items:flex-start;gap:8px}
+  .quicklinks{gap:14px clamp(16px,5vw,30px)}
 }
 /* Below this the page scrolls like an ordinary page. A phone is not a wall
-   display, and a scrollbar is honest where squeezing text until it spills
-   out of its own box is not. Every display size tested stays above it, so
-   a TV still gets one locked screen with nothing below the fold. */
+   display, and a scrollbar is honest where squeezing type is not. Every
+   display size tested stays above this, so a TV gets one locked screen. */
 @media (max-width:640px),(max-height:430px){
   html,body{overflow:auto}
   .app{height:auto;min-height:100vh;min-height:100dvh}
-  .stage{justify-content:flex-start;padding-top:clamp(8px,3vh,24px)}
+  .stage{justify-content:flex-start;padding-top:clamp(14px,4vh,40px)}
 }
 
 /* ---- occasion overlay ---- */
@@ -428,35 +393,34 @@ a:focus-visible,
 .contactrow:last-child{border-bottom:none}
 .contactrow .k{color:var(--muted);width:88px;flex:0 0 auto;font-size:13px;text-transform:uppercase;letter-spacing:.05em}
 .contactrow a{color:var(--brand-800);text-decoration:none;font-weight:600}
-/* Portrait. Everything on this page is sized from vmin, which in portrait is
-   the *width* — so on a tall narrow screen every element inflates relative to
-   the height actually available. The countdown is the worst offender: at
-   15.5vmin on an 810px-wide tablet it wants 125px of a 1080px screen, and it
-   is the one thing allowed to be that big. The strip and the chrome give
-   space back instead; the band costs almost nothing either way.
-   This block must stay at the very end of the stylesheet. A media query adds
-   no specificity, so written earlier it loses to the unconditional rules
-   above and silently does nothing — which has already happened twice in this
-   file. */
+/* Portrait. Everything here is sized from vmin, which in portrait is the
+   *width*, so a tall tablet's height goes unused unless the display sizes
+   are taken from whichever axis runs out first. The countdown is the case
+   that matters: the string is always eight glyphs, so the vw term is a
+   reliable width guard while the vh term claims the height.
+   The floors are not cosmetic. They are what the accessibility check in
+   test-layout.js enforces — nothing on this screen may render below 15px
+   on a display or 13px on a phone — and on a small viewport it is the
+   floor that binds, not the vmin term.
+   This block must stay at the very end of the stylesheet. A media query
+   adds no specificity, so written earlier it loses to the unconditional
+   rules above and silently does nothing. That has now happened three
+   times in this file; check the rendered size, not the source. */
 @media (max-width:860px) and (orientation:portrait){
-  .brandmark{height:clamp(26px,4.6vmin,52px)}
-  .clock .hm{font-size:clamp(20px,3.2vmin,42px)}
-  .clock .ss{font-size:clamp(10px,1.4vmin,18px)}
-  /* Sized from whichever axis runs out first rather than from vmin alone.
-     In portrait vmin is the width, so a countdown set from it ignores all
-     the height a tall tablet has and leaves the screen looking unfinished.
-     The string is always eight glyphs, so the vw term is a reliable width
-     guard: at 17vw on an 810px screen it sets ~138px and measures ~650px
-     wide inside a 762px content box. */
-  .hero-count{font-size:clamp(48px,min(13.5vh,17vw),180px)}
-  .hero-name{font-size:clamp(22px,min(5vh,6.6vw),66px)}
-  .hero-at{font-size:clamp(12px,min(2.1vh,2.9vw),28px)}
-  .t-en{font-size:clamp(12px,min(2.5vh,3.4vw),32px)}
-  .t-ar{font-size:clamp(11px,min(2.1vh,2.9vw),27px)}
-  .t-begins{font-size:clamp(12px,min(2.4vh,3.3vw),30px)}
-  .t-jamaah{font-size:clamp(13px,min(2.8vh,3.8vw),35px)}
-  .quicklink{padding:clamp(7px,1.4vmin,16px) clamp(9px,1.6vmin,18px)}
-  .quicklink .v{font-size:clamp(12px,2.1vmin,22px)}
+  .brandmark{height:clamp(30px,5vmin,58px)}
+  .clock .hm{font-size:clamp(26px,min(4vh,5.6vw),50px)}
+  .clock .ss{font-size:clamp(14px,min(1.9vh,2.6vw),24px)}
+  .hero-count{font-size:clamp(54px,min(14vh,17.5vw),190px)}
+  .hero-name{font-size:clamp(26px,min(5.2vh,7vw),70px)}
+  .hero-k{font-size:clamp(15px,min(1.9vh,2.6vw),26px)}
+  .hero-at{font-size:clamp(17px,min(2.3vh,3.1vw),30px)}
+  .t-en{font-size:clamp(15px,min(2vh,2.7vw),27px)}
+  .t-ar{font-size:clamp(16px,min(2.1vh,2.9vw),29px)}
+  .t-jamaah{font-size:clamp(23px,min(3vh,4.1vw),40px)}
+  .t-begins{font-size:clamp(16px,min(2vh,2.8vw),27px)}
+  .quicklink{font-size:clamp(17px,min(2.2vh,3vw),30px)}
+  .footline{font-size:clamp(15px,min(1.8vh,2.4vw),24px)}
+  .sitefoot{font-size:clamp(15px,min(1.6vh,2.2vw),21px)}
 }
 </style>
 </head>
@@ -492,41 +456,32 @@ a:focus-visible,
       <div class="hero-count tnum" id="hero-countdown">--:--:--</div>
       <div class="hero-at" id="hero-at">—</div>
     </section>
-
-    <div class="daygroup">
-      <!-- The day, Fajr to Isha, at true proportions. Decorative to a screen
-           reader: every time it encodes is read out in the strip below. -->
-      <section class="band" aria-hidden="true">
-        <div class="band-track"></div>
-        <div class="band-fill" id="band-fill"></div>
-        <div id="band-ticks"></div>
-        <div class="band-now" id="band-now"></div>
-      </section>
-
-      <section class="times" id="times"></section>
-    </div>
   </main>
 
-  <footer class="quicklinks">
+  <!-- One hairline, and it is live: it fills from the start of Fajr to
+       wherever the day has reached. Decorative to a screen reader; every
+       time it encodes is read out in the row below. -->
+  <div class="daygroup" aria-hidden="true">
+    <div class="rule">
+      <div class="rule-fill" id="rule-fill"></div>
+      <div class="rule-now" id="rule-now"></div>
+    </div>
+  </div>
+
+  <section class="times" id="times"></section>
+
+  <nav class="quicklinks">
     <button class="quicklink" id="btn-month" type="button">
-      <span class="k">Browse</span>
       <span class="v">This month</span>
-      <span class="d">Full timetable, day by day</span>
-      <span class="go" aria-hidden="true">›</span>
     </button>
     <button class="quicklink primary" id="btn-support" type="button">
-      <span class="k">The New Build</span>
-      <span class="v" id="support-title">Support the appeal</span>
-      <span class="d" id="support-sub">Tap for ways to give</span>
-      <span class="go" aria-hidden="true">›</span>
+      <span class="v">Support the new build</span>
+      <span class="go" aria-hidden="true">→</span>
     </button>
     <button class="quicklink" id="btn-contact" type="button">
-      <span class="k">Bolton BL1 8HD</span>
       <span class="v">Visit or get in touch</span>
-      <span class="d">Address, phone &amp; email</span>
-      <span class="go" aria-hidden="true">›</span>
     </button>
-  </footer>
+  </nav>
 
   <div class="footline">
     <div class="jumline" id="jummah-line"></div>
@@ -1003,41 +958,31 @@ function renderDay(rec, baseDate, now){
   const key = ymd(baseDate) + "|" + current + "|" + (isFriday ? "f" : "-");
   if(key !== lastDayKey){
     lastDayKey = key;
-
-    const ticks = document.createDocumentFragment();
-    for(const p of PRAYERS){
-      const tick = document.createElement('div');
-      tick.className = 'band-tick' + (p.key===current ? ' is-now' : '');
-      tick.style.left = pct(atToday(baseDate, rec.begins[p.key]).getTime()) + '%';
-      ticks.appendChild(tick);
-    }
-    document.getElementById('band-ticks').replaceChildren(ticks);
-
-    const strip = document.createDocumentFragment();
+    const frag = document.createDocumentFragment();
     for(const p of PRAYERS){
       const item = document.createElement('div');
       item.className = 't-item' + (!p.info && current===p.key ? ' is-now' : '');
       const friday = p.key==="zuhr" && isFriday;
       const en = friday ? "Jumu'ah" : p.en;
       const ar = friday ? "\u0627\u0644\u062c\u0645\u0639\u0629" : p.ar;
-      // Sunrise is not a prayer. It is on the strip because households plan
-      // around it, but it must never look like something with a jama'ah.
+      // Sunrise is not a prayer. It is here because households plan around
+      // it, but it must never look like something with a jama'ah.
       const jamaah = p.info
         ? '<div class="t-jamaah none">\u2014</div>'
         : `<div class="t-jamaah tnum">${hm12(friday ? rec.jummah.first : rec.jamaat[p.key])}</div>`;
       item.innerHTML = `
         <div class="t-name"><span class="t-en">${en}</span><span class="t-ar">${ar}</span></div>
-        <div class="t-begins tnum">${hm12(rec.begins[p.key])}</div>
-        ${jamaah}`;
-      strip.appendChild(item);
+        ${jamaah}
+        <div class="t-begins tnum">from ${hm12(rec.begins[p.key])}</div>`;
+      frag.appendChild(item);
     }
-    document.getElementById('times').replaceChildren(strip);
+    document.getElementById('times').replaceChildren(frag);
   }
 
-  // Every tick: where we are in the day.
+  // Every tick: how far the rule has filled.
   const at = pct(now.getTime());
-  document.getElementById('band-fill').style.width = at + '%';
-  document.getElementById('band-now').style.left = at + '%';
+  document.getElementById('rule-fill').style.width = at + '%';
+  document.getElementById('rule-now').style.left = at + '%';
 }
 
 function renderJummahBanner(baseDate){
@@ -1273,8 +1218,11 @@ document.getElementById('month-next').addEventListener('click', ()=>{
 /* ---------------- support (New Build) modal ---------------- */
 function renderSupport(){
   const nb = NEWBUILD;
-  document.getElementById('support-title').textContent = nb.phaseTitle || "Support the appeal";
-  document.getElementById('support-sub').textContent = nb.phaseTag || "Tap for ways to give";
+  /* The link on the home screen stays "Support the new build". Earlier
+     layouts retitled it with the current phase ("Internal fixtures &
+     fittings"), which names the project but asks for nothing — and this is
+     the one control on the screen we actually want pressed. The phase is
+     still the first thing inside the modal, so nothing is lost. */
   const b = nb.give.bank;
   document.getElementById('support-body').innerHTML = `
     <span class="tag">${nb.phaseTag}</span>

@@ -100,7 +100,7 @@ function fakeDateScript(iso) {
         // point of the layout, and it is the first thing a well-meaning
         // tweak to a clamp() will quietly break.
         const cd = document.querySelector('.hero-count');
-        const rivals = ['.t-jamaah', '.quicklink .v', '.clock .hm', '.hero-name']
+        const rivals = ['.t-jamaah', '.quicklink', '.clock .hm', '.hero-name']
           .map(sel => { const e = document.querySelector(sel);
                         return e ? parseFloat(getComputedStyle(e).fontSize) : 0; });
         const cdSize = cd ? parseFloat(getComputedStyle(cd).fontSize) : 0;
@@ -108,12 +108,27 @@ function fakeDateScript(iso) {
           probs.push(`countdown ${Math.round(cdSize)}px is not dominant ` +
             `(largest rival ${Math.round(Math.max(...rivals))}px)`);
 
-        for (const sel of ['.chrome','.hero','.band','.times','.quicklinks','.footline']) {
-          const el = document.querySelector(sel); if (!el) continue;
+        for (const sel of ['.chrome','.hero','.daygroup','.times','.quicklinks','.footline']) {
+          const el = document.querySelector(sel);
+          // A missing selector used to be skipped, which turned a renamed
+          // element into a check that quietly stopped running. Fail loudly.
+          if (!el) { probs.push(`selector ${sel} matched nothing — test is stale`); continue; }
           const r = el.getBoundingClientRect();
           if (!mayScroll && r.bottom > winH + 1) probs.push(`${sel} runs ${Math.round(r.bottom - winH)}px past the bottom`);
           if (r.right > winW + 1) probs.push(`${sel} runs ${Math.round(r.right - winW)}px past the right edge`);
         }
+
+        // Any element at all running off the right edge, not just the six
+        // containers above. A long hijri date inside the chrome overflowed
+        // and carried the clock off-screen on a phone while the chrome's own
+        // box stayed within bounds, so the container-level check missed it.
+        document.querySelectorAll('.app *').forEach(el => {
+          const r = el.getBoundingClientRect();
+          if (!r.width || !r.height) return;
+          if (r.right > winW + 1.5 || r.left < -1.5)
+            probs.push(`${el.className || el.tagName} overflows horizontally ` +
+              `(${Math.round(r.left)}..${Math.round(r.right)} vs 0..${winW})`);
+        });
 
         const de = document.documentElement;
         if (!mayScroll && de.scrollHeight > winH + 1) probs.push(`page scrolls (${de.scrollHeight} > ${winH})`);
@@ -129,13 +144,37 @@ function fakeDateScript(iso) {
         if (heights.length && Math.max(...heights) - Math.min(...heights) > 6)
           probs.push(`times columns render at different heights: ${heights.join(', ')}`);
 
-        // The band must actually place its marker inside itself.
-        const band = document.querySelector('.band'), now = document.querySelector('.band-now');
-        if (band && now) {
-          const bb = band.getBoundingClientRect(), nb = now.getBoundingClientRect();
+        // The live rule must keep its marker on the rule.
+        const rule = document.querySelector('.rule'), now = document.querySelector('.rule-now');
+        if (!rule || !now) probs.push('the live rule is missing — test is stale');
+        else {
+          const rb = rule.getBoundingClientRect(), nb = now.getBoundingClientRect();
           const c = nb.left + nb.width / 2;
-          if (c < bb.left - 1 || c > bb.right + 1) probs.push('band marker is outside the band');
+          if (c < rb.left - 1 || c > rb.right + 1) probs.push('rule marker is outside the rule');
         }
+
+        // ---- accessibility floors ----
+        // A wall display read across a room by a congregation with a lot of
+        // elderly people. Nothing here should ever be set at web-body size.
+        // On a 720p TV it is the clamp FLOOR that binds rather than the vmin
+        // term, and that is the case most likely to regress unnoticed
+        // because it still looks fine on a 1080p mock.
+        const MIN_TEXT = winW >= 900 ? 15 : 13;
+        document.querySelectorAll('.app *').forEach(el => {
+          const ownText = [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim().length > 1);
+          if (!ownText) return;
+          const r = el.getBoundingClientRect(); if (!r.width || !r.height) return;
+          const px = parseFloat(getComputedStyle(el).fontSize);
+          if (px < MIN_TEXT) probs.push(`text at ${px.toFixed(1)}px, floor ${MIN_TEXT}px (${el.className || el.tagName})`);
+        });
+        // Every control must clear the 44px minimum touch target.
+        document.querySelectorAll('.app button, .app a, .app [tabindex]').forEach(el => {
+          const r = el.getBoundingClientRect();
+          if (!r.width || !r.height) return;
+          // 43.5 not 44: a control laid out at exactly 44px can measure
+          // 43.98 after sub-pixel rounding, which is not a real failure.
+          if (r.height < 43.5) probs.push(`control only ${r.height.toFixed(1)}px tall (${el.id || el.className})`);
+        });
 
         return { probs: [...new Set(probs)], cards: document.querySelectorAll('.t-item').length };
       });
