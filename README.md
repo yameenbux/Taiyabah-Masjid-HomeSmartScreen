@@ -1,7 +1,7 @@
 # Taiyabah Masjid — Home Smart Screen
 
-**A live prayer-times display for tablets and TVs — it sounds the Adhan and Iqamah automatically, and
-keeps working on a screen nobody is touching.**
+**A prayer-times display for tablets and TVs that also carries the masjid's live broadcast — built to
+replace the FM radio receiver on a kitchen worktop, and to keep working on a screen nobody is touching.**
 
 🔗 **[View it live](https://yameenbux.github.io/Taiyabah-Masjid-HomeSmartScreen/)**
 
@@ -14,10 +14,19 @@ mosque's own wall screens, and it needs no attention once it's set up.
 
 ## What it does
 
-- **Live clock and countdown** to the next congregational prayer (Jamā'ah)
-- **Today's full timetable** — start and Jamā'ah times, with the current prayer highlighted
-- **Gregorian and Hijri dates**, and a standing banner for the next Friday prayer (Jumu'ah)
-- **Plays the Adhan automatically** 15 minutes before each Jamā'ah, and a short Iqamah at the time itself
+- **A countdown to the next Jamā'ah** as the subject of the screen, sized to be read across a room
+- **The masjid live** — carries the masjid's own broadcast, with a level meter so a quiet hall reads as
+  live rather than broken, and automatic reconnection if the stream drops. It **tunes in by itself a few
+  minutes before each adhan** and leaves after the jamā'ah, so the adhan you hear is the masjid's own
+  muadhin and the salah is live — without streaming around the clock
+- **A donation QR** on screen, so the phone in the room can give even though the screen can't take a
+  payment
+- **Today's six times** — start and Jamā'ah times, with the current prayer marked
+- **A sky that follows the day** — four photographs cross-fading from the masjid's own sunrise and
+  prayer times, so the screen is at dusk in November and in daylight in June at the same hour
+- **Gregorian and Hijri dates**, and the next Friday prayer (Jumu'ah)
+- **Plays the Adhan automatically** 15 minutes before each Jamā'ah, and a short Iqamah at the time
+  itself — and defers to the live broadcast when that is carrying the real adhan
 - **Full-screen greetings** for Ramadan and both Eids
 - **Works offline** and installs to a home screen like a normal app
 - **Drivable by a TV remote** — every control reachable with a D-pad, no touchscreen needed
@@ -101,7 +110,12 @@ Then open it from the new icon and **tap the sound pill once** — it should tur
 
 Set the device's screen timeout to **Never** and leave it plugged in, or it will sleep.
 
-**Put it on a TV:** see [`docs/android-tv.md`](docs/android-tv.md).
+**Put it on a TV:**
+
+| Setup | Guide |
+| --- | --- |
+| A small PC per screen (recommended — no app to build or sign) | [`docs/kiosk-windows.md`](docs/kiosk-windows.md) |
+| Fire TV / Android TV stick | [`docs/android-tv.md`](docs/android-tv.md) |
 
 ## Run it locally
 
@@ -141,6 +155,8 @@ node test-timezone.js              # or any other script in the folder
 | `test-keepalive.js` | The keep-alive loop runs, self-heals, and warns when audio is blocked |
 | `test-timezone.js` | Five simulated device timezones all show the same prayer times |
 | `test-dpad.js` | Remote-control navigation, focus rings and focus trapping |
+| `test-live.js` | The live radio connects, reports itself honestly, and recovers unattended |
+| `test-layout.js` | Every viewport keeps six prayers legible, and holds the accessibility floors |
 | `screenshot.js`, `screenshot-dates.js` | Visual checks across screen sizes, Fridays, Ramadan and Eid |
 | `audit.js` | Runs the whole lot against the **live deployed site** |
 
@@ -169,14 +185,22 @@ test-scripts/          ← Playwright test suite
 | Document | What's in it |
 | --- | --- |
 | [`docs/engineering-notes.md`](docs/engineering-notes.md) | Architecture, the data model, and every deliberate decision that might look like a bug. **Read before editing** |
-| [`docs/android-tv.md`](docs/android-tv.md) | Building, signing and installing the TV app; Fire TV setup; remote management |
+| [`docs/kiosk-windows.md`](docs/kiosk-windows.md) | Running a screen on a Windows mini PC: kiosk browser, never-sleep, auto-start, Tailscale remote access |
+| [`docs/android-tv.md`](docs/android-tv.md) | The Fire TV / Android TV app: building, signing, installing, asset links |
 | [`test-scripts/README.md`](test-scripts/README.md) | What each test covers and how the fake-clock pattern works |
 
 ---
 
 ## Known open items
 
-1. `data/timetable-2026.json` needs a 2027 follow-up (or a multi-year file) before the year turns over.
+1. **Prayer times now run to 31 December 2027** (2026 and 2027 are merged at build time; add a year by
+   adding a file to `TIMETABLES` in `build.py`). The screen also no longer fails silently when they do
+   run out: from 45 days out it counts down the days remaining, turning amber inside the last fortnight,
+   and past the final date it replaces the countdown with a plain explanation naming the date. The live
+   broadcast keeps working either way, since it does not depend on the timetable.
+2. **The donation QR points at the shop page.** A Stripe Payment Link would convert better — fewer steps
+   and it brings Apple/Google Pay — and it is also a shorter URL, which makes the QR itself easier to
+   scan. Change `give.qrUrl` in `data/newbuild.json`, run `tools/make-qr.py`, rebuild.
 2. Custom domain (`home.taiyabahmasjid.com` or similar) — fixes the assetlinks.json root-domain problem
    properly and gives a nicer URL.
 3. Finish the Android TV package — needs a desktop with Android Studio (signing, plus the leanback
@@ -194,8 +218,8 @@ reinvented here.
 
 **Designed and built by YSB Designs**, who own the source code, the interface design and the build
 tooling in this repository — the layout, the styling, the JavaScript, `build.py`, the test suite, the CI
-workflow and the Android packaging configuration. The on-screen credit in the countdown panel reflects
-this.
+workflow and the Android packaging configuration. The screen itself carries only the MasjidOne platform
+credit; YSB Designs' ownership of the code is recorded here rather than on the display.
 
 **The masjid's own assets belong to Bolton Central Islamic Society**, not to YSB Designs:
 

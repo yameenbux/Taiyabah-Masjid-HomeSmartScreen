@@ -33,3 +33,5 @@ __pycache__/
 # OS noise
 .DS_Store
 Thumbs.db
+test-scripts/live-check/
+_concept-*.html

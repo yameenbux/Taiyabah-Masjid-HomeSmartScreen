@@ -36,14 +36,14 @@ async function withPage(browser, iso, fn) {
   // 1. Console/runtime errors on plain load (today's real date, no mocking)
   report.consoleErrorsToday = await withPage(browser, null, async (page) => {
     const heroName = await page.textContent('#hero-name');
-    const clock = await page.textContent('#clock');
+    const clock = await page.textContent('#clock-hm');
     console.log('  hero-name:', heroName.trim(), '| clock:', clock.trim());
   });
 
   // 2. Friday / Jumu'ah row substitution
   report.consoleErrorsFriday = await withPage(browser, '2026-08-21T12:00:00', async (page) => {
-    const zuhrRowExists = await page.locator('.prow.jummahrow').count();
-    console.log('  Friday jummahrow present:', zuhrRowExists > 0);
+    const zuhrRowExists = await page.locator('#pgrid .pcard', { hasText: "Jumu'ah" }).count();
+    console.log('  Friday Jumu\'ah card present:', zuhrRowExists > 0);
   });
 
   // 3. Ramadan occasion overlay

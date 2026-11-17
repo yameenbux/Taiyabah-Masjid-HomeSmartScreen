@@ -1,5 +1,9 @@
 # Getting this onto a TV (Fire TV / Android TV)
 
+> **Is a small PC an option?** If you can put a mini PC behind each screen, Chrome in kiosk mode does
+> this job with no APK, no signing key, no Digital Asset Links and no Amazon home screen — see
+> [`kiosk-windows.md`](kiosk-windows.md). Everything below exists because a streaming stick can't.
+
 ## The short way: run the build in CI
 
 `.github/workflows/android-tv-apk.yml` does all of this on a GitHub runner — no desktop, no Android

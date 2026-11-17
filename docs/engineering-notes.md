@@ -78,6 +78,333 @@ timetable["days"]["YYYY-MM-DD"] = {
 or the app will silently have nothing to show. There is no fallback/error state for a missing date — worth
 adding if this isn't refreshed in time.
 
+## The visual language is shared with the in-mosque screens
+
+The home screen and the masjid's in-mosque screens (`Taiyabah-Mosque-Interactive-Screens` —
+`foyer.html`, `timetable.html` and their portrait twins) are two separate codebases that must look like
+one product. They already shared the palette tokens and all three typefaces (Amiri, Fraunces, Hanken
+Grotesk); what they did not share was the layout, and side by side the difference was obvious. The home
+screen has since been rebuilt in the in-mosque language. If you change one, change both.
+
+What the shared language actually is, in the order it matters:
+
+- **A flat gradient ground, nothing on top of it.** Three layers: a gold radial from above, a plum radial
+  from below, a `175deg` linear through `--brand-900 → 800 → 700`. The home screen used to tile a faint
+  eight-point star motif over this. It has gone — the in-mosque screens run the gradient bare, and beside
+  them the plain ground reads calmer. Restoring it is one rule, but then the two no longer match.
+- **Translucent cards, never filled panels.** `rgba(252,250,243,.045)` over the gradient with a
+  `1px solid rgba(198,162,76,.4)` gold hairline and a ~20px radius. The old home screen put the timetable
+  in a solid cream block (`--card` as a background), and that one element was what refused to sit in the
+  same family as the foyer screens. Nothing on the maroon ground should be opaque. `--card` is now only
+  for the modals, which are a different surface entirely.
+- **Gold is for labels and jamā'ah times only.** Micro-labels are uppercase Hanken Grotesk 600 at
+  `.13em`–`.18em` tracking in `--gold-bright`. Prayer names and beginning times are cream; the jamā'ah
+  time is gold and a size larger, because that is the time people leave the house for.
+- **The current prayer gets a gold wash,** `linear-gradient(180deg, rgba(198,162,76,.28), rgba(198,162,76,.09))`
+  with the border lifted to `.75` — findable from the back of a room without reading anything.
+- **Tokens that differ from the in-mosque set are bugs.** `--card` is `#FCFAF3` and `--line` is `#E4DECF`;
+  the home screen carried older, warmer values (`#EDE1C8` / `#D8CAA5`) until this change.
+
+## The donation QR
+
+A screen on a shelf cannot take a payment; the phone in the room can. The QR
+is the whole bridge, which makes it the one element on this page where
+getting the size wrong is worse than leaving it out — a code nobody can scan
+still *looks* like a working donation path.
+
+`tools/make-qr.py` regenerates it from `give.qrUrl` in `data/newbuild.json`
+and writes the URL it encoded beside the image. **`build.py` fails if those
+disagree**, because nobody proof-reads a QR by eye: a changed link with a
+stale code beside it would send every scan to the wrong place and look
+completely fine on screen. segno is a build-time tool only and deliberately
+not a dependency of `build.py`, which stays standard-library.
+
+**It is dark modules on a light ground, and that is not a style choice.** The
+first version was cream modules on a translucent dark panel — it suited the
+sky, and it is an *inverted* code, which a meaningful share of readers simply
+will not resolve. A donation path that quietly fails for some people is worse
+than one that sits slightly less comfortably on the background. The tile is
+now solid cream baked into the SVG, with the quiet zone (`border=3`) part of
+the image so it scales with the code and cannot be squeezed by a later CSS
+change. Nothing is behind it and nothing around it: no panel, no shadow, no
+glow, and nothing translucent for the moving photograph to show through —
+least of all through the quiet zone, which is the one part of a QR that has
+to be plain.
+
+Three things decide whether it scans, and only one of them is the block size:
+
+- **Module count.** Error correction **L, not M** — M buys ~15% damage
+  tolerance, which is worth having on a printed poster that gets scuffed and
+  worth nothing on a clean pixel render. It costs modules: this URL is 33x33
+  at M and 29x29 at L. Bigger squares, same box.
+- **URL length.** 53 chars is 29x29; a ~24-character short link is 25x25,
+  which is about a third larger per module. This is the biggest lever
+  available and it costs nothing. A Stripe Payment Link is also shorter than
+  the current shop URL.
+- **Physical size, which CSS cannot see.** 11.5vmin is ~124px, which is about
+  6.5cm on a 43" TV and barely over a centimetre on a high-DPI 10" tablet.
+  There is no CSS unit that fixes this, so the QR is hidden below 860px wide
+  — on a phone there is nothing to scan it with but the phone itself.
+
+It is anchored to the middle of the right-hand side, not the bottom. Pinned
+to the bottom it landed on top of the Isha column, because the times strip
+runs the full width while the hero does not.
+
+One trap worth knowing: segno writes `width`/`height` and **no `viewBox`**, so
+CSS stretches the element without scaling the artwork and the code renders a
+few pixels wide in the corner of its box. `tools/make-qr.py` adds the
+viewBox.
+
+## Tuning in by itself for the adhan
+
+The radio being "off" used to mean the adhan fell back to the recording and
+the live salah was not heard at all — the wrong default for a screen meant to
+replace a radio, since the reason to carry the masjid's feed is to hear the
+masjid's own muadhin.
+
+`autoTune` (on by default, in `data/stream.json`) opens the stream a few
+minutes before each adhan and closes it after the jamā'ah, whether or not
+anyone switched the radio on. The lead matters: it is ~1.2s to first audio
+and a few seconds more to be sure it is really playing, so opening three
+minutes early means the stream is already live when the adhan is due and the
+recording stands down cleanly instead of racing it.
+
+`autoTuned` tracks *why* the stream is up. A window only ever closes a
+connection it opened — someone who switched the radio on by hand keeps it on,
+prayer window or not — and the pill says "live for salah" rather than "live"
+so the state is legible.
+
+This also answers the bandwidth problem from the live-radio section: prayer
+windows are roughly 40 minutes five times a day rather than 24 hours, which
+is about a tenth of the listener-hours of leaving it on.
+
+## Prayer times are one file per year
+
+`TIMETABLES` in `build.py` lists the year files and they are merged into one
+blob at build time, so adding a year is adding a file to that list and
+nothing else. The merge is checked both ways: **overlapping dates** mean a
+file was listed twice, and **a gap** means a day on which the screen would
+show "prayer times need updating" in the middle of an otherwise fine run —
+the exact silent failure the expiry handling exists to prevent. Either fails
+the build rather than reaching a wall. Currently 730 days, 2026-01-01 to
+2027-12-31.
+
+## Running out of timetable
+
+`data/timetable-2026.json` covers 2026 and nothing else, and the screen has
+no way to fetch more. This is the one failure in the project with a date
+attached, and it used to be silent: the day after the last entry, `tick()`
+simply skipped every render because `dayRec()` returned null, leaving the
+markup's placeholder dashes on the wall. No times, no explanation, a display
+that looked broken rather than out of date — which is the worst version,
+because nobody can tell whether the times are missing or merely wrong. The
+"timetable ends here" string that was supposed to cover this was unreachable:
+it lived in `renderHero()`, which is only called when a record exists.
+
+Now there are two states, and the quiet one matters more:
+
+- **From 45 days out**, a line above the footer counts down the days to the
+  last date and names it. Inside the last fortnight it turns amber and the
+  dot pulses. The point is that somebody acts *before* the cliff.
+- **Past the last date**, the countdown is replaced by a plain statement
+  naming the date the timetable ran out and saying the adhan cannot sound
+  until it is replaced. The live broadcast keeps working throughout, because
+  it does not depend on the timetable.
+
+The notice is sized *larger* than the small print around it, not smaller. At
+1.6vmin it fell to a 14px floor on a 720p TV, under the accessibility floor
+`test-layout.js` enforces — and too small for a warning nobody is looking
+for. The layout test caught that, which is the second time it has caught a
+regression in something I had just added.
+
+## Optional assets, and why the 404 mattered
+
+`masjidone-logo.svg` is not in the repo. The page used to request it anyway
+and fall back to a text wordmark on `error`, which worked — and logged a 404
+on every load of every device, forever. That noise is exactly what hides a
+real error when one appears, and `audit.js` was reporting it as a console
+error on every run.
+
+`build.py` now resolves it at build time through `OPTIONAL_ASSETS`: if the
+file is not in the repo, `__BRAND_MARK__` substitutes to `null` and the page
+never asks for it. Dropping the real logo in at that path and rebuilding is
+still the only step needed. The `error` handler stays, for the case where the
+file exists at build time but fails to load on the device.
+
+## The live radio
+
+The screen carries the masjid's own live broadcast, and the point of it is to
+replace the FM receiver sitting on people's kitchen worktops. That framing
+sets the engineering bar. An FM radio has no buffer, no server and no Wi-Fi:
+it never drops, never silently dies, never needs restarting. The hard part
+here is not playback — playback is one `<audio src>` — it is staying up for
+months and recovering on its own when it doesn't.
+
+Config lives in `data/stream.json` and is substituted at build time, so every
+MasjidOne masjid gets this with its own URL and nothing is hardcoded.
+
+**Two things that will waste an afternoon if you don't know them:**
+
+- **The URL must be the `/stream.mp3` endpoint.** The bare host —
+  `https://taiyabahmbolton.radioca.st/`, which is what the masjid's own
+  website links — returns `Content-Type: audio/mpeg` and plays perfectly in a
+  desktop media player, but browsers reject it with
+  `NotSupportedError: no supported source was found`. It fails *silently* in
+  the app. (Their website has the same bug for anyone clicking "Listen Live"
+  in a browser.)
+- **`crossorigin="anonymous"` on the audio element is not optional.** Without
+  it the AnalyserNode that drives the level meter reads pure silence, because
+  the stream is a different origin. The stream sends
+  `Access-Control-Allow-Origin: *`, so it works — but only if asked for.
+
+**Three failure modes a plain `<audio src=stream>` will not survive**, all of
+which are handled in the `LIVE` module:
+
+1. The network blips, the element fires `error` or `ended` once, and then
+   sits there paused forever. Every end state schedules a reconnect.
+2. The element reports `playing` while `currentTime` is frozen — what a
+   half-open socket looks like, and which **no event announces**. The
+   watchdog on the one-second tick compares `currentTime` against the last
+   tick and reconnects after six still ticks.
+3. The device sleeps and wakes holding a socket the far end closed hours ago.
+   The stream is rebuilt on every `visibilitychange` to visible rather than
+   waiting for the watchdog.
+
+Backoff is 1/2/4/8/16/30s and **retrying never stops** — a radio does not give
+up — the cap just means a masjid that is off-air overnight is not hammered.
+Every reconnect appends a fresh query string: without it a reconnect can be
+served the same dead buffered response and "succeed" into nothing.
+
+**The meter is not decoration.** A masjid between prayers sits around 0.006
+RMS — real room tone, not silence — and without a moving level a working
+stream and a dead one look identical. Bars have a 22% floor for the same
+reason: collapsed to a hairline, "quiet" reads as "broken". `quiet` and
+`down` are distinct states with distinct colours.
+
+**The recorded adhan is still the safety net and must stay that way.** If the
+live stream is audible at a trigger, the recording is suppressed — the real
+muadhin is about to be heard, and two adhans at once is worse than either.
+Every other case (switched off, still connecting, off-air) plays the
+recording. The off-air label says so explicitly, because a congregation
+relying on this needs to know the adhan is still coming.
+
+It is **opt-in once, then remembered forever** (`taiyabah.live.on`). A screen
+on a kitchen worktop should not start broadcasting the moment it is plugged
+in, and one tap at setup is what switching on a radio has always been. This
+also keeps the audio tests deterministic — a fresh profile has the radio off,
+so the recorded-adhan path is what they exercise.
+
+The service worker **bypasses anything cross-origin**, the stream included.
+Routing an endless body through a service worker is a known way to have it
+buffer or stall.
+
+### Cost, which is the thing that actually bites
+
+At 128 kbps a listener costs about **56 MB/hour**, and a radio is on all day.
+One household running it twelve hours is ~670 MB/day; a hundred households is
+~67 GB/day and, more importantly, **a hundred permanently concurrent
+listeners**. Hosted Shoutcast plans are priced per listener slot, so check the
+plan's cap before this is advertised to the congregation. If it needs to
+scale, a lower bitrate for the always-on feed (48–64 kbps mono is ample for
+speech) cuts both numbers by half or better.
+
+## Horizon: the layout, and the sizes that are not decoration
+
+The home screen is a photograph of the sky with the content standing in the
+lower-left corner, like a title card. No panels, no cards, no boxes. The
+top-right two thirds are empty on purpose — that is where the sky is. The
+only drawn line is one hairline rule, and that rule is live: it fills from
+the beginning of Fajr to wherever the day has reached, carrying the
+information an earlier day-band used to take a whole element to show.
+
+**Everything is sized to be read across a room by someone not wearing their
+glasses.** That is why the type here is far larger than a web page would
+use. It is a wall display for a congregation with a lot of elderly people.
+`test-layout.js` enforces this and will fail the build-equivalent check if
+it regresses:
+
+- nothing inside `.app` may render below **15px** on a display (>=900px wide)
+  or **13px** on a phone;
+- every control must clear the **44px** touch-target minimum;
+- the countdown must stay at least **1.6x** its largest rival.
+
+The trap worth knowing: on a 1280x720 TV `vmin` is only 7.2px, so for the
+smaller text it is the clamp **floor** that binds, not the vmin term — and
+that is the case most likely to regress unnoticed, because it still looks
+correct on a 1080p mock. Check the rendered size, not the source.
+
+Two bugs this cost, both now covered by tests:
+
+- **A selector that no longer exists is silently skipped.** The layout test
+  was still checking `.band` after the band became `.rule`; `querySelector`
+  returned null and the check simply stopped running while reporting PASS.
+  It now fails loudly on a selector that matches nothing.
+- **A container can stay in bounds while its child runs off-screen.** The
+  chrome's own box was within the viewport on a phone while the hijri date
+  inside it overflowed and carried the clock out to x=446 on a 390px screen.
+  The test now checks every element under `.app` for horizontal overflow,
+  not just the six top-level containers.
+
+Horizon's own padding (5vw / 4.2vh) is comfortably outside the 5% band
+Android TV asks for, so the separate overscan override that used to live in
+the app shell is gone. Shrink those numbers and it has to come back.
+
+## The sky, and why the scrim is not negotiable
+
+The background is four photographs — night, pre-dawn, day, dusk — generated
+for this screen and cross-faded as the day passes. Which one shows is decided
+by *this masjid's own times* (`renderSky()`), not by a guess at the clock: at
+4:16pm in November the screen is already at dusk, and in June it is still full
+daylight at the same hour. That is the entire reason to drive it from the
+timetable rather than from hardcoded hours.
+
+The set is 47KB for all four because they are smooth gradients, so this costs a
+kiosk essentially nothing and still works offline.
+
+Things that will bite whoever touches this next:
+
+- **The scrim over the photographs is a contrast device, not decoration.**
+  Every piece of text on this page was measured against the *lightest pixel*
+  underneath it, on all four skies. The floor is 4.5:1 and the worst case is
+  5.37:1 (the footline over dawn). If you weaken `.sky-scrim`, re-measure;
+  do not eyeball it. The first attempt at this was scrimmed so hard the
+  photographs were invisible, and opening it up dropped the times strip to
+  3.56:1 over the day sky.
+- **`sky/day.webp` is deliberately darkened in the file**, pulled toward the
+  brand maroon. It is the one light image in the set, and it alone decided how
+  hard the scrim had to work; darkening the file instead let the dusk and dawn
+  photographs keep doing what they were generated for. Regenerate it and you
+  must re-darken it.
+- **The sky files are cached separately from the shell in `sw.js`.**
+  `cache.addAll()` is atomic, so a single missing sky in `SHELL` would fail the
+  whole install and leave the device with no offline shell at all. They go
+  through `Promise.allSettled` instead and are allowed to fail; the page falls
+  back to the plain gradient.
+- **Generated imagery is skies only** — no figures, no animals, no buildings,
+  no lettering. The first batch had hallucinated text burned into five of eight
+  images because the prompt ended "designed as a dark background behind cream
+  coloured text", which the model took as an instruction to draw cream text.
+  Do not describe the overlaid UI in an image prompt.
+
+## Layout rules that are load-bearing
+
+- **Six prayers must always be on screen, at every viewport, without scrolling** — on a display nobody
+  touches, a prayer below the fold does not exist. The grid is six across in landscape above 860px and two
+  columns everywhere else; six stacked cards do not fit the height of a portrait tablet.
+- **Below 560px wide each prayer becomes one compact row** (name left, both times right), and below 640px
+  wide or 460px tall the page is allowed to scroll like any ordinary page. A phone is not a display, and
+  the honest answer there is a scrollbar rather than six boxes quietly squeezed until the text spills over
+  its own borders. Every display size verified in testing stays above those thresholds, so a TV still gets
+  one locked screen.
+- **`.pc-times` stacks the two times only in the six-across landscape row.** That override must sit *after*
+  the base `.pc-times` rule in source order. A media query adds no specificity, so written earlier in the
+  file (next to the `.pgrid` landscape rule, which is where it went first) the later unconditional rule
+  simply wins and every card stays in row mode. It looked correct because the wide prayer names wrapped
+  onto two lines anyway — but Sunrise, whose only times are `7:45 am` and an em dash, was narrow enough to
+  fit one line, so exactly one card in six laid itself out differently. This is the second time source
+  order has silently broken a layout rule here; see the portrait block below.
+- **The portrait override block must stay at the very end of the stylesheet,** for the same reason.
+
 ## Things that look like bugs but are deliberate
 
 - **3-minute audio catch-up window** (`CATCHUP_WINDOW_MS` in the JS): if the tab/PWA was backgrounded exactly
@@ -110,6 +437,14 @@ adding if this isn't refreshed in time.
   prayer. It's a no-op on a correctly-configured device, and the detected timezone is logged at boot.
 - **A near-silent audio loop plays continuously once sound is enabled**, and the device will show a media
   notification / lock-screen player for it. Both are deliberate — see below.
+- **Portrait tablets get their own override block, and it sits at the very end of the stylesheet.**
+  Everything here is sized from `vmin`, which in portrait is the *width* — so on a tall narrow screen the
+  header, hero and footer all inflate relative to the height available and the prayer table is what gets
+  squeezed out. Measured on an 810x1080 iPad the budget came to exactly 1080px with the table 61px short,
+  losing Maghrib and Isha below the fold. The logo, countdown and footer cards give that space back,
+  because the table is the content and they are decoration. The block's *position* is load-bearing: the
+  base rules it overrides are defined later in the file, so placed any earlier it loses on source order
+  and silently does nothing — which is exactly what happened on the first attempt.
 - **Almost every `clamp()` in the layout has a deliberately low minimum.** Those floors are not
   placeholders. A browser with its own chrome — Silk on a Fire TV — reports a viewport as short as
   960x460, and the original floors (58px logo, 20px prayer times, 18px footer padding) added up to more
@@ -121,7 +456,7 @@ adding if this isn't refreshed in time.
   Android TV overscan safe area — plenty of panels crop about 5% off every edge, and the guideline is
   27px/48px at 1080p, which the default `clamp()` padding undershoots. It costs a little margin in a
   desktop browser and saves the clock and footer buttons from being cut off on a TV.
-- **The "Created by YSB Designs" credit is absolutely positioned, not a flex child.** That's what keeps it
+- **The "Powered by MasjidOne" credit is absolutely positioned, not a flex child.** That's what keeps it
   from ever changing the hero's height or pushing the countdown around — it contributes no layout at any
   viewport, verified across eight screen sizes. It sits lower-right because every line in that card is
   left-aligned, so the right corner is the only one empty at *all* sizes; a lower-left version collided
@@ -129,6 +464,12 @@ adding if this isn't refreshed in time.
   order is unchanged, and `pointer-events:none` keeps it clear of taps. Hidden below 420px, where the
   countdown's own digits reach the corner and it would either collide or sit a few pixels off, which reads
   as a mistake rather than a signature.
+- **The MasjidOne mark falls back to a text wordmark when `masjidone-logo.svg` is absent**, handled in the
+  main script rather than an inline `onerror`. A wall display must never show a broken-image icon, and the
+  fallback means dropping the real logo into the repo root is the only step needed to switch to it —
+  no markup change. **If you add the logo, do not add it to `sw.js`'s `SHELL` list until the file is
+  actually committed:** `cache.addAll()` is atomic, so one 404 fails the whole service worker install and
+  takes offline support down with it.
 - **GitHub Pages serves via a case-sensitive filesystem.** A prior deploy broke because folders were named
   `Audio`/`Data` while the code references lowercase `audio`/`data`. If something 404s after a file move/rename
   via GitHub's web editor, check the actual resulting path (a web-editor rename previously left a stray
@@ -322,6 +663,13 @@ details on each script and setup (`npm install` + `npx playwright install chromi
 - `test-keepalive.js` — the silent keep-alive loop: silent before unlock, playing and looping and unmuted
   after one tap, self-healing after an external pause, and degrading the pill to an amber warning rather
   than green when audio output is refused. Run after touching `startKeepAlive()` or `updateSoundPill()`.
+- **Viewport/overflow sweep** — the check that matters most after any layout change: render every display
+  size (1920x1080, 1280x720, the shorter 1280x672 Silk viewport, 960x540, portrait tablets, phones) across
+  several dates, and assert three things — no child of a prayer card escapes its card's box, nothing but the
+  phone sizes extends past the viewport, and every card in the row renders its times block at the same
+  height. The third is what catches the source-order trap above; comparing computed `flex-direction` is not
+  enough, because a wrapping row renders as two lines on one card and one line on the next and the computed
+  value agrees on both. Confirm any new assertion here has teeth by reverting the fix and watching it fail.
 - `test-dpad.js` — drives the page with real Tab/Enter/Escape key presses to verify focus rings, modal focus
   trapping (both directions), focus restore-on-close, and backdrop click-to-close. Run after touching modal
   markup or the `openModal`/`closeModal` helpers.

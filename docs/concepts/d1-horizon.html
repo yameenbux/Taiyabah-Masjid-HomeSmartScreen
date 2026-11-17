@@ -1,0 +1,72 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>D1 — Horizon</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri&family=Fraunces:opsz,wght@9..144,200;9..144,300;9..144,400;9..144,600&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#1b0712}
+body{font-family:"Hanken Grotesk",sans-serif;color:#F7F3EA;-webkit-font-smoothing:antialiased}
+.photo{position:fixed;inset:0;background:url('../../sky/dusk.webp') center 55%/cover;transform:scale(1.05)}
+/* Barely any scrim: the photograph IS the design here, so shade is placed
+   only where type actually sits — a wedge up from the bottom-left corner. */
+.veil{position:fixed;inset:0;background:
+  linear-gradient(72deg,rgba(18,5,12,.92) 0%,rgba(18,5,12,.72) 26%,rgba(18,5,12,.18) 52%,rgba(18,5,12,0) 72%),
+  linear-gradient(0deg,rgba(18,5,12,.78) 0%,rgba(18,5,12,0) 34%)}
+.app{position:relative;height:100vh;display:flex;flex-direction:column;justify-content:flex-end;
+  padding:4.5vh 5vw 3.6vh}
+.top{position:absolute;top:4.5vh;left:5vw;right:5vw;display:flex;justify-content:space-between;align-items:flex-start}
+.mark{height:52px;opacity:.9}
+.now{text-align:right;font-family:"Fraunces",serif;font-weight:200;font-size:40px;letter-spacing:.01em;line-height:1}
+.now small{display:block;font-family:"Hanken Grotesk",sans-serif;font-weight:500;font-size:12px;
+  letter-spacing:.2em;text-transform:uppercase;color:#D9C3D2;margin-top:9px}
+/* Everything anchored lower-left and left-aligned, like a title card. */
+.block{max-width:60%}
+.kicker{font-size:12px;font-weight:600;letter-spacing:.42em;text-transform:uppercase;color:#E3C87E;margin-bottom:22px}
+.name{font-family:"Fraunces",serif;font-weight:300;font-size:64px;line-height:1;letter-spacing:-.01em;margin-bottom:6px}
+.name .ar{font-family:"Amiri",serif;font-size:.72em;color:#E3C87E;margin-left:.35em}
+.count{font-family:"Fraunces",serif;font-weight:200;font-size:176px;line-height:.9;letter-spacing:-.045em;
+  font-variant-numeric:tabular-nums;margin:6px 0 14px -9px}
+.sub{font-size:19px;color:#E0CBD9;font-weight:400}
+.sub b{color:#fff;font-weight:600}
+/* The times are a single hairline of small caps along the bottom edge —
+   information, not furniture. No boxes anywhere on this screen. */
+.rule{height:1px;background:linear-gradient(90deg,rgba(227,200,126,.55),rgba(227,200,126,.06));margin:34px 0 16px}
+.times{display:flex;gap:48px;flex-wrap:wrap}
+.t{display:flex;align-items:baseline;gap:9px}
+.t .n{font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#C7AEC0}
+.t .v{font-family:"Fraunces",serif;font-weight:400;font-size:19px;font-variant-numeric:tabular-nums}
+.t.on .n{color:#E3C87E}
+.t.on .v{color:#fff}
+.foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:26px;
+  font-size:12px;letter-spacing:.06em;color:#BCA2B6}
+.links{display:flex;gap:34px}
+.links a{color:#F7F3EA;text-decoration:none;font-size:14px;font-weight:500;border-bottom:1px solid rgba(227,200,126,.5);padding-bottom:3px}
+.links a.go{color:#E3C87E;border-bottom-color:#E3C87E}
+</style></head><body>
+<div class="photo"></div><div class="veil"></div>
+<div class="app">
+  <div class="top">
+    <img class="mark" src="../../logo-cream.png" alt="Taiyabah Masjid">
+    <div class="now">16:00<small>Mon 16 Nov · 6 Jumada al-Thani</small></div>
+  </div>
+  <div class="block">
+    <div class="kicker">Next jamā'ah</div>
+    <div class="name">Maghrib<span class="ar">المغرب</span></div>
+    <div class="count">00:15:55</div>
+    <div class="sub">at <b>4:16 pm</b> — the adhan will sound on this device</div>
+  </div>
+  <div class="rule"></div>
+  <div class="times">
+    <div class="t"><span class="n">Fajr</span><span class="v">7:00 am</span></div>
+    <div class="t"><span class="n">Sunrise</span><span class="v">7:38 am</span></div>
+    <div class="t"><span class="n">Zuhr</span><span class="v">12:45 pm</span></div>
+    <div class="t on"><span class="n">Asr</span><span class="v">3:00 pm</span></div>
+    <div class="t"><span class="n">Maghrib</span><span class="v">4:16 pm</span></div>
+    <div class="t"><span class="n">Isha</span><span class="v">7:30 pm</span></div>
+  </div>
+  <div class="foot">
+    <div class="links">
+      <a href="#">This month</a><a href="#" class="go">Support the new build →</a><a href="#">Visit us</a>
+    </div>
+    <div>JUMU'AH FRI 20 NOV · 12:45 &amp; 1:40 PM &nbsp;&nbsp;·&nbsp;&nbsp; POWERED BY MASJIDONE</div>
+  </div>
+</div></body></html>
