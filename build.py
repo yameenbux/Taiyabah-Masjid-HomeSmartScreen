@@ -25,6 +25,16 @@ SOURCES = {
     "__STREAM_JSON__": "data/stream.json",
 }
 
+# Optional asset. The page used to request masjidone-logo.svg unconditionally
+# and fall back to a text wordmark on error — which worked, but logged a 404
+# on every load of every device, forever, and that noise is exactly what
+# hides a real error when one turns up. Resolve it at build time instead: if
+# the file is not in the repo the page never asks for it. Dropping the real
+# logo in at this path and rebuilding is still the only step needed.
+OPTIONAL_ASSETS = {
+    "__BRAND_MARK__": "masjidone-logo.svg",
+}
+
 
 def main():
     out = (ROOT / "template.html").read_text(encoding="utf-8")
@@ -36,7 +46,14 @@ def main():
             json.dumps(blob, separators=(",", ":"), ensure_ascii=False),
         )
 
-    for placeholder in SOURCES:
+    for placeholder, relpath in OPTIONAL_ASSETS.items():
+        present = (ROOT / relpath).exists()
+        out = out.replace(placeholder, json.dumps(relpath if present else None))
+        if not present:
+            print("note: %s is not in the repo — the page will use its text "
+                  "fallback and will not request it" % relpath)
+
+    for placeholder in list(SOURCES) + list(OPTIONAL_ASSETS):
         assert placeholder not in out, "%s was not substituted" % placeholder
 
     (ROOT / "index.html").write_text(out, encoding="utf-8")

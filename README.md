@@ -1,7 +1,7 @@
 # Taiyabah Masjid — Home Smart Screen
 
-**A live prayer-times display for tablets and TVs — it sounds the Adhan and Iqamah automatically, and
-keeps working on a screen nobody is touching.**
+**A prayer-times display for tablets and TVs that also carries the masjid's live broadcast — built to
+replace the FM radio receiver on a kitchen worktop, and to keep working on a screen nobody is touching.**
 
 🔗 **[View it live](https://yameenbux.github.io/Taiyabah-Masjid-HomeSmartScreen/)**
 
@@ -14,10 +14,15 @@ mosque's own wall screens, and it needs no attention once it's set up.
 
 ## What it does
 
-- **Live clock and countdown** to the next congregational prayer (Jamā'ah)
-- **Today's full timetable** — start and Jamā'ah times, with the current prayer highlighted
-- **Gregorian and Hijri dates**, and a standing banner for the next Friday prayer (Jumu'ah)
-- **Plays the Adhan automatically** 15 minutes before each Jamā'ah, and a short Iqamah at the time itself
+- **A countdown to the next Jamā'ah** as the subject of the screen, sized to be read across a room
+- **The masjid live** — carries the masjid's own broadcast, with a level meter so a quiet hall reads as
+  live rather than broken, and automatic reconnection if the stream drops
+- **Today's six times** — start and Jamā'ah times, with the current prayer marked
+- **A sky that follows the day** — four photographs cross-fading from the masjid's own sunrise and
+  prayer times, so the screen is at dusk in November and in daylight in June at the same hour
+- **Gregorian and Hijri dates**, and the next Friday prayer (Jumu'ah)
+- **Plays the Adhan automatically** 15 minutes before each Jamā'ah, and a short Iqamah at the time
+  itself — and defers to the live broadcast when that is carrying the real adhan
 - **Full-screen greetings** for Ramadan and both Eids
 - **Works offline** and installs to a home screen like a normal app
 - **Drivable by a TV remote** — every control reachable with a D-pad, no touchscreen needed
@@ -146,6 +151,8 @@ node test-timezone.js              # or any other script in the folder
 | `test-keepalive.js` | The keep-alive loop runs, self-heals, and warns when audio is blocked |
 | `test-timezone.js` | Five simulated device timezones all show the same prayer times |
 | `test-dpad.js` | Remote-control navigation, focus rings and focus trapping |
+| `test-live.js` | The live radio connects, reports itself honestly, and recovers unattended |
+| `test-layout.js` | Every viewport keeps six prayers legible, and holds the accessibility floors |
 | `screenshot.js`, `screenshot-dates.js` | Visual checks across screen sizes, Fridays, Ramadan and Eid |
 | `audit.js` | Runs the whole lot against the **live deployed site** |
 
@@ -182,7 +189,12 @@ test-scripts/          ← Playwright test suite
 
 ## Known open items
 
-1. `data/timetable-2026.json` needs a 2027 follow-up (or a multi-year file) before the year turns over.
+1. **`data/timetable-2026.json` runs out on 31 December 2026 and a 2027 file is needed.** The screen no
+   longer fails silently at that point: from 45 days out it shows a countdown of days remaining (turning
+   amber inside the last fortnight), and past the final date it replaces the countdown with a plain
+   explanation naming the date the timetable ran out. The live broadcast keeps working either way, since
+   it does not depend on the timetable — but **the Adhan cannot sound without prayer times**, so this is
+   the one item with a deadline.
 2. Custom domain (`home.taiyabahmasjid.com` or similar) — fixes the assetlinks.json root-domain problem
    properly and gives a nicer URL.
 3. Finish the Android TV package — needs a desktop with Android Studio (signing, plus the leanback

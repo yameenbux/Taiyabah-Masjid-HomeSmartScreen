@@ -316,6 +316,30 @@ a:focus-visible,
 .quicklink .go{margin-left:.5em;transition:transform .18s ease;display:inline-block}
 .quicklink:hover .go,.quicklink:focus-visible .go{transform:translateX(4px)}
 
+/* ---- running out of timetable ---- */
+/* Two states, and the quiet one matters more. The timetable is a finite
+   file: when it runs out the screen cannot show a single prayer time, and
+   there is no way for it to fetch more. So it says so early, while there
+   is still time to act, rather than only once it has already failed. */
+.expiry{flex:0 0 auto;margin-top:clamp(10px,1.6vmin,22px);
+  /* Larger than the small print around it, not smaller: this is the only
+     thing on the screen with a deadline attached, and at 1.6vmin it fell
+     to the 14px floor on a 720p TV — under the accessibility floor the
+     layout test enforces, and too small for a warning nobody is looking
+     for. */
+  font-size:clamp(16px,1.9vmin,28px);font-weight:600;letter-spacing:.04em;
+  color:var(--gold-bright);display:flex;align-items:baseline;gap:.6em}
+.expiry .dot{width:.55em;height:.55em;border-radius:50%;background:var(--gold-bright);
+  align-self:center;flex:0 0 auto}
+.expiry.urgent{color:#F0B37A}
+.expiry.urgent .dot{background:#F0B37A;animation:pulseDot 2s ease-in-out infinite}
+/* The hard stop. No times exist, so the screen stops pretending it has a
+   countdown and says plainly what has happened and who can fix it. */
+.hero.nodata .hero-count{display:none}
+.hero.nodata .hero-name{font-size:clamp(28px,5vmin,86px);color:var(--gold-bright)}
+.hero.nodata .hero-at{max-width:26em;margin-top:clamp(10px,1.6vmin,24px)}
+body.nodata .daygroup,body.nodata .times{display:none}
+
 /* ---- the floor line ---- */
 .footline{flex:0 0 auto;display:flex;align-items:baseline;justify-content:space-between;
   gap:clamp(12px,2.4vw,40px);margin-top:clamp(16px,2.4vmin,38px);
@@ -485,7 +509,7 @@ a:focus-visible,
 
   <main class="stage">
     <section class="hero">
-      <div class="hero-k">Next jamā'ah</div>
+      <div class="hero-k" id="hero-k">Next jamā'ah</div>
       <div class="hero-name" id="hero-name">—</div>
       <div class="hero-count tnum" id="hero-countdown">--:--:--</div>
       <div class="hero-at" id="hero-at">—</div>
@@ -517,11 +541,13 @@ a:focus-visible,
     </button>
   </nav>
 
+  <div class="expiry" id="expiry" hidden><span class="dot"></span><span id="expiry-text"></span></div>
+
   <div class="footline">
     <div class="jumline" id="jummah-line"></div>
     <div class="sitefoot">
       <span class="prefix">Powered by</span>
-      <img class="mark" id="brand-mark" src="masjidone-logo.svg" alt="MasjidOne">
+      <img class="mark" id="brand-mark" alt="MasjidOne" hidden>
       <span class="wordmark" id="brand-word" hidden>MasjidOne</span>
     </div>
   </div>
@@ -594,6 +620,7 @@ const DATA = __TIMETABLE_JSON__;
 const NEWBUILD = __NEWBUILD_JSON__;
 const OCCASIONS = __OCCASIONS_JSON__;
 const STREAM = __STREAM_JSON__;
+const BRAND_MARK = __BRAND_MARK__;
 
 const PRAYERS = [
   {key:"fajr",    en:"Fajr",    ar:"الفجر"},
@@ -802,15 +829,27 @@ function probeAutoplay(){
 /* The OS will surface this as a media notification / lock-screen player
    whether we like it or not, so give it a name that explains itself rather
    than a blank tile someone taps "stop" on out of curiosity. */
-function setUpMediaSession(){
+/* What the phone's lock screen and the car stereo say we are playing. It
+   used to read "standing by" even while the masjid's broadcast was coming
+   through, which is wrong on the one surface a listener sees when the
+   screen itself is off. */
+function updateMediaSession(){
   if(!('mediaSession' in navigator)) return;
   try{
+    const live = typeof LIVE !== 'undefined' && LIVE.state === 'live';
     navigator.mediaSession.metadata = new MediaMetadata({
-      title: "Adhan & Iqamah — standing by",
-      artist: "Taiyabah Masjid",
+      title: live ? "Live from the masjid" : "Adhan & Iqamah \u2014 standing by",
+      artist: (STREAM && STREAM.name) || "Taiyabah Masjid",
       album: "Home Smart Screen",
       artwork: [{ src: "icon-512.png", sizes: "512x512", type: "image/png" }]
     });
+  }catch(e){ /* older WebView without MediaMetadata — nothing to do */ }
+}
+
+function setUpMediaSession(){
+  if(!('mediaSession' in navigator)) return;
+  try{
+    updateMediaSession();
     // If someone does hit pause from the lock screen, honour it — but make
     // it loud on the page rather than leaving a green "Sound on" pill lying
     // about a display that can no longer sound the Adhan.
@@ -899,6 +938,7 @@ function liveRetry(reason){
 
 function liveStop(){
   LIVE.wanted = false; LIVE.state = 'off';
+  updateMediaSession();
   clearTimeout(LIVE.timer);
   try { audioLive.pause(); audioLive.removeAttribute('src'); audioLive.load(); } catch(e){}
   try { localStorage.setItem(LIVE_KEY, '0'); } catch(e){}
@@ -937,6 +977,7 @@ audioLive.addEventListener('playing', ()=>{
   LIVE.attempts = 0; LIVE.state = 'live'; LIVE.frozenTicks = 0;
   if(LIVE.ctx && LIVE.ctx.state === 'suspended') LIVE.ctx.resume().catch(()=>{});
   updateSoundPill();
+  updateMediaSession();
 });
 audioLive.addEventListener('error',   ()=> liveRetry('errored'));
 audioLive.addEventListener('ended',   ()=> liveRetry('ended'));
@@ -1131,6 +1172,71 @@ function checkAudioTriggers(rec, baseDate, now){
   }
 }
 
+/* ---------------- running out of timetable ----------------
+   The timetable is a finite file — 2026 only, at the time of writing — and
+   the screen has no way to fetch more. Before this, the day after the last
+   entry simply rendered the markup's placeholder dashes: no times, no
+   explanation, a display that looked broken rather than out of date. On a
+   wall in a masjid that is the worst kind of failure, because nobody can
+   tell whether the times are missing or merely wrong.
+   So the cliff is handled, and more importantly it is announced in advance
+   while somebody can still act on it. */
+const LAST_DAY = (function(){
+  if(!DATA || !DATA.days) return null;
+  const keys = Object.keys(DATA.days);
+  if(!keys.length) return null;
+  keys.sort();
+  return keys[keys.length-1];
+})();
+const EXPIRY_NOTICE_DAYS = 45;   // about six weeks' warning
+
+function daysOfTimetableLeft(now){
+  if(!LAST_DAY) return 0;
+  const [y,m,d] = LAST_DAY.split('-').map(Number);
+  const end = new Date(y, m-1, d); end.setHours(23,59,59,999);
+  const today = new Date(now); today.setHours(0,0,0,0);
+  return Math.floor((end - today) / 86400000);
+}
+
+function renderExpiryNotice(now){
+  const el = document.getElementById('expiry');
+  const txt = document.getElementById('expiry-text');
+  const left = daysOfTimetableLeft(now);
+  if(!LAST_DAY || left > EXPIRY_NOTICE_DAYS || left < 0){ el.hidden = true; return; }
+  el.hidden = false;
+  el.classList.toggle('urgent', left <= 14);
+  const [y,m,d] = LAST_DAY.split('-').map(Number);
+  const when = d + " " + MON[m-1] + " " + y;
+  txt.textContent = left === 0
+    ? "Today is the last day on this timetable \u2014 new prayer times are needed before tomorrow."
+    : "Prayer times run out in " + left + " day" + (left===1?"":"s") +
+      " (" + when + "). A new timetable is needed before then.";
+}
+
+/* Shown instead of a countdown once the timetable has actually run out.
+   The live broadcast keeps working — it does not depend on the timetable —
+   so the screen stays useful while it waits to be updated. */
+function renderNoTimetable(now){
+  document.body.classList.add('nodata');
+  document.querySelector('.hero').classList.add('nodata');
+  document.getElementById('hero-k').textContent = "Timetable";
+  document.getElementById('hero-name').textContent = "Prayer times need updating";
+  document.getElementById('hero-countdown').textContent = "";
+  document.getElementById('hero-at').innerHTML =
+    "This screen has no times for today. The timetable ran out on <b>" +
+    (LAST_DAY ? (Number(LAST_DAY.slice(8)) + " " + MON[Number(LAST_DAY.slice(5,7))-1] + " " + LAST_DAY.slice(0,4)) : "an earlier date") +
+    "</b>. Please let the masjid know \u2014 the adhan cannot sound until it is replaced.";
+  document.getElementById('jummah-line').textContent = "";
+  document.getElementById('expiry').hidden = true;
+}
+
+function clearNoTimetable(){
+  if(!document.body.classList.contains('nodata')) return;
+  document.body.classList.remove('nodata');
+  document.querySelector('.hero').classList.remove('nodata');
+  document.getElementById('hero-k').textContent = "Next jam\u0101'ah";
+}
+
 /* ---------------- render ---------------- */
 let lastOccasionKey = null;
 let occasionDismissed = false;
@@ -1307,11 +1413,17 @@ function tick(){
   renderClock(now);
   renderDateline(now, rec);
   if(rec){
+    clearNoTimetable();
     renderHero(rec, now, now);
     renderDay(rec, now, now);
     renderSky(rec, now, now);
     renderJummahBanner(now);
+    renderExpiryNotice(now);
     checkAudioTriggers(rec, now, now);
+  } else {
+    // Past the end of the timetable. Say so, rather than leaving the
+    // markup's placeholder dashes on a wall for weeks.
+    renderNoTimetable(now);
   }
   renderOccasion(now);
 }
@@ -1546,17 +1658,23 @@ document.addEventListener('visibilitychange', ()=>{
 });
 window.addEventListener('focus', tick);
 
-/* The MasjidOne mark falls back to a text wordmark if the logo file isn't
-   present, so the credit never renders as a broken image on a wall screen
-   and adding masjidone-logo.svg is the only step needed to show the real
-   mark. Both states are styled; neither affects layout. */
+/* The MasjidOne credit. BRAND_MARK is filled in by build.py and is null
+   whenever the logo file is not in the repo, so the page simply never
+   requests it — the earlier version asked unconditionally and fell back on
+   the error, which worked but logged a 404 on every load of every device
+   forever, and that noise is what hides a real error when one appears.
+   Dropping the real logo in at that path and rebuilding is still the only
+   step needed. The error handler stays for the case where the file exists
+   at build time but fails to load on the device. */
 (function brandMark(){
   const img = document.getElementById('brand-mark');
   const word = document.getElementById('brand-word');
   if(!img || !word) return;
   const useWordmark = ()=>{ img.hidden = true; word.hidden = false; };
-  if(img.complete && img.naturalWidth === 0) useWordmark();
+  if(!BRAND_MARK){ useWordmark(); return; }
   img.addEventListener('error', useWordmark, {once:true});
+  img.addEventListener('load', ()=>{ img.hidden = false; word.hidden = true; }, {once:true});
+  img.src = BRAND_MARK;
 })();
 
 /* ---------------- boot ---------------- */

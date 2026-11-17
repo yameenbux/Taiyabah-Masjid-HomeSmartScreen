@@ -105,6 +105,48 @@ What the shared language actually is, in the order it matters:
 - **Tokens that differ from the in-mosque set are bugs.** `--card` is `#FCFAF3` and `--line` is `#E4DECF`;
   the home screen carried older, warmer values (`#EDE1C8` / `#D8CAA5`) until this change.
 
+## Running out of timetable
+
+`data/timetable-2026.json` covers 2026 and nothing else, and the screen has
+no way to fetch more. This is the one failure in the project with a date
+attached, and it used to be silent: the day after the last entry, `tick()`
+simply skipped every render because `dayRec()` returned null, leaving the
+markup's placeholder dashes on the wall. No times, no explanation, a display
+that looked broken rather than out of date — which is the worst version,
+because nobody can tell whether the times are missing or merely wrong. The
+"timetable ends here" string that was supposed to cover this was unreachable:
+it lived in `renderHero()`, which is only called when a record exists.
+
+Now there are two states, and the quiet one matters more:
+
+- **From 45 days out**, a line above the footer counts down the days to the
+  last date and names it. Inside the last fortnight it turns amber and the
+  dot pulses. The point is that somebody acts *before* the cliff.
+- **Past the last date**, the countdown is replaced by a plain statement
+  naming the date the timetable ran out and saying the adhan cannot sound
+  until it is replaced. The live broadcast keeps working throughout, because
+  it does not depend on the timetable.
+
+The notice is sized *larger* than the small print around it, not smaller. At
+1.6vmin it fell to a 14px floor on a 720p TV, under the accessibility floor
+`test-layout.js` enforces — and too small for a warning nobody is looking
+for. The layout test caught that, which is the second time it has caught a
+regression in something I had just added.
+
+## Optional assets, and why the 404 mattered
+
+`masjidone-logo.svg` is not in the repo. The page used to request it anyway
+and fall back to a text wordmark on `error`, which worked — and logged a 404
+on every load of every device, forever. That noise is exactly what hides a
+real error when one appears, and `audit.js` was reporting it as a console
+error on every run.
+
+`build.py` now resolves it at build time through `OPTIONAL_ASSETS`: if the
+file is not in the repo, `__BRAND_MARK__` substitutes to `null` and the page
+never asks for it. Dropping the real logo in at that path and rebuilding is
+still the only step needed. The `error` handler stays, for the case where the
+file exists at build time but fails to load on the device.
+
 ## The live radio
 
 The screen carries the masjid's own live broadcast, and the point of it is to
