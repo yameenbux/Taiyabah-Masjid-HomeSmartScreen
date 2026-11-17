@@ -193,7 +193,7 @@ a:focus-visible,
 /* ---- chrome: logo left, clock right, nothing in between ---- */
 .chrome{flex:0 0 auto;display:flex;align-items:flex-start;justify-content:space-between;
   gap:clamp(12px,2vw,36px)}
-.chrome-left{display:flex;align-items:center;gap:clamp(12px,1.8vw,26px);min-width:0;flex-wrap:wrap}
+.chrome-left{display:flex;align-items:center;gap:clamp(18px,3.4vw,68px);min-width:0;flex-wrap:wrap}
 /* The masjid's own mark, and the only branding on the screen — sized as a
    proportion of the display rather than as a web-page logo. The lockup
    carries the calligraphy over a small "TAIYABAH / MASJID" wordmark, and it
@@ -202,12 +202,12 @@ a:focus-visible,
    and the wordmark lands around 30px. The source is 780x552, so even the
    240px ceiling on a 4K panel is still under native width and stays sharp. */
 .brandmark{height:clamp(52px,13vmin,240px);width:auto;display:block;flex:0 0 auto}
-.soundpill{display:flex;align-items:center;gap:11px;background:rgba(198,162,76,.18);
+.soundpill{display:flex;align-items:center;gap:9px;background:rgba(198,162,76,.18);
   border:1px solid rgba(198,162,76,.55);color:var(--on-1);border-radius:99px;
-  padding:clamp(11px,1.5vmin,19px) clamp(18px,2.4vmin,32px);
-  font-size:clamp(15px,1.75vmin,26px);font-weight:600;cursor:pointer;white-space:nowrap;
+  padding:clamp(9px,1.05vmin,15px) clamp(14px,1.75vmin,24px);
+  font-size:clamp(15px,1.5vmin,21px);font-weight:600;cursor:pointer;white-space:nowrap;
   min-height:44px}
-.soundpill .dot{width:12px;height:12px;flex:0 0 auto;border-radius:50%;background:var(--gold-bright);
+.soundpill .dot{width:10px;height:10px; flex:0 0 auto;border-radius:50%;background:var(--gold-bright);
   animation:pulseDot 1.6s ease-in-out infinite}
 .soundpill.on{background:rgba(247,243,234,.08);border-color:rgba(201,178,194,.3);color:var(--on-2);cursor:default}
 .soundpill.on .dot{background:#7FC08F;animation:none}
