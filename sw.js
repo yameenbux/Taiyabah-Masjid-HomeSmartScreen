@@ -55,6 +55,12 @@ self.addEventListener("activate", (e) => {
 
 self.addEventListener("fetch", (e) => {
   const url = new URL(e.request.url);
+  /* The live broadcast is an endless response. Never put it through the
+     cache logic below: caches.match on a stream is pointless, and routing
+     an infinite body through a service worker is a known way to have it
+     buffer or stall on some browsers. Let it go straight to the network.
+     Same for anything cross-origin — none of it is ours to cache. */
+  if (url.origin !== self.location.origin) return;
   const isHTML = e.request.mode === "navigate" || url.pathname.endsWith("index.html");
   if (isHTML) {
     e.respondWith(

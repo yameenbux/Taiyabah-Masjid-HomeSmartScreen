@@ -22,6 +22,7 @@ SOURCES = {
     "__TIMETABLE_JSON__": "data/timetable-2026.json",
     "__NEWBUILD_JSON__": "data/newbuild.json",
     "__OCCASIONS_JSON__": "data/occasions.json",
+    "__STREAM_JSON__": "data/stream.json",
 }
 
 

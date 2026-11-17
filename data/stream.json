@@ -1,0 +1,6 @@
+{
+  "enabled": true,
+  "name": "Taiyabah Masjid",
+  "url": "https://taiyabahmbolton.radioca.st/stream.mp3",
+  "note": "Shoutcast, 128kbps MP3. IMPORTANT: this is the /stream.mp3 endpoint, not the bare host the website links to. The bare host returns audio/mpeg but browsers reject it with a format error, so it plays in a desktop media player and fails silently in the app. Verified playing at ~1.2s to first audio."
+}

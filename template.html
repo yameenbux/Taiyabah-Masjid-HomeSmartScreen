@@ -212,6 +212,26 @@ a:focus-visible,
 .soundpill.on{background:rgba(247,243,234,.08);border-color:rgba(201,178,194,.3);color:var(--on-2);cursor:default}
 .soundpill.on .dot{background:#7FC08F;animation:none}
 @keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.28}}
+/* ---- the live radio ---- */
+/* This screen replaces the FM receiver that sits in people's kitchens, so
+   the two things a radio must always answer are answered visually: is it
+   on, and is it working. The meter is the important half — a masjid mic is
+   near-silent most of the day, and without a moving level a working stream
+   and a dead one look exactly the same. */
+.meter{display:flex;align-items:flex-end;gap:clamp(2px,.25vmin,4px);
+  height:clamp(16px,2.1vmin,32px);flex:0 0 auto}
+.meter i{display:block;width:clamp(3px,.36vmin,6px);height:22%;border-radius:2px;
+  background:var(--gold-bright);opacity:.85;transition:height .12s linear}
+.meter.quiet i{background:var(--on-3);opacity:.6}
+.meter.down i{background:var(--danger);opacity:.75;height:22%!important;transition:none}
+.radio-vol{appearance:none;-webkit-appearance:none;background:none;cursor:pointer;
+  width:clamp(64px,7vw,130px);height:28px;flex:0 0 auto}
+.radio-vol::-webkit-slider-runnable-track{height:3px;border-radius:99px;background:rgba(201,178,194,.35)}
+.radio-vol::-moz-range-track{height:3px;border-radius:99px;background:rgba(201,178,194,.35)}
+.radio-vol::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;
+  background:var(--gold-bright);margin-top:-6px;border:none}
+.radio-vol::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--gold-bright);border:none}
+@media (max-width:700px){ .radio-vol{display:none} }
 @media (max-width:700px){ #sound-pill-label{display:none} .soundpill{padding:12px} }
 
 .clockblock{text-align:right;flex:1 1 auto;min-width:0}
@@ -451,8 +471,11 @@ a:focus-visible,
     <div class="chrome-left">
       <img class="brandmark" src="logo-cream.png" alt="Taiyabah Masjid">
       <button class="soundpill" id="sound-pill" type="button" hidden aria-label="Enable Adhan and Iqamah sound">
-        <span class="dot"></span><span id="sound-pill-label">Enable Adhan &amp; Iqamah sound</span>
+        <span class="dot"></span><span id="sound-pill-label">Listen live</span>
       </button>
+      <div class="meter" id="meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <input class="radio-vol" id="radio-vol" type="range" min="0" max="100" value="85"
+             aria-label="Live volume" title="Live volume">
     </div>
     <div class="clockblock">
       <div class="clock tnum"><span class="hm" id="clock-hm">--:--</span><span class="ss" id="clock-ss">--</span></div>
@@ -558,6 +581,11 @@ a:focus-visible,
      what stops a backgrounded tablet from suspending our timers and missing
      an Adhan. See "Keeping the audio alive" in the README. -->
 <audio id="audio-keepalive" src="data:audio/wav;base64,UklGRmQfAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAfAAABAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQD//w==" loop preload="auto" playsinline></audio>
+<!-- The masjid's own live broadcast. crossorigin is not optional: without
+     it the analyser that drives the level meter reads pure silence, because
+     the stream is a different origin. preload="none" so a screen that is
+     never switched on never opens the connection. -->
+<audio id="audio-live" crossorigin="anonymous" preload="none" playsinline></audio>
 <audio id="audio-adhan" src="audio/adhan-full.mp3" preload="auto"></audio>
 <audio id="audio-iqamah" src="audio/iqamah-short.mp3" preload="auto"></audio>
 
@@ -565,6 +593,7 @@ a:focus-visible,
 const DATA = __TIMETABLE_JSON__;
 const NEWBUILD = __NEWBUILD_JSON__;
 const OCCASIONS = __OCCASIONS_JSON__;
+const STREAM = __STREAM_JSON__;
 
 const PRAYERS = [
   {key:"fajr",    en:"Fajr",    ar:"الفجر"},
@@ -790,6 +819,192 @@ function setUpMediaSession(){
   }catch(e){ /* older WebView without MediaMetadata — nothing to do */ }
 }
 
+/* ====================================================================
+   THE LIVE RADIO
+   --------------------------------------------------------------------
+   This screen is meant to replace the FM receiver sitting in people's
+   kitchens, which sets the bar: an FM radio has no buffer, no server and
+   no Wi-Fi, so it never drops, never silently dies, and never needs
+   restarting. Matching that is the whole job here, and it is not the
+   playback — playback is one line — it is staying up for months.
+
+   Three failure modes a plain <audio src=stream> will not survive:
+     1. the network blips and the element fires 'error' or 'ended' once,
+        then sits there paused forever;
+     2. the element reports playing while currentTime is frozen, which is
+        what a half-open socket looks like and which no event announces;
+     3. the device sleeps and wakes with a dead connection.
+   So: every end state reconnects with backoff, and a watchdog on the tick
+   compares currentTime against the last tick and reconnects if the clock
+   stops moving. Retrying never stops — a radio does not give up — the
+   backoff just caps at 30s so a masjid that is off-air overnight is not
+   hammered.
+
+   It is opt-in, once, and then remembered forever. A screen on a kitchen
+   worktop should not start broadcasting the moment it is plugged in, and
+   one tap at setup is exactly what switching a radio on has always been.
+   ==================================================================== */
+const LIVE_KEY = 'taiyabah.live.on';
+const LIVE_VOL_KEY = 'taiyabah.live.vol';
+const audioLive = document.getElementById('audio-live');
+const meterEl = document.getElementById('meter');
+const volEl = document.getElementById('radio-vol');
+
+const LIVE = {
+  wanted: false,          // has anyone switched the radio on
+  state: 'off',           // off | connecting | live | retrying | failed
+  attempts: 0,
+  lastTime: -1,
+  frozenTicks: 0,
+  timer: null,
+  ctx: null, analyser: null, buf: null, level: 0, quietFor: 0,
+};
+try { LIVE.wanted = localStorage.getItem(LIVE_KEY) === '1'; } catch(e){}
+try {
+  const v = parseInt(localStorage.getItem(LIVE_VOL_KEY), 10);
+  if(!isNaN(v)) volEl.value = v;
+} catch(e){}
+audioLive.volume = (parseInt(volEl.value,10) || 85) / 100;
+
+function liveConfigured(){ return !!(STREAM && STREAM.enabled && STREAM.url); }
+function liveAudible(){
+  return LIVE.state === 'live' && !audioLive.muted && audioLive.volume > 0.01;
+}
+
+function liveConnect(){
+  if(!liveConfigured() || !LIVE.wanted) return;
+  clearTimeout(LIVE.timer);
+  LIVE.state = LIVE.attempts ? 'retrying' : 'connecting';
+  LIVE.frozenTicks = 0; LIVE.lastTime = -1;
+  /* A fresh query string on every attempt. Without it a reconnect can be
+     served the same dead buffered response from an intermediate cache and
+     reconnect "successfully" to nothing. */
+  audioLive.src = STREAM.url + (STREAM.url.includes('?') ? '&' : '?') + 'r=' + Date.now();
+  audioLive.load();
+  audioLive.play().catch(()=>{ /* the retry path owns this */ });
+  updateSoundPill();
+}
+
+function liveRetry(reason){
+  if(!LIVE.wanted) return;
+  LIVE.attempts++;
+  const wait = Math.min(30000, 1000 * Math.pow(2, Math.min(LIVE.attempts - 1, 5)));
+  LIVE.state = LIVE.attempts >= 4 ? 'failed' : 'retrying';
+  console.info('[taiyabah] live stream ' + reason + ' — reconnecting in ' +
+    (wait/1000) + 's (attempt ' + LIVE.attempts + ')');
+  clearTimeout(LIVE.timer);
+  LIVE.timer = setTimeout(liveConnect, wait);
+  updateSoundPill();
+}
+
+function liveStop(){
+  LIVE.wanted = false; LIVE.state = 'off';
+  clearTimeout(LIVE.timer);
+  try { audioLive.pause(); audioLive.removeAttribute('src'); audioLive.load(); } catch(e){}
+  try { localStorage.setItem(LIVE_KEY, '0'); } catch(e){}
+  updateSoundPill();
+}
+
+function liveStart(){
+  LIVE.wanted = true; LIVE.attempts = 0;
+  try { localStorage.setItem(LIVE_KEY, '1'); } catch(e){}
+  liveSetUpAnalyser();
+  liveConnect();
+}
+
+/* The level meter. The analyser needs an AudioContext, which needs a user
+   gesture on most platforms, so it is built on the same tap that starts
+   the radio. If it cannot be built the meter still animates from the
+   element's own state rather than sitting dead. */
+function liveSetUpAnalyser(){
+  if(LIVE.analyser || !window.AudioContext) return;
+  try {
+    LIVE.ctx = new AudioContext();
+    const src = LIVE.ctx.createMediaElementSource(audioLive);
+    LIVE.analyser = LIVE.ctx.createAnalyser();
+    LIVE.analyser.fftSize = 1024;
+    LIVE.buf = new Uint8Array(LIVE.analyser.fftSize);
+    src.connect(LIVE.analyser);
+    LIVE.analyser.connect(LIVE.ctx.destination);
+  } catch(e){
+    console.info('[taiyabah] level meter unavailable: ' + e.message);
+    LIVE.analyser = null;
+  }
+  if(LIVE.ctx && LIVE.ctx.state === 'suspended') LIVE.ctx.resume().catch(()=>{});
+}
+
+audioLive.addEventListener('playing', ()=>{
+  LIVE.attempts = 0; LIVE.state = 'live'; LIVE.frozenTicks = 0;
+  if(LIVE.ctx && LIVE.ctx.state === 'suspended') LIVE.ctx.resume().catch(()=>{});
+  updateSoundPill();
+});
+audioLive.addEventListener('error',   ()=> liveRetry('errored'));
+audioLive.addEventListener('ended',   ()=> liveRetry('ended'));
+audioLive.addEventListener('stalled', ()=> liveRetry('stalled'));
+/* 'waiting' is ordinary rebuffering, not a failure — show it, do not reconnect. */
+audioLive.addEventListener('waiting', ()=>{
+  if(LIVE.state === 'live'){ LIVE.state = 'connecting'; updateSoundPill(); }
+});
+
+volEl.addEventListener('input', ()=>{
+  const v = parseInt(volEl.value, 10) || 0;
+  audioLive.volume = v / 100;
+  try { localStorage.setItem(LIVE_VOL_KEY, String(v)); } catch(e){}
+});
+
+/* Called once a second from tick(). Catches the failure no event reports:
+   the element claims to be playing while its clock has stopped. */
+function liveWatchdog(){
+  if(!LIVE.wanted || LIVE.state === 'off') return;
+  if(LIVE.state === 'live'){
+    const t = audioLive.currentTime;
+    if(t === LIVE.lastTime){
+      if(++LIVE.frozenTicks >= 6) liveRetry('stalled silently (clock frozen)');
+    } else {
+      LIVE.frozenTicks = 0;
+    }
+    LIVE.lastTime = t;
+  }
+}
+
+/* Drives the bars. Deliberately not requestAnimationFrame: this runs for
+   months on a Fire Stick, and 10fps of seven bars is invisible on a CPU
+   graph where rAF is not. */
+function liveMeterTick(){
+  if(!meterEl) return;
+  const bars = meterEl.children;
+  if(LIVE.state === 'failed' || LIVE.state === 'off'){
+    meterEl.className = LIVE.state === 'failed' ? 'meter down' : 'meter';
+    if(LIVE.state === 'off') for(const b of bars) b.style.height = '8%';
+    return;
+  }
+  let rms = 0;
+  if(LIVE.analyser && LIVE.state === 'live'){
+    LIVE.analyser.getByteTimeDomainData(LIVE.buf);
+    let sum = 0;
+    for(let i=0;i<LIVE.buf.length;i++){ const d = (LIVE.buf[i]-128)/128; sum += d*d; }
+    rms = Math.sqrt(sum / LIVE.buf.length);
+  }
+  LIVE.level = LIVE.level * 0.6 + rms * 0.4;
+  /* A masjid between prayers sits around 0.006 RMS — real room tone, not
+     silence. Scaled so that reads as a visible flicker rather than nothing,
+     because "connected but quiet" must never look like "broken". */
+  const norm = Math.min(1, LIVE.level * 14);
+  meterEl.className = 'meter' + (LIVE.state === 'live' && norm < 0.12 ? ' quiet' : '');
+  for(let i=0;i<bars.length;i++){
+    const centre = 1 - Math.abs(i - (bars.length-1)/2) / bars.length;
+    /* The floor is 22%, not zero. A masjid between prayers really is near
+       silent, and bars collapsed to a hairline look exactly like a dead
+       stream — which is the one thing this meter exists to rule out. The
+       quiet state is a low, visible shimmer; the adhan takes it to full. */
+    const h = LIVE.state === 'live'
+      ? 22 + norm * 78 * (0.55 + centre * 0.65) * (0.75 + Math.random()*0.5)
+      : 22 + ((Date.now()/220 + i) % 2) * 16;   // connecting: a slow travelling blip
+    bars[i].style.height = Math.max(22, Math.min(100, h)) + '%';
+  }
+}
+setInterval(liveMeterTick, 100);
+
 function unlockSound(playConfirm){
   soundUnlocked = true;
   try { localStorage.setItem(SOUND_KEY, '1'); } catch(e){}
@@ -817,9 +1032,11 @@ function unlockSound(playConfirm){
 }
 function updateSoundPill(){
   soundPill.hidden = false;
+  if(meterEl) meterEl.hidden = !(soundUnlocked && LIVE.wanted);
+  if(volEl) volEl.hidden = !(soundUnlocked && LIVE.wanted && liveConfigured());
   if(!soundUnlocked){
     soundPill.classList.remove('on');
-    soundPillLabel.textContent = "Enable Adhan & Iqamah sound";
+    soundPillLabel.textContent = liveConfigured() ? "Listen live" : "Enable Adhan & Iqamah sound";
     return;
   }
   if(keepAliveStalled()){
@@ -829,10 +1046,33 @@ function updateSoundPill(){
     soundPillLabel.textContent = "Sound paused · tap to resume";
     return;
   }
+  if(LIVE.wanted){
+    // The radio states, said plainly. "failed" in particular has to admit
+    // what it means for the thing people rely on, which is why it names the
+    // adhan: the recording still fires even with the masjid off-air.
+    if(LIVE.state === 'live'){
+      soundPill.classList.add('on');
+      soundPillLabel.textContent = (STREAM.name || "Masjid") + " · live";
+      return;
+    }
+    soundPill.classList.remove('on');
+    soundPillLabel.textContent =
+      LIVE.state === 'failed' ? "Masjid off-air · adhan will still play"
+      : LIVE.state === 'retrying' ? "Reconnecting\u2026"
+      : "Connecting\u2026";
+    return;
+  }
   soundPill.classList.add('on');
-  soundPillLabel.textContent = "Sound on · tap to test";
+  soundPillLabel.textContent = liveConfigured() ? "Tap to listen live" : "Sound on · tap to test";
 }
-soundPill.addEventListener('click', ()=>unlockSound(true));
+soundPill.addEventListener('click', ()=>{
+  const first = !soundUnlocked;
+  unlockSound(!liveConfigured() && !first);
+  if(!liveConfigured()) return;
+  // One tap switches the radio on, and it stays on across restarts. A
+  // second tap switches it off, the way a radio has always worked.
+  if(LIVE.wanted && !first) liveStop(); else liveStart();
+});
 
 function buildTriggersForDay(rec, baseDate){
   const isFriday = baseDate.getDay()===5 && !!rec.jummah;
@@ -872,6 +1112,16 @@ function checkAudioTriggers(rec, baseDate, now){
     if(firedTriggers.has(t.id)) continue;
     const diff = now - t.at;
     if(diff >= 0 && diff < CATCHUP_WINDOW_MS){
+      /* If the masjid's own broadcast is playing, the real adhan is about
+         to come through it from the real muadhin. Playing the recording on
+         top would be two adhans at once, which is worse than either. The
+         recording is the fallback for exactly the case where live is not
+         carrying it: switched off, still connecting, or off-air. */
+      if(t.kind==="adhan" && liveAudible()){
+        firedTriggers.add(t.id);
+        console.info('[taiyabah] adhan is coming through the live stream — recording suppressed');
+        continue;
+      }
       const player = t.kind==="adhan" ? audioAdhan : audioIqamah;
       player.currentTime = 0;
       player.play().then(()=>{ firedTriggers.add(t.id); }).catch(()=>{ /* retry next tick */ });
@@ -1050,6 +1300,7 @@ function tick(){
     if(audioKeepAlive.paused){ keepAliveMissedTicks++; startKeepAlive(); }
     else if(keepAliveMissedTicks !== 0){ keepAliveMissedTicks = 0; }
   }
+  liveWatchdog();
   updateSoundPill();
 
   const rec = dayRec(now);
@@ -1283,6 +1534,14 @@ document.addEventListener('visibilitychange', ()=>{
   if(document.visibilityState === 'visible'){
     requestWakeLock();
     tick(); // re-check immediately on resume, don't wait up to 1s for the next interval
+    /* A device that slept comes back holding a socket the other end closed
+       hours ago. It reports no error and fires no event — it simply never
+       produces another sample — so the stream is rebuilt on every wake
+       rather than waiting for the watchdog to notice six seconds later. */
+    if(LIVE.wanted && LIVE.state !== 'off'){
+      LIVE.attempts = 0;
+      liveConnect();
+    }
   }
 });
 window.addEventListener('focus', tick);

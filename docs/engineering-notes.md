@@ -105,6 +105,83 @@ What the shared language actually is, in the order it matters:
 - **Tokens that differ from the in-mosque set are bugs.** `--card` is `#FCFAF3` and `--line` is `#E4DECF`;
   the home screen carried older, warmer values (`#EDE1C8` / `#D8CAA5`) until this change.
 
+## The live radio
+
+The screen carries the masjid's own live broadcast, and the point of it is to
+replace the FM receiver sitting on people's kitchen worktops. That framing
+sets the engineering bar. An FM radio has no buffer, no server and no Wi-Fi:
+it never drops, never silently dies, never needs restarting. The hard part
+here is not playback — playback is one `<audio src>` — it is staying up for
+months and recovering on its own when it doesn't.
+
+Config lives in `data/stream.json` and is substituted at build time, so every
+MasjidOne masjid gets this with its own URL and nothing is hardcoded.
+
+**Two things that will waste an afternoon if you don't know them:**
+
+- **The URL must be the `/stream.mp3` endpoint.** The bare host —
+  `https://taiyabahmbolton.radioca.st/`, which is what the masjid's own
+  website links — returns `Content-Type: audio/mpeg` and plays perfectly in a
+  desktop media player, but browsers reject it with
+  `NotSupportedError: no supported source was found`. It fails *silently* in
+  the app. (Their website has the same bug for anyone clicking "Listen Live"
+  in a browser.)
+- **`crossorigin="anonymous"` on the audio element is not optional.** Without
+  it the AnalyserNode that drives the level meter reads pure silence, because
+  the stream is a different origin. The stream sends
+  `Access-Control-Allow-Origin: *`, so it works — but only if asked for.
+
+**Three failure modes a plain `<audio src=stream>` will not survive**, all of
+which are handled in the `LIVE` module:
+
+1. The network blips, the element fires `error` or `ended` once, and then
+   sits there paused forever. Every end state schedules a reconnect.
+2. The element reports `playing` while `currentTime` is frozen — what a
+   half-open socket looks like, and which **no event announces**. The
+   watchdog on the one-second tick compares `currentTime` against the last
+   tick and reconnects after six still ticks.
+3. The device sleeps and wakes holding a socket the far end closed hours ago.
+   The stream is rebuilt on every `visibilitychange` to visible rather than
+   waiting for the watchdog.
+
+Backoff is 1/2/4/8/16/30s and **retrying never stops** — a radio does not give
+up — the cap just means a masjid that is off-air overnight is not hammered.
+Every reconnect appends a fresh query string: without it a reconnect can be
+served the same dead buffered response and "succeed" into nothing.
+
+**The meter is not decoration.** A masjid between prayers sits around 0.006
+RMS — real room tone, not silence — and without a moving level a working
+stream and a dead one look identical. Bars have a 22% floor for the same
+reason: collapsed to a hairline, "quiet" reads as "broken". `quiet` and
+`down` are distinct states with distinct colours.
+
+**The recorded adhan is still the safety net and must stay that way.** If the
+live stream is audible at a trigger, the recording is suppressed — the real
+muadhin is about to be heard, and two adhans at once is worse than either.
+Every other case (switched off, still connecting, off-air) plays the
+recording. The off-air label says so explicitly, because a congregation
+relying on this needs to know the adhan is still coming.
+
+It is **opt-in once, then remembered forever** (`taiyabah.live.on`). A screen
+on a kitchen worktop should not start broadcasting the moment it is plugged
+in, and one tap at setup is what switching on a radio has always been. This
+also keeps the audio tests deterministic — a fresh profile has the radio off,
+so the recorded-adhan path is what they exercise.
+
+The service worker **bypasses anything cross-origin**, the stream included.
+Routing an endless body through a service worker is a known way to have it
+buffer or stall.
+
+### Cost, which is the thing that actually bites
+
+At 128 kbps a listener costs about **56 MB/hour**, and a radio is on all day.
+One household running it twelve hours is ~670 MB/day; a hundred households is
+~67 GB/day and, more importantly, **a hundred permanently concurrent
+listeners**. Hosted Shoutcast plans are priced per listener slot, so check the
+plan's cap before this is advertised to the congregation. If it needs to
+scale, a lower bitrate for the always-on feed (48–64 kbps mono is ample for
+speech) cuts both numbers by half or better.
+
 ## Horizon: the layout, and the sizes that are not decoration
 
 The home screen is a photograph of the sky with the content standing in the
