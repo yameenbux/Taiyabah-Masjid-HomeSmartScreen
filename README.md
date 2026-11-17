@@ -16,7 +16,11 @@ mosque's own wall screens, and it needs no attention once it's set up.
 
 - **A countdown to the next Jamā'ah** as the subject of the screen, sized to be read across a room
 - **The masjid live** — carries the masjid's own broadcast, with a level meter so a quiet hall reads as
-  live rather than broken, and automatic reconnection if the stream drops
+  live rather than broken, and automatic reconnection if the stream drops. It **tunes in by itself a few
+  minutes before each adhan** and leaves after the jamā'ah, so the adhan you hear is the masjid's own
+  muadhin and the salah is live — without streaming around the clock
+- **A donation QR** on screen, so the phone in the room can give even though the screen can't take a
+  payment
 - **Today's six times** — start and Jamā'ah times, with the current prayer marked
 - **A sky that follows the day** — four photographs cross-fading from the masjid's own sunrise and
   prayer times, so the screen is at dusk in November and in daylight in June at the same hour
@@ -189,12 +193,14 @@ test-scripts/          ← Playwright test suite
 
 ## Known open items
 
-1. **`data/timetable-2026.json` runs out on 31 December 2026 and a 2027 file is needed.** The screen no
-   longer fails silently at that point: from 45 days out it shows a countdown of days remaining (turning
-   amber inside the last fortnight), and past the final date it replaces the countdown with a plain
-   explanation naming the date the timetable ran out. The live broadcast keeps working either way, since
-   it does not depend on the timetable — but **the Adhan cannot sound without prayer times**, so this is
-   the one item with a deadline.
+1. **Prayer times now run to 31 December 2027** (2026 and 2027 are merged at build time; add a year by
+   adding a file to `TIMETABLES` in `build.py`). The screen also no longer fails silently when they do
+   run out: from 45 days out it counts down the days remaining, turning amber inside the last fortnight,
+   and past the final date it replaces the countdown with a plain explanation naming the date. The live
+   broadcast keeps working either way, since it does not depend on the timetable.
+2. **The donation QR points at the shop page.** A Stripe Payment Link would convert better — fewer steps
+   and it brings Apple/Google Pay — and it is also a shorter URL, which makes the QR itself easier to
+   scan. Change `give.qrUrl` in `data/newbuild.json`, run `tools/make-qr.py`, rebuild.
 2. Custom domain (`home.taiyabahmasjid.com` or similar) — fixes the assetlinks.json root-domain problem
    properly and gives a nicer URL.
 3. Finish the Android TV package — needs a desktop with Android Studio (signing, plus the leanback

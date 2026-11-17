@@ -13,13 +13,25 @@ and no data, so catch it here rather than on a live tablet.
     python3 build.py
 """
 
+import datetime
 import json
 import pathlib
 
 ROOT = pathlib.Path(__file__).parent
 
+# Prayer times are split one file per year and merged into a single blob at
+# build time, so adding a year is adding a file to this list and nothing
+# else. The merge is checked: overlapping dates mean a file was listed twice
+# or a year was duplicated, and a gap means a day on which the screen would
+# show "prayer times need updating" in the middle of an otherwise fine run —
+# which is the silent failure the expiry handling exists to prevent, so it
+# fails the build rather than reaching a wall.
+TIMETABLES = [
+    "data/timetable-2026.json",
+    "data/timetable-2027.json",
+]
+
 SOURCES = {
-    "__TIMETABLE_JSON__": "data/timetable-2026.json",
     "__NEWBUILD_JSON__": "data/newbuild.json",
     "__OCCASIONS_JSON__": "data/occasions.json",
     "__STREAM_JSON__": "data/stream.json",
@@ -36,8 +48,78 @@ OPTIONAL_ASSETS = {
 }
 
 
+def load_timetable():
+    """Merge every year in TIMETABLES into one {"days": {...}} blob."""
+    days = {}
+    for relpath in TIMETABLES:
+        blob = json.loads((ROOT / relpath).read_text(encoding="utf-8"))
+        year = blob.get("days", blob)
+        clash = sorted(set(year) & set(days))
+        assert not clash, "%s repeats dates already loaded: %s" % (
+            relpath, ", ".join(clash[:3]))
+        days.update(year)
+
+    keys = sorted(days)
+    assert keys, "no prayer times loaded at all"
+    first = datetime.date.fromisoformat(keys[0])
+    last = datetime.date.fromisoformat(keys[-1])
+    expected = (last - first).days + 1
+    if len(keys) != expected:
+        have = set(keys)
+        missing = [
+            (first + datetime.timedelta(days=i)).isoformat()
+            for i in range(expected)
+            if (first + datetime.timedelta(days=i)).isoformat() not in have
+        ]
+        raise AssertionError(
+            "the timetable has %d gap(s) between %s and %s, starting at %s — "
+            "a missing day leaves the screen with no prayer times on that date"
+            % (len(missing), keys[0], keys[-1], missing[0]))
+
+    print("timetable: %d days, %s -> %s" % (len(keys), keys[0], keys[-1]))
+    return {"days": days}
+
+
+def donation_qr():
+    """Inline the donation QR, after checking it still encodes the right URL.
+
+    Nobody proof-reads a QR code by eye, so a changed donation link with a
+    stale QR beside it would send every scan to the wrong place and look
+    completely fine on screen. tools/make-qr.py records the URL it encoded
+    next to the image; if that disagrees with the data, the build stops.
+    """
+    svg = ROOT / "donate-qr.svg"
+    stamp = ROOT / "donate-qr.url"
+    give = json.loads((ROOT / "data" / "newbuild.json").read_text(encoding="utf-8"))["give"]
+    wanted = give.get("qrUrl") or give["otherAmountUrl"]
+
+    if not give.get("qrEnabled", True):
+        return ""
+    if not svg.exists() or not stamp.exists():
+        print("note: no donation QR (run tools/make-qr.py) — the block is omitted")
+        return ""
+
+    encoded = stamp.read_text(encoding="utf-8").strip()
+    assert encoded == wanted, (
+        "the donation QR encodes %s but data/newbuild.json now says %s — "
+        "run tools/make-qr.py" % (encoded, wanted))
+
+    markup = svg.read_text(encoding="utf-8")
+    # Strip the XML prolog so it can be inlined straight into the page.
+    if markup.lstrip().startswith("<?xml"):
+        markup = markup.split("?>", 1)[1]
+    return markup.strip()
+
+
 def main():
     out = (ROOT / "template.html").read_text(encoding="utf-8")
+
+    out = out.replace("__DONATE_QR_SVG__", donation_qr())
+
+    out = out.replace(
+        "__TIMETABLE_JSON__",
+        json.dumps(load_timetable(), separators=(",", ":"), ensure_ascii=False),
+    )
 
     for placeholder, relpath in SOURCES.items():
         blob = json.loads((ROOT / relpath).read_text(encoding="utf-8"))
@@ -53,6 +135,8 @@ def main():
             print("note: %s is not in the repo — the page will use its text "
                   "fallback and will not request it" % relpath)
 
+    assert "__TIMETABLE_JSON__" not in out, "__TIMETABLE_JSON__ was not substituted"
+    assert "__DONATE_QR_SVG__" not in out, "__DONATE_QR_SVG__ was not substituted"
     for placeholder in list(SOURCES) + list(OPTIONAL_ASSETS):
         assert placeholder not in out, "%s was not substituted" % placeholder
 

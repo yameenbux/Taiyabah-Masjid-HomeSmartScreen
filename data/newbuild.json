@@ -51,6 +51,10 @@
       "sortCode": "40-04-15",
       "accountNumber": "02320258"
     },
-    "note": "Bolton Central Islamic Society · Registered charity 1041569."
+    "note": "Bolton Central Islamic Society · Registered charity 1041569.",
+    "qrUrl": "https://www.taiyabahmasjid.com/product/dome-donation/",
+    "qrLabel": "Scan to give",
+    "qrEnabled": true,
+    "qrNote": "qrUrl is what the on-screen QR encodes. Point it at a Stripe Payment Link when one exists — fewer steps than the shop page and it brings Apple/Google Pay, which is most of the conversion win on a phone. After changing it run tools/make-qr.py; build.py fails if the QR and this URL disagree."
   }
 }

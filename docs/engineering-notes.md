@@ -105,6 +105,78 @@ What the shared language actually is, in the order it matters:
 - **Tokens that differ from the in-mosque set are bugs.** `--card` is `#FCFAF3` and `--line` is `#E4DECF`;
   the home screen carried older, warmer values (`#EDE1C8` / `#D8CAA5`) until this change.
 
+## The donation QR
+
+A screen on a shelf cannot take a payment; the phone in the room can. The QR
+is the whole bridge, which makes it the one element on this page where
+getting the size wrong is worse than leaving it out — a code nobody can scan
+still *looks* like a working donation path.
+
+`tools/make-qr.py` regenerates it from `give.qrUrl` in `data/newbuild.json`
+and writes the URL it encoded beside the image. **`build.py` fails if those
+disagree**, because nobody proof-reads a QR by eye: a changed link with a
+stale code beside it would send every scan to the wrong place and look
+completely fine on screen. segno is a build-time tool only and deliberately
+not a dependency of `build.py`, which stays standard-library.
+
+Three things decide whether it scans, and only one of them is the block size:
+
+- **Module count.** Error correction **L, not M** — M buys ~15% damage
+  tolerance, which is worth having on a printed poster that gets scuffed and
+  worth nothing on a clean pixel render. It costs modules: this URL is 33x33
+  at M and 29x29 at L. Bigger squares, same box.
+- **URL length.** 53 chars is 29x29; a ~24-character short link is 25x25,
+  which is about a third larger per module. This is the biggest lever
+  available and it costs nothing. A Stripe Payment Link is also shorter than
+  the current shop URL.
+- **Physical size, which CSS cannot see.** 11.5vmin is ~124px, which is about
+  6.5cm on a 43" TV and barely over a centimetre on a high-DPI 10" tablet.
+  There is no CSS unit that fixes this, so the QR is hidden below 860px wide
+  — on a phone there is nothing to scan it with but the phone itself.
+
+It is anchored to the middle of the right-hand side, not the bottom. Pinned
+to the bottom it landed on top of the Isha column, because the times strip
+runs the full width while the hero does not.
+
+One trap worth knowing: segno writes `width`/`height` and **no `viewBox`**, so
+CSS stretches the element without scaling the artwork and the code renders a
+few pixels wide in the corner of its box. `tools/make-qr.py` adds the
+viewBox.
+
+## Tuning in by itself for the adhan
+
+The radio being "off" used to mean the adhan fell back to the recording and
+the live salah was not heard at all — the wrong default for a screen meant to
+replace a radio, since the reason to carry the masjid's feed is to hear the
+masjid's own muadhin.
+
+`autoTune` (on by default, in `data/stream.json`) opens the stream a few
+minutes before each adhan and closes it after the jamā'ah, whether or not
+anyone switched the radio on. The lead matters: it is ~1.2s to first audio
+and a few seconds more to be sure it is really playing, so opening three
+minutes early means the stream is already live when the adhan is due and the
+recording stands down cleanly instead of racing it.
+
+`autoTuned` tracks *why* the stream is up. A window only ever closes a
+connection it opened — someone who switched the radio on by hand keeps it on,
+prayer window or not — and the pill says "live for salah" rather than "live"
+so the state is legible.
+
+This also answers the bandwidth problem from the live-radio section: prayer
+windows are roughly 40 minutes five times a day rather than 24 hours, which
+is about a tenth of the listener-hours of leaving it on.
+
+## Prayer times are one file per year
+
+`TIMETABLES` in `build.py` lists the year files and they are merged into one
+blob at build time, so adding a year is adding a file to that list and
+nothing else. The merge is checked both ways: **overlapping dates** mean a
+file was listed twice, and **a gap** means a day on which the screen would
+show "prayer times need updating" in the middle of an otherwise fine run —
+the exact silent failure the expiry handling exists to prevent. Either fails
+the build rather than reaching a wall. Currently 730 days, 2026-01-01 to
+2027-12-31.
+
 ## Running out of timetable
 
 `data/timetable-2026.json` covers 2026 and nothing else, and the screen has

@@ -2,5 +2,10 @@
   "enabled": true,
   "name": "Taiyabah Masjid",
   "url": "https://taiyabahmbolton.radioca.st/stream.mp3",
-  "note": "Shoutcast, 128kbps MP3. IMPORTANT: this is the /stream.mp3 endpoint, not the bare host the website links to. The bare host returns audio/mpeg but browsers reject it with a format error, so it plays in a desktop media player and fails silently in the app. Verified playing at ~1.2s to first audio."
+  "note": "Shoutcast, 128kbps MP3. IMPORTANT: this is the /stream.mp3 endpoint, not the bare host the website links to. The bare host returns audio/mpeg but browsers reject it with a format error, so it plays in a desktop media player and fails silently in the app. Verified playing at ~1.2s to first audio.",
+  "autoTune": true,
+  "tuneLeadMinutes": 3,
+  "tuneTailMinutes": 25,
+  "jumuahTailMinutes": 70,
+  "autoTuneNote": "With autoTune on, the screen opens the live stream a few minutes before each adhan and closes it after the jamaa'ah, even when the radio has not been left on. That is what makes the adhan the masjid's own muadhin rather than the recording, and it carries the salah live. Leaving the radio switched on keeps it connected all day instead. jumuahTailMinutes is longer because of the khutbah."
 }

@@ -316,6 +316,38 @@ a:focus-visible,
 .quicklink .go{margin-left:.5em;transition:transform .18s ease;display:inline-block}
 .quicklink:hover .go,.quicklink:focus-visible .go{transform:translateX(4px)}
 
+/* ---- the donation QR ---- */
+/* A screen on a shelf cannot take a payment, but the phone in the room can.
+   The QR is the whole bridge, so it sits in the empty right-hand side where
+   Horizon has nothing else. Anchored to the middle of the screen rather than
+   the floor: pinned to the bottom it landed on top of the Isha column,
+   because the times strip runs the full width while the hero does not.
+   Sizing is the only thing that matters: a QR nobody can scan is worse than
+   no QR, because it looks like the donation path works while quietly not.
+   CSS pixels are not a physical size, and that is the trap here — 11.5vmin
+   is ~124px, which is ~6.5cm on a 43" TV but barely over a centimetre on a
+   high-DPI 10" tablet. Two levers actually help, and both are about module
+   size rather than block size: error correction L instead of M (29x29
+   instead of 33x33 for this URL, see tools/make-qr.py) and a SHORTER URL.
+   A ~24-character link is 25x25, which is a third larger per module than
+   where this started. Worth doing before blaming the camera. */
+.donate{position:absolute;right:clamp(18px,5vw,110px);top:46%;transform:translateY(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:clamp(7px,1vmin,14px);
+  z-index:2;pointer-events:none;user-select:none}
+.donate .code{width:clamp(104px,11.5vmin,210px);height:clamp(104px,11.5vmin,210px);
+  padding:clamp(5px,.7vmin,11px);border-radius:10px;
+  /* A quiet zone the scanner can rely on. The sky behind is dark and moving,
+     and a code read straight off a photograph is unreliable without it. */
+  background:rgba(14,4,10,.72);display:block}
+.donate .code svg{width:100%;height:100%;display:block;shape-rendering:crispEdges}
+/* Held to the same floor as everything else. The caption is what tells
+   someone the code is for giving rather than for Wi-Fi or a menu, so it is
+   not the place to go below readable. */
+.donate .cap{font-size:clamp(15px,1.45vmin,22px);font-weight:600;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--gold-bright);white-space:nowrap}
+/* On a phone there is nothing to scan it with but the phone itself. */
+@media (max-width:860px),(max-height:520px){ .donate{display:none} }
+
 /* ---- running out of timetable ---- */
 /* Two states, and the quiet one matters more. The timetable is a finite
    file: when it runs out the screen cannot show a single prayer time, and
@@ -540,6 +572,11 @@ body.nodata .daygroup,body.nodata .times{display:none}
       <span class="v">Visit or get in touch</span>
     </button>
   </nav>
+
+  <div class="donate" id="donate" hidden>
+    <span class="code" id="donate-code">__DONATE_QR_SVG__</span>
+    <span class="cap" id="donate-cap">Scan to give</span>
+  </div>
 
   <div class="expiry" id="expiry" hidden><span class="dot"></span><span id="expiry-text"></span></div>
 
@@ -937,6 +974,7 @@ function liveRetry(reason){
 }
 
 function liveStop(){
+  autoTuned = false;
   LIVE.wanted = false; LIVE.state = 'off';
   updateMediaSession();
   clearTimeout(LIVE.timer);
@@ -946,6 +984,7 @@ function liveStop(){
 }
 
 function liveStart(){
+  autoTuned = false;          // switched on by hand; prayer windows no longer own it
   LIVE.wanted = true; LIVE.attempts = 0;
   try { localStorage.setItem(LIVE_KEY, '1'); } catch(e){}
   liveSetUpAnalyser();
@@ -992,6 +1031,60 @@ volEl.addEventListener('input', ()=>{
   audioLive.volume = v / 100;
   try { localStorage.setItem(LIVE_VOL_KEY, String(v)); } catch(e){}
 });
+
+/* ---- tuning in by itself for the adhan and the salah ----
+   The radio being "off" used to mean the adhan fell back to the recording
+   and the salah was not heard at all, which is the wrong default for a
+   screen meant to replace a radio: the whole reason to carry the masjid's
+   feed is to hear the masjid's own muadhin.
+   So the stream is opened a few minutes before each adhan and closed again
+   after the jamaa'ah, whether or not anyone switched the radio on. Opening
+   early matters: it is ~1.2s to first audio and a few seconds more to be
+   sure it is really playing, so by the time the adhan is due the stream is
+   already live and the recording stands down cleanly rather than racing it.
+   Leaving the radio switched on by hand keeps it connected all day instead,
+   which is also the setting that costs a listener slot around the clock. */
+let autoTuned = false;          // stream is up because of a prayer, not a tap
+
+function prayerWindow(rec, baseDate, now){
+  if(!rec || !STREAM || STREAM.autoTune === false) return false;
+  const lead  = (STREAM.tuneLeadMinutes   != null ? STREAM.tuneLeadMinutes   : 3) * 60000;
+  const tail  = (STREAM.tuneTailMinutes   != null ? STREAM.tuneTailMinutes   : 25) * 60000;
+  const jtail = (STREAM.jumuahTailMinutes != null ? STREAM.jumuahTailMinutes : 70) * 60000;
+  const t = now.getTime();
+  for(const trig of buildTriggersForDay(rec, baseDate)){
+    if(trig.kind !== 'adhan') continue;        // one window per prayer
+    const adhan  = trig.at.getTime();
+    const jamaah = adhan + 15*60000;           // buildTriggersForDay sets adhan 15m before
+    const isJumuah = trig.id.indexOf('jumuah') === 0;
+    if(t >= adhan - lead && t <= jamaah + (isJumuah ? jtail : tail)) return true;
+  }
+  return false;
+}
+
+function autoTune(rec, baseDate, now){
+  if(!liveConfigured()) return;
+  const want = prayerWindow(rec, baseDate, now);
+  if(want && !LIVE.wanted){
+    console.info('[taiyabah] tuning in for the adhan');
+    autoTuned = true;
+    LIVE.wanted = true; LIVE.attempts = 0;
+    liveSetUpAnalyser();
+    liveConnect();
+    return;
+  }
+  /* Only ever close a connection this opened. Someone who switched the
+     radio on by hand keeps it on, prayer window or not. */
+  if(!want && autoTuned && LIVE.wanted){
+    console.info('[taiyabah] jamaa\'ah over — leaving the stream');
+    autoTuned = false;
+    LIVE.wanted = false; LIVE.state = 'off';
+    clearTimeout(LIVE.timer);
+    try { audioLive.pause(); audioLive.removeAttribute('src'); audioLive.load(); } catch(e){}
+    updateSoundPill();
+    updateMediaSession();
+  }
+}
 
 /* Called once a second from tick(). Catches the failure no event reports:
    the element claims to be playing while its clock has stopped. */
@@ -1093,7 +1186,8 @@ function updateSoundPill(){
     // adhan: the recording still fires even with the masjid off-air.
     if(LIVE.state === 'live'){
       soundPill.classList.add('on');
-      soundPillLabel.textContent = (STREAM.name || "Masjid") + " · live";
+      soundPillLabel.textContent = (STREAM.name || "Masjid") +
+        (autoTuned ? " · live for salah" : " · live");
       return;
     }
     soundPill.classList.remove('on');
@@ -1172,6 +1266,19 @@ function checkAudioTriggers(rec, baseDate, now){
   }
 }
 
+/* The QR is inlined at build time, so an empty block means either no QR
+   file or qrEnabled:false in the data. Either way, show nothing rather
+   than an empty frame. */
+(function donateQR(){
+  const box = document.getElementById('donate');
+  const code = document.getElementById('donate-code');
+  if(!box || !code) return;
+  const give = (NEWBUILD && NEWBUILD.give) || {};
+  const ok = give.qrEnabled !== false && code.querySelector('svg');
+  box.hidden = !ok;
+  if(ok && give.qrLabel) document.getElementById('donate-cap').textContent = give.qrLabel;
+})();
+
 /* ---------------- running out of timetable ----------------
    The timetable is a finite file — 2026 only, at the time of writing — and
    the screen has no way to fetch more. Before this, the day after the last
@@ -1228,6 +1335,7 @@ function renderNoTimetable(now){
     "</b>. Please let the masjid know \u2014 the adhan cannot sound until it is replaced.";
   document.getElementById('jummah-line').textContent = "";
   document.getElementById('expiry').hidden = true;
+  const dq = document.getElementById('donate'); if(dq) dq.hidden = true;
 }
 
 function clearNoTimetable(){
@@ -1419,6 +1527,7 @@ function tick(){
     renderSky(rec, now, now);
     renderJummahBanner(now);
     renderExpiryNotice(now);
+    autoTune(rec, now, now);
     checkAudioTriggers(rec, now, now);
   } else {
     // Past the end of the timetable. Say so, rather than leaving the
