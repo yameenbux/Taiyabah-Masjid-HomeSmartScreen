@@ -3,6 +3,10 @@
 This is the plan for replacing the FM transmitter: a small always-on screen in a household's kitchen
 or hallway that shows the prayer times and carries the masjid's own muadhin live.
 
+**Every home gets a unit the masjid buys, locks down and hands over working.** There is deliberately
+no bring-your-own-device option — see [why that choice is load-bearing](#why-owning-every-unit-matters)
+below, because it decides more than it looks like it does.
+
 > **The other two device docs do not apply here.** [`kiosk-windows.md`](kiosk-windows.md) and
 > [`android-tv.md`](android-tv.md) are for the masjid's own wall displays, and every assumption in them
 > is false in a home: you don't own the building, you can't reach the network, there are hundreds of
@@ -24,7 +28,7 @@ You do not have to guess. **The app tells you.** It probes autoplay at boot and 
 
 ```
 [taiyabah] autoplay permitted by this browser — sound enabled with no interaction     ← good
-[taiyabah] autoplay probe refused: <reason>                                           ← fatal for homes
+[taiyabah] autoplay probe refused: <reason>                                           ← needs the wrapper
 ```
 
 ### The test, on one device, before ordering the rest
@@ -34,17 +38,29 @@ You do not have to guess. **The app tells you.** It probes autoplay at boot and 
    Look for which of the two lines above appears. That is your answer in thirty seconds.
 3. Then prove it end to end: reboot, **touch nothing**, and wait for Zuhr or Asr. You should see
    `[taiyabah] tuning in for the adhan` and hear it.
+4. Repeat step 3 **with the screen off**, because that is how it will spend every night and Fajr
+   depends on it.
 
-**If the probe is refused**, the supplied-unit tier needs the Android wrapper already in this repo
-instead of a plain URL — a WebView you control can call `setMediaPlaybackRequiresUserGesture(false)`
-directly, which is guaranteed rather than hopeful. That means distributing an APK and rebuilding it when
-the shell changes. It is a known, solvable problem, but it changes the rollout, so find out first.
+### Why owning every unit matters
+
+If the probe is refused, the fix is the Android wrapper already in this repo: a WebView you control can
+call `setMediaPlaybackRequiresUserGesture(false)` directly, which is guaranteed rather than hopeful. It
+means distributing an APK instead of a URL, and rebuilding it when the app shell changes.
+
+**That fallback only exists because the masjid owns the hardware.** On someone's own phone you cannot
+install a privileged wrapper, cannot pick the browser, and on an iPhone or iPad cannot lift the gesture
+requirement at all — iOS provides no mechanism, so the adhan would simply never sound unattended. A
+bring-your-own-device tier would have left the core promise of the product unfixable on an unknown
+fraction of devices. Supplying the unit turns the one genuine technical unknown here into a problem
+with two solutions instead of none.
+
+It has a second benefit worth planning around: **standardise on a single tablet model.** You then test
+autoplay, speaker volume, screen-off audio and battery behaviour exactly once, and every support call
+is about a device you have in front of you.
 
 ---
 
-## Tier 1 — the supplied unit
-
-A tablet the masjid buys, locks down, and hands over working.
+## The unit
 
 ### Hardware
 
@@ -57,26 +73,33 @@ A tablet the masjid buys, locks down, and hands over working.
 | Mains powered, permanently | See the warning below. |
 
 Roughly **£120–200** for a Lenovo Tab M11 class device, though listings vary enough that you should
-price it the week you buy.
+price it the week you buy. At any serious unit count this is the dominant cost of the whole project,
+so it is worth getting quotes rather than buying at retail.
 
 > **The battery is the part that will fail.** A tablet held at 100% charge, warm, for two years will
 > swell, and a swollen battery lifts the screen off the chassis. Prefer a device with charge limiting,
 > or plan to replace batteries, or budget for attrition. This is the most likely reason a unit comes
 > back, and it is not a software problem.
+>
+> This cuts against buying refurbished to save money: a refurb unit is much cheaper per screen, and
+> cosmetic grade genuinely doesn't matter on a wall, but an already-aged battery held at full charge
+> is the one component you least want second-hand. If you go refurb, prioritise battery health over
+> appearance and expect a higher return rate.
 
 ### Fully Kiosk settings that actually matter
 
-Buy the **volume licence — one key covers 10+ devices.** Do not buy 200 individual licences.
+Buy the **volume licence — one key covers 10+ devices.** Do not buy individual licences per unit.
 
 | Setting | Value | Why |
 | --- | --- | --- |
 | Autoplay Audio | On | The whole product. See the test above. |
-| Kiosk Mode, with PIN exit gesture | On | The lockdown you asked for. |
+| Kiosk Mode, with PIN exit gesture | On | The lockdown. Keep the PIN at the masjid. |
 | Lock Task Mode *(Device Owner)* | On | Proper kiosk: kills the home and recents buttons and the status bar. Far stronger than kiosk mode alone. |
 | Autostart on boot | On | Comes back by itself after a power cut. |
 | Auto restart Fully after crashes | On | Comes back by itself after a crash. |
 | Switch screen off on idle | On | Overnight dimming — see the schedule warning below. |
 | Mute Audio / Disable Volume Buttons | **Off** | Leave the household their volume. Muting the device defeats the purpose. |
+| Disable ADB *(Device Owner)* | Off until deployed | You want ADB during the autoplay test. Turn it off for units going out. |
 | Daily System Restart *(Device Owner)* | ~03:00, **only once the autoplay test passes** | See below. |
 
 > **Do not set a daily restart until autoplay is confirmed working.** If the device needs a tap to
@@ -97,10 +120,9 @@ The stream opens 3 minutes before the Fajr adhan and closes 25 minutes after Ish
 shortest night of the year there are **only 185 minutes** when nothing is scheduled at all.
 
 So use **Switch screen off on idle** instead of a clock schedule: the app keeps running and the audio
-keeps playing with the screen dark. Add this to your one-device test — confirm the adhan still sounds
-with the screen off, because that is how it will spend every night.
+keeps playing with the screen dark. This is step 4 of the test above, and it is not optional.
 
-### Provisioning without configuring 200 tablets by hand
+### Provisioning without configuring every tablet by hand
 
 Fully supports **QR Code provisioning** (Android 7+, factory-reset device required). You generate the
 code once in Fully's web configurator; it carries the APK URL and your settings. A reset tablet scans
@@ -119,42 +141,26 @@ Do them in batches at the masjid. The household should receive a unit that needs
 
 ### Managing them once they're out there
 
-At 200 homes on 200 private networks, REST and MQTT are useless to you — they need a route into each
-house. **Fully Cloud** is the only realistic remote-management path, and it is a per-device
+Across hundreds of private home networks, REST and MQTT are useless to you — they need a route into
+each house. **Fully Cloud** is the only realistic remote-management path, and it is a per-device
 subscription, so price it as part of the per-home cost rather than a footnote.
 
 What reaches every home with nobody doing anything: **prayer times, layout, audio timing and bug
 fixes.** The service worker is network-first for the page and the app reloads itself just after 2am, so
-a change pushed to `main` is on all 200 screens within 24 hours. That is the single best property of
-this whole design and it is worth protecting.
+a change pushed to `main` is on every screen within 24 hours. That is the single best property of this
+whole design and it is worth protecting.
 
 What needs Fully Cloud or a visit: Fully's own settings, the licence, Android updates. What needs a new
 APK: only the wrapper route, if the autoplay test sends you there.
 
-### Support, at this scale
+### Support
 
 Assume a failure rate and budget spares. Give each household a printed card: what it is, the donation
 link, and *"if the screen is blank, unplug it for ten seconds."* That one sentence will resolve most
 calls. Keep the PIN with the masjid, not on the card.
 
----
-
-## Tier 2 — bring your own device
-
-Free, no hardware cost, and you should be honest with yourself about what it is: **a way to see the
-times, not a reliable radio.** You cannot lock down a device you don't own.
-
-**Android.** Chrome → **Install app**. The manifest sets `display: fullscreen`, so it opens with no
-address bar. Android's own **App pinning** (Settings → Security → App pinning) gives a light lockdown
-the household can undo — fine for a device they chose to dedicate. Autoplay behaviour in Chrome is not
-the same as in Fully, so a tap may be needed after each launch.
-
-**iPhone / iPad.** Add to Home Screen works, and the times, countdown and layout are all correct. But
-**iOS provides no way to lift the audio gesture requirement**, so the adhan will not sound unattended,
-and the screen will sleep. Guided Access pins the app but changes none of that. Present the iOS route
-as "check the times", and don't let anyone believe it replaces their radio. Confirm on a real iPad
-before you write the instructions — the gesture policy is certain, the screen-sleep behaviour is worth
-seeing for yourself.
+Decide up front what happens when a household moves, stops wanting it, or the battery swells — units
+coming back is a normal part of running a fleet, not an exception.
 
 ---
 

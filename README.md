@@ -121,7 +121,7 @@ Set the device's screen timeout to **Never** and leave it plugged in, or it will
 
 | Setup | Guide |
 | --- | --- |
-| A locked-down tablet per home, plus a free bring-your-own-device tier | [`docs/home-player.md`](docs/home-player.md) |
+| A locked-down tablet per home, supplied by the masjid | [`docs/home-player.md`](docs/home-player.md) |
 | How many homes the live stream can carry | [`docs/stream-capacity.md`](docs/stream-capacity.md) |
 
 ## Run it locally
@@ -194,7 +194,7 @@ test-scripts/          ← Playwright test suite
 | [`docs/engineering-notes.md`](docs/engineering-notes.md) | Architecture, the data model, and every deliberate decision that might look like a bug. **Read before editing** |
 | [`docs/kiosk-windows.md`](docs/kiosk-windows.md) | Running a screen on a Windows mini PC: kiosk browser, never-sleep, auto-start, Tailscale remote access |
 | [`docs/android-tv.md`](docs/android-tv.md) | The Fire TV / Android TV app: building, signing, installing, asset links |
-| [`docs/home-player.md`](docs/home-player.md) | Putting a locked-down screen in people's homes: tablet spec, Fully Kiosk settings, provisioning at scale, and the autoplay test to run before buying |
+| [`docs/home-player.md`](docs/home-player.md) | Putting a masjid-supplied, locked-down screen in people's homes: tablet spec, Fully Kiosk settings, provisioning at scale, and the autoplay test to run before buying |
 | [`docs/stream-capacity.md`](docs/stream-capacity.md) | Bandwidth and concurrent-listener maths at 200+ homes, and the HLS decision that follows from it |
 | [`test-scripts/README.md`](test-scripts/README.md) | What each test covers and how the fake-clock pattern works |
 
