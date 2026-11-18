@@ -4,6 +4,9 @@
 > this job with no APK, no signing key, no Digital Asset Links and no Amazon home screen — see
 > [`kiosk-windows.md`](kiosk-windows.md). Everything below exists because a streaming stick can't.
 
+> **Putting a screen in someone's home instead?** Stop here — none of this applies.
+> Homes are a different deployment entirely: see [`home-player.md`](home-player.md).
+
 ## The short way: run the build in CI
 
 `.github/workflows/android-tv-apk.yml` does all of this on a GitHub runner — no desktop, no Android

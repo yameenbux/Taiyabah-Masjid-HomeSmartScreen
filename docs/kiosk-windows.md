@@ -5,6 +5,9 @@ Tailscale for remote access. This replaces the Fire TV route entirely — no APK
 Digital Asset Links, no Amazon home screen. If you're doing this, you can ignore
 [`android-tv.md`](android-tv.md) completely.
 
+> **Putting a screen in someone's home instead?** Stop here — none of this applies.
+> Homes are a different deployment entirely: see [`home-player.md`](home-player.md).
+
 The prayer content still updates from the web on its own. Nothing below needs redoing when the app
 changes — you're only setting up the machine.
 
