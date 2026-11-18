@@ -5,10 +5,18 @@ template.html is the source of truth. index.html is generated output and is
 what GitHub Pages serves from the root of main — never hand-edit it, the next
 run of this script will overwrite whatever you changed.
 
-The substitution is deliberately dumb (three placeholder replacements, no
-bundler). The asserts at the end are the important part: a placeholder left
-un-substituted still produces a page that loads, just with a JS syntax error
-and no data, so catch it here rather than on a live tablet.
+The substitution is deliberately dumb (placeholder replacement, no bundler).
+The asserts are the important part: a placeholder left un-substituted still
+produces a page that loads, just with a JS syntax error and no data, so catch
+it here rather than on a live tablet in somebody's kitchen.
+
+Every masjid on the screen is a directory under data/masjids/:
+
+    data/masjids/<id>/profile.json        name, contact, stream, give, appeal
+    data/masjids/<id>/timetable-YYYY.json one file per year
+    data/masjids/<id>/donate-qr.svg       optional, with .url beside it
+
+Adding a masjid is adding a directory. Nothing in this file lists them.
 
     python3 build.py
 """
@@ -18,49 +26,49 @@ import json
 import pathlib
 
 ROOT = pathlib.Path(__file__).parent
+MASJID_DIR = ROOT / "data" / "masjids"
 
-# Prayer times are split one file per year and merged into a single blob at
-# build time, so adding a year is adding a file to this list and nothing
-# else. The merge is checked: overlapping dates mean a file was listed twice
-# or a year was duplicated, and a gap means a day on which the screen would
-# show "prayer times need updating" in the middle of an otherwise fine run —
-# which is the silent failure the expiry handling exists to prevent, so it
-# fails the build rather than reaching a wall.
-TIMETABLES = [
-    "data/timetable-2026.json",
-    "data/timetable-2027.json",
-]
+# The masjid a device shows before anyone has chosen one: the masjid whose
+# project this is, so the masjid's own wall screens need no setup at all.
+DEFAULT_MASJID = "taiyabah"
 
 SOURCES = {
-    "__NEWBUILD_JSON__": "data/newbuild.json",
     "__OCCASIONS_JSON__": "data/occasions.json",
-    "__STREAM_JSON__": "data/stream.json",
+    "__TUNING_JSON__": "data/tuning.json",
 }
 
 # Optional asset. The page used to request masjidone-logo.svg unconditionally
 # and fall back to a text wordmark on error — which worked, but logged a 404
 # on every load of every device, forever, and that noise is exactly what
 # hides a real error when one turns up. Resolve it at build time instead: if
-# the file is not in the repo the page never asks for it. Dropping the real
-# logo in at this path and rebuilding is still the only step needed.
+# the file is not in the repo the page never asks for it.
 OPTIONAL_ASSETS = {
     "__BRAND_MARK__": "masjidone-logo.svg",
 }
 
 
-def load_timetable():
-    """Merge every year in TIMETABLES into one {"days": {...}} blob."""
+def load_timetable(folder, masjid_id):
+    """Merge every timetable-YYYY.json in a masjid's folder into one blob.
+
+    The merge is checked. Overlapping dates mean a year was duplicated, and a
+    gap means a day on which that masjid's congregation would see "prayer
+    times need updating" in the middle of an otherwise fine run — the silent
+    failure the expiry handling exists to prevent. Fail here, not on a wall.
+    """
+    files = sorted(folder.glob("timetable-*.json"))
+    assert files, "%s has no timetable-YYYY.json — a masjid with no times " \
+                  "would show its congregation nothing" % folder
+
     days = {}
-    for relpath in TIMETABLES:
-        blob = json.loads((ROOT / relpath).read_text(encoding="utf-8"))
+    for path in files:
+        blob = json.loads(path.read_text(encoding="utf-8"))
         year = blob.get("days", blob)
         clash = sorted(set(year) & set(days))
         assert not clash, "%s repeats dates already loaded: %s" % (
-            relpath, ", ".join(clash[:3]))
+            path.name, ", ".join(clash[:3]))
         days.update(year)
 
     keys = sorted(days)
-    assert keys, "no prayer times loaded at all"
     first = datetime.date.fromisoformat(keys[0])
     last = datetime.date.fromisoformat(keys[-1])
     expected = (last - first).days + 1
@@ -72,111 +80,120 @@ def load_timetable():
             if (first + datetime.timedelta(days=i)).isoformat() not in have
         ]
         raise AssertionError(
-            "the timetable has %d gap(s) between %s and %s, starting at %s — "
-            "a missing day leaves the screen with no prayer times on that date"
-            % (len(missing), keys[0], keys[-1], missing[0]))
+            "%s has %d gap(s) between %s and %s, starting at %s — a missing "
+            "day leaves that masjid with no prayer times on that date"
+            % (masjid_id, len(missing), keys[0], keys[-1], missing[0]))
 
-    print("timetable: %d days, %s -> %s" % (len(keys), keys[0], keys[-1]))
-    return {"days": days}
+    return days, keys[0], keys[-1]
 
 
-def donation_qr():
-    """Inline the donation QR, after checking it still encodes the right URL.
+def donation_qr(folder, give, masjid_id):
+    """Inline a masjid's donation QR, after checking it encodes the right URL.
 
     Nobody proof-reads a QR code by eye, so a changed donation link with a
     stale QR beside it would send every scan to the wrong place and look
     completely fine on screen. tools/make-qr.py records the URL it encoded
-    next to the image; if that disagrees with the data, the build stops.
+    next to the image; if that disagrees with the profile, the build stops.
     """
-    svg = ROOT / "donate-qr.svg"
-    stamp = ROOT / "donate-qr.url"
-    give = json.loads((ROOT / "data" / "newbuild.json").read_text(encoding="utf-8"))["give"]
-    wanted = give.get("qrUrl") or give["otherAmountUrl"]
-
-    if not give.get("qrEnabled", True):
-        return ""
-    if not svg.exists() or not stamp.exists():
-        print("note: no donation QR (run tools/make-qr.py) — the block is omitted")
-        return ""
+    if not give or not give.get("qrEnabled", True):
+        return None
+    svg = folder / "donate-qr.svg"
+    stamp = folder / "donate-qr.url"
+    wanted = give.get("qrUrl") or give.get("otherAmountUrl")
+    if not wanted or not svg.exists() or not stamp.exists():
+        print("note: %s has no donation QR (run tools/make-qr.py %s)"
+              % (masjid_id, masjid_id))
+        return None
 
     encoded = stamp.read_text(encoding="utf-8").strip()
     assert encoded == wanted, (
-        "the donation QR encodes %s but data/newbuild.json now says %s — "
-        "run tools/make-qr.py" % (encoded, wanted))
+        "%s's QR encodes %s but its profile now says %s — run "
+        "tools/make-qr.py %s" % (masjid_id, encoded, wanted, masjid_id))
 
     markup = svg.read_text(encoding="utf-8")
-    # Strip the XML prolog so it can be inlined straight into the page.
-    if markup.lstrip().startswith("<?xml"):
+    if markup.lstrip().startswith("<?xml"):          # strip the XML prolog
         markup = markup.split("?>", 1)[1]
     return markup.strip()
 
 
-HOME_STATION_ID = "taiyabah"
+def load_masjids():
+    """Every masjid directory, the default one first, then alphabetical.
 
-
-def load_stations():
-    """One list of tunable masjids, home first.
-
-    Taiyabah's URL is only ever read from stream.json, so there is no second
-    copy of it to drift. Everything else comes from stations.json, which ships
-    empty on purpose: with one station the tuner UI stays hidden and the screen
-    is a single-masjid radio, exactly as before this existed.
+    Order is the order of the setup list, so the masjid running the project
+    appears at the top rather than wherever the alphabet puts it.
     """
-    stream = json.loads((ROOT / "data" / "stream.json").read_text(encoding="utf-8"))
-    others = json.loads((ROOT / "data" / "stations.json").read_text(encoding="utf-8"))
+    assert MASJID_DIR.is_dir(), "data/masjids/ is missing"
+    folders = sorted(p for p in MASJID_DIR.iterdir() if (p / "profile.json").is_file())
+    assert folders, "no masjids in data/masjids/"
 
-    stations = [{
-        "id": HOME_STATION_ID,
-        "name": stream.get("name") or "Taiyabah Masjid",
-        "url": stream.get("url") or "",
-        "home": True,
-    }]
+    out = []
+    for folder in folders:
+        p = json.loads((folder / "profile.json").read_text(encoding="utf-8"))
+        mid = p.get("id") or folder.name
+        assert mid == folder.name, (
+            "%s/profile.json says id %r — the id must match the folder name, "
+            "because the folder name is what a device stores" % (folder.name, mid))
+        assert p.get("name"), "%s has no name" % mid
 
-    for i, st in enumerate(others.get("stations", [])):
-        where = "data/stations.json station %d" % i
-        for key in ("id", "name", "url"):
-            assert st.get(key), "%s is missing %r" % (where, key)
-        assert st["id"] != HOME_STATION_ID, (
-            "%s uses the reserved id %r — the home masjid comes from stream.json"
-            % (where, HOME_STATION_ID))
-        assert st["url"].startswith("https://"), (
-            "%s url must be https, got %r. The page is served over HTTPS, so a "
-            "plain-http stream is blocked as mixed content and fails silently."
-            % (where, st["url"]))
-        stations.append({
-            "id": st["id"], "name": st["name"], "url": st["url"], "home": False,
+        days, first, last = load_timetable(folder, mid)
+        stream = p.get("stream") or {}
+        url = stream.get("url")
+        if url:
+            assert url.startswith("https://"), (
+                "%s's stream url must be https, got %r. The page is served "
+                "over HTTPS, so a plain-http stream is blocked as mixed "
+                "content and fails silently." % (mid, url))
+
+        logo = p.get("logo")
+        if logo:
+            assert (ROOT / logo).exists(), (
+                "%s's profile points at logo %r, which is not in the repo. A "
+                "missing logo would 404 on every load of every device forever."
+                % (mid, logo))
+
+        out.append({
+            "id": mid,
+            "name": p["name"],
+            "shortName": p.get("shortName") or p["name"],
+            "logo": logo or None,
+            "contact": p.get("contact") or None,
+            "stream": stream or None,
+            "give": p.get("give") or None,
+            "appeal": p.get("appeal") or None,
+            "qr": donation_qr(folder, p.get("give"), mid),
+            "days": days,
         })
+        print("  %-12s %4d days %s -> %s%s%s" % (
+            mid, len(days), first, last,
+            "  stream" if url else "  NO STREAM",
+            "  qr" if out[-1]["qr"] else ""))
 
-    ids = [s["id"] for s in stations]
-    dupe_id = next((i for i in ids if ids.count(i) > 1), None)
-    assert dupe_id is None, "duplicate station id %r in data/stations.json" % dupe_id
+    ids = [m["id"] for m in out]
+    assert DEFAULT_MASJID in ids, (
+        "the default masjid %r has no directory — a device with no choice "
+        "stored would have nothing to show" % DEFAULT_MASJID)
 
-    urls = [s["url"] for s in stations]
-    dupe_url = next((u for u in urls if urls.count(u) > 1), None)
-    assert dupe_url is None, (
-        "two stations share the url %r. One of them is almost certainly a "
-        "copy-paste of the home masjid." % dupe_url)
+    urls = [m["stream"]["url"] for m in out if m.get("stream") and m["stream"].get("url")]
+    dupe = next((u for u in urls if urls.count(u) > 1), None)
+    assert dupe is None, (
+        "two masjids share the stream url %r — one profile is almost "
+        "certainly a copy-paste of another" % dupe)
 
-    if len(stations) > 1:
-        print("note: %d stations — the tuner is shown (%s)"
-              % (len(stations), ", ".join(s["name"] for s in stations)))
-    return stations
+    out.sort(key=lambda m: (m["id"] != DEFAULT_MASJID, m["name"].lower()))
+    return out
 
 
 def main():
     out = (ROOT / "template.html").read_text(encoding="utf-8")
 
-    out = out.replace("__DONATE_QR_SVG__", donation_qr())
+    print("masjids:")
+    masjids = load_masjids()
 
     out = out.replace(
-        "__TIMETABLE_JSON__",
-        json.dumps(load_timetable(), separators=(",", ":"), ensure_ascii=False),
+        "__MASJIDS_JSON__",
+        json.dumps(masjids, separators=(",", ":"), ensure_ascii=False),
     )
-
-    out = out.replace(
-        "__STATIONS_JSON__",
-        json.dumps(load_stations(), separators=(",", ":"), ensure_ascii=False),
-    )
+    out = out.replace("__DEFAULT_MASJID__", json.dumps(DEFAULT_MASJID))
 
     for placeholder, relpath in SOURCES.items():
         blob = json.loads((ROOT / relpath).read_text(encoding="utf-8"))
@@ -192,14 +209,13 @@ def main():
             print("note: %s is not in the repo — the page will use its text "
                   "fallback and will not request it" % relpath)
 
-    assert "__TIMETABLE_JSON__" not in out, "__TIMETABLE_JSON__ was not substituted"
-    assert "__DONATE_QR_SVG__" not in out, "__DONATE_QR_SVG__ was not substituted"
-    assert "__STATIONS_JSON__" not in out, "__STATIONS_JSON__ was not substituted"
-    for placeholder in list(SOURCES) + list(OPTIONAL_ASSETS):
+    for placeholder in ["__MASJIDS_JSON__", "__DEFAULT_MASJID__"] \
+            + list(SOURCES) + list(OPTIONAL_ASSETS):
         assert placeholder not in out, "%s was not substituted" % placeholder
 
     (ROOT / "index.html").write_text(out, encoding="utf-8")
-    print("index.html written (%d bytes)" % len(out.encode("utf-8")))
+    print("index.html written (%d bytes, %d masjid(s))"
+          % (len(out.encode("utf-8")), len(masjids)))
 
 
 if __name__ == "__main__":

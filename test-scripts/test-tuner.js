@@ -50,14 +50,28 @@ const check = (label, ok, detail) => {
 
 function writeVariant() {
   const html = fs.readFileSync(REAL, 'utf8');
-  const re = /const STATIONS = (\[.*?\]);/;
+  /* STATIONS is derived at runtime from MASJIDS now, so the fixture adds a
+     whole second masjid - its own times, stream and profile - which is what
+     a real second masjid is. Cloning the first one's days keeps this honest
+     about shape without inventing another masjid's prayer times. */
+  const re = /const MASJIDS = (\[.*?\]);\n/;
   const m = html.match(re);
-  if (!m) throw new Error('could not find the baked STATIONS array in index.html');
-  const home = JSON.parse(m[1])[0];
-  if (!home || !home.home) throw new Error('first station is not the home masjid');
-  const two = [home, { id: 'testmasjid', name: 'Test Masjid', url: 'https://example.invalid/s.mp3', home: false }];
-  fs.writeFileSync(VARIANT, html.replace(re, 'const STATIONS = ' + JSON.stringify(two) + ';'), 'utf8');
-  return two;
+  if (!m) throw new Error('could not find the baked MASJIDS array in index.html');
+  const masjids = JSON.parse(m[1]);
+  if (masjids.length !== 1) throw new Error(`fixture expects 1 masjid in the repo, found ${masjids.length}`);
+  const second = JSON.parse(JSON.stringify(masjids[0]));
+  second.id = 'testmasjid';
+  second.name = 'Test Masjid';
+  second.shortName = 'Test';
+  second.logo = null;                       // exercises the wordmark fallback
+  second.appeal = null;                     // a masjid with no fundraising appeal
+  second.give = null;
+  second.qr = null;
+  second.contact = { address: '1 Test Street, Bolton', phone: '01204 000 000' };
+  second.stream = { enabled: true, name: 'Test Masjid', url: 'https://example.invalid/s.mp3' };
+  const two = masjids.concat([second]);
+  fs.writeFileSync(VARIANT, html.replace(re, 'const MASJIDS = ' + JSON.stringify(two) + ';\n'), 'utf8');
+  return two.map(x => ({ id: x.id, name: x.name, url: x.stream && x.stream.url, home: x.id === masjids[0].id }));
 }
 
 (async () => {
@@ -72,9 +86,9 @@ function writeVariant() {
       await page.addInitScript(fakeDateScript(QUIET));
       await page.goto('file://' + REAL, { waitUntil: 'load' });
       await page.waitForTimeout(900);
-      const n = await page.evaluate(() => STATIONS.length);
+      const n = await page.evaluate(() => MASJIDS.length);
       const hidden = await page.evaluate(() => document.getElementById('tuner-btn').hidden);
-      check('ships with only the home masjid', n === 1, `${n} station(s)`);
+      check('ships with one masjid until more are added', n === 1, `${n} masjid(s)`);
       check('one station shows no dial at all', hidden === true, `hidden=${hidden}`);
       await page.close();
     }

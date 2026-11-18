@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
-"""Regenerate the donation QR from the URL in data/newbuild.json.
+"""Regenerate a masjid's donation QR from the URL in its profile.
+
+    python3 tools/make-qr.py <masjid-id>        (default: taiyabah)
 
 Run this whenever the donation link changes:
 
     pip install segno
     python3 tools/make-qr.py
 
-It writes donate-qr.svg and donate-qr.url. build.py refuses to build if
+It writes donate-qr.svg and donate-qr.url into that masjid's folder.
+build.py refuses to build if
 those two disagree with the URL in the data, so a changed link can never
 quietly leave an old QR pointing somewhere else — which is the failure
 that matters here, since nobody proof-reads a QR code by eye.
@@ -24,9 +27,16 @@ try:
 except ImportError:
     sys.exit("segno is not installed. Run: pip install segno")
 
+import sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-give = json.loads((ROOT / "data" / "newbuild.json").read_text(encoding="utf-8"))["give"]
-url = give.get("qrUrl") or give["otherAmountUrl"]
+MASJID = sys.argv[1] if len(sys.argv) > 1 else "taiyabah"
+FOLDER = ROOT / "data" / "masjids" / MASJID
+if not (FOLDER / "profile.json").is_file():
+    raise SystemExit("no such masjid: %s (looked in %s)" % (MASJID, FOLDER))
+give = json.loads((FOLDER / "profile.json").read_text(encoding="utf-8")).get("give") or {}
+url = give.get("qrUrl") or give.get("otherAmountUrl")
+if not url:
+    raise SystemExit("%s has no give.qrUrl or give.otherAmountUrl — nothing to encode" % MASJID)
 
 # Error correction L, not M. M buys ~15% damage tolerance, which is worth
 # having on a printed poster that gets scuffed — but this is a clean pixel
@@ -48,7 +58,7 @@ qr = segno.make(url, error="l")
 # the tile's own rounding is comfortable in practice and buys back module
 # size, which is what decides whether a camera resolves it at all.
 qr.save(
-    ROOT / "donate-qr.svg",
+    FOLDER / "donate-qr.svg",
     scale=1,
     border=3,
     dark="#3C0B2A",     # brand maroon, near-black against the tile
@@ -59,7 +69,7 @@ qr.save(
 # element without scaling the artwork — the code ends up a few pixels wide in
 # the corner of its box, which is exactly what happened the first time. Give
 # it a viewBox so it scales to whatever the page asks for.
-out = ROOT / "donate-qr.svg"
+out = FOLDER / "donate-qr.svg"
 markup = out.read_text(encoding="utf-8")
 if "viewBox" not in markup:
     size = qr.symbol_size(scale=1, border=2)[0]
@@ -70,6 +80,6 @@ if "viewBox" not in markup:
     )
     out.write_text(markup, encoding="utf-8")
 
-(ROOT / "donate-qr.url").write_text(url + "\n", encoding="utf-8")
+(FOLDER / "donate-qr.url").write_text(url + "\n", encoding="utf-8")
 print("donate-qr.svg written for %s (version %s, %d modules)"
       % (url, qr.version, qr.symbol_size(scale=1, border=0)[0]))

@@ -1,0 +1,82 @@
+{
+  "id": "taiyabah",
+  "name": "Taiyabah Masjid",
+  "shortName": "Taiyabah",
+  "logo": "logo-cream.png",
+  "_note": "One masjid on the screen. Everything here is optional except id, name and timetables: a masjid with no give block simply shows no donation QR, one with no appeal shows no appeal link. That is how a masjid joins without having to supply things it does not have.",
+  "contact": {
+    "address": "31a Draycott Street, Bolton, BL1 8HD",
+    "phone": "01204 535 997",
+    "phoneHref": "tel:01204535997",
+    "email": "info@taiyabahmasjid.com",
+    "website": "https://www.taiyabahmasjid.com",
+    "websiteLabel": "taiyabahmasjid.com",
+    "charity": "Bolton Central Islamic Society · No. 1041569"
+  },
+  "stream": {
+    "enabled": true,
+    "name": "Taiyabah Masjid",
+    "url": "https://taiyabahmbolton.radioca.st/stream.mp3",
+    "note": "Shoutcast, 128kbps MP3. IMPORTANT: this is the /stream.mp3 endpoint, not the bare host the website links to. The bare host returns audio/mpeg but browsers reject it with a format error, so it plays in a desktop media player and fails silently in the app. Verified playing at ~1.2s to first audio."
+  },
+  "give": {
+    "scanLabel": "Scan to give any amount",
+    "otherAmountUrl": "https://www.taiyabahmasjid.com/product/dome-donation/",
+    "giftAidNote": "If you're a UK taxpayer, please add Gift Aid — it adds 25p to every £1 at no cost to you.",
+    "bankHeading": "Or transfer directly",
+    "bank": {
+      "accountName": "Bolton Central Islamic Society (BCIS)",
+      "bankName": "HSBC",
+      "sortCode": "40-04-15",
+      "accountNumber": "02320258"
+    },
+    "note": "Bolton Central Islamic Society · Registered charity 1041569.",
+    "qrUrl": "https://www.taiyabahmasjid.com/product/dome-donation/",
+    "qrLabel": "Scan to give",
+    "qrEnabled": true,
+    "qrNote": "qrUrl is what the on-screen QR encodes. Point it at a Stripe Payment Link when one exists — fewer steps than the shop page and it brings Apple/Google Pay, which is most of the conversion win on a phone. After changing it run tools/make-qr.py; build.py fails if the QR and this URL disagree."
+  },
+  "appeal": {
+    "eyebrow": "The New Build",
+    "heading": "Building a lasting home for Taiyabah Masjid.",
+    "tagline": "A purpose-built centre for prayer, learning and community life — designed with the community, funded by the community.",
+    "phaseTag": "Current appeal · Phase 3.3",
+    "phaseTitle": "Internal fixtures & fittings",
+    "phaseDescription": "Help make the masjid ready for salah, Qur'an and remembrance for generations to come.",
+    "needs": [
+      "Tiling",
+      "Carpets",
+      "Heating",
+      "Lighting",
+      "Electrical",
+      "Decor"
+    ],
+    "timeline": [
+      {
+        "date": "2018 – Ramadhan 2019",
+        "title": "Phase 1",
+        "status": "done"
+      },
+      {
+        "date": "December 2021",
+        "title": "Phase 2",
+        "status": "done"
+      },
+      {
+        "date": "2022",
+        "title": "Community fundraiser",
+        "status": "done"
+      },
+      {
+        "date": "Now · Phase 3.3",
+        "title": "Internal fixtures & fittings",
+        "status": "active"
+      },
+      {
+        "date": "What's next",
+        "title": "Full facilities complete",
+        "status": "upcoming"
+      }
+    ]
+  }
+}

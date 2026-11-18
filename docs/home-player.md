@@ -164,43 +164,67 @@ coming back is a normal part of running a fleet, not an exception.
 
 ---
 
-## Listening to other masjids
+## Setting a device up, out of the box
 
-The FM receiver this replaces could reach every transmitter in Bolton, and some people will rightly
-count that as the better radio. The screen has a dial for the same reason: a **Other masjids** button
-beside the listen control opens a list, and choosing one tunes to it.
+A household opens the box, plugs it in, and the screen runs setup by itself:
+**welcome → connect to Wi-Fi → which masjid do you attend → done.** It then
+shows that masjid's times and plays their adhan live at every salah.
 
-**With one masjid configured the dial does not appear at all**, so nothing changes until you add
-someone. The list is `data/stations.json`; Taiyabah is not in it, because it comes from `stream.json`
-and should exist in exactly one place. The build refuses duplicate ids, duplicate URLs, a station
-reusing the reserved `taiyabah` id, and any non-HTTPS stream (the page is served over HTTPS, so a
-plain-HTTP mount is blocked as mixed content and fails silently).
+The Wi-Fi step cannot be done in the page — no browser can scan for networks or
+take a password, and none should be able to. What Fully Kiosk provides is
+`fully.openWifiSettings()`, so the screen hands over to **Android's own Wi-Fi
+picker**: a screen the household has seen before, which handles WPA3 and
+captive portals properly and which we would only have reimplemented badly. The
+page then watches `fully.isWifiConnected()` and moves on by itself, which is
+the part that would otherwise leave someone stranded on a settings screen not
+knowing what to press.
 
-> **Ask the masjid first. This spends their money, not ours.** Every screen that tunes to another
-> masjid consumes one of *their* listener slots and *their* bandwidth. A few hundred of our units
-> pointed at their mount could exhaust their plan and knock their own congregation off the stream.
-> Hotlinking a publicly reachable URL is technically easy and is not the question. Who appears on
-> that list is also a decision for the masjid committee rather than a technical one.
+> **This answers the wifi wrinkle above.** You no longer have to choose between
+> whitelisting a settings screen and handing out the PIN — setup opens the
+> picker for them, once, as a step in the flow. Fully's **JavaScript Interface**
+> must be enabled (PLUS) for this. Fully's own docs warn that the interface
+> lets any loaded page read local files and change device settings, so pair it
+> with Fully's **URL whitelist** restricted to this site. On a locked kiosk
+> showing one page that is a reasonable trade; leaving it open to the whole web
+> is not.
 
-**The screen is always Taiyabah's; only the sound is chosen.** The times, the countdown, the date,
-the Hijri date, the Jumu'ah line and the branding never change, whatever is playing. The only things
-that follow the dial are the ones describing the sound itself: the dial button, the listen pill while
-live, and the lock-screen media metadata. `test-tuner.js` snapshots the whole face of the screen
-either side of a tune and fails if a single character of it moves, so this is enforced rather than
-remembered. No other masjid's timetable is held, needed, or maintained.
+Setup appears only on a real unit (Fully present, nothing chosen yet) or when
+`?setup` is in the URL. A plain web visitor and the masjid's own wall screens
+never see it — they get the default masjid and behave exactly as before.
 
-Three further behaviours are deliberate, and all three exist to protect Fajr:
+A household that changes masjid later doesn't need the URL: **Other masjids →
+Change my masjid** reopens setup at the picker.
+
+## One screen, many masjids
+
+The screen is a neutral shell. The chosen masjid's name, times, adhan, jamā'ah,
+contact details and donation QR are all theirs; the sky, the type and the
+layout are the same for everyone. A masjid that supplied no logo gets its name
+set as a wordmark, so joining needs no artwork.
+
+Adding a masjid is adding a directory — see
+[`adding-a-masjid.md`](adding-a-masjid.md), which also covers the part that
+isn't code: there is no API for jamā'ah times, so every masjid on the list is a
+timetable somebody collects and re-collects each year.
+
+Separately from whose screen it is, **the dial still reaches everyone else.**
+Picking your masjid sets your times; the **Other masjids** button lets you
+listen to any of the others without your times changing. Three behaviours exist
+to protect Fajr, and all three follow *your* masjid rather than a fixed one:
 
 | Behaviour | Why |
 | --- | --- |
-| Auto-tune only works on Taiyabah | The prayer windows are built from Taiyabah's timetable, so they mean nothing on another masjid's stream. Someone listening elsewhere is never interrupted or dragged back. |
-| The recorded adhan still plays when tuned away | Live playback normally suppresses the recording, because the real muadhin is about to come through. Another masjid's programme is **not** our adhan, so the recording is not suppressed — otherwise the household would get someone else's talk at Fajr with the radio apparently working perfectly. |
-| The dial returns to Taiyabah overnight | The page reloads itself just after 2am and comes back on the home masjid. A household that tunes away and forgets would otherwise have Fajr arrive as a recording for months without ever connecting the two. |
+| Auto-tune only works on your own masjid | The prayer windows are built from your masjid's timetable, so they mean nothing on someone else's stream. |
+| The recorded adhan still plays when tuned away | Another masjid's programme is **not** your adhan. Suppressing on it would hand the household someone else's talk at Fajr with the radio apparently working perfectly. |
+| The dial returns home overnight | The nightly reload comes back on your masjid, so tuning away and forgetting does not cost months of live Fajr. |
 
-The picker opens with focus on the station currently selected rather than on **Close**, so a TV remote
-lands where the choice is. `test-tuner.js` covers all of this, including a negative control that
-auto-tune still fires on the home masjid — without it, the "doesn't hijack" check would also pass on a
-screen where auto-tune was simply broken.
+> **Ask before adding anyone's stream.** Every screen that tunes to a masjid
+> consumes one of *their* listener slots and *their* bandwidth. A few hundred
+> units pointed at their mount could knock their own congregation off.
+
+`test-setup.js` and `test-tuner.js` cover all of this, including the assertion
+the whole product rests on — that choosing a masjid really does move the times,
+not just the name over them.
 
 ---
 

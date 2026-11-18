@@ -202,6 +202,17 @@ a:focus-visible,
    and the wordmark lands around 30px. The source is 780x552, so even the
    240px ceiling on a 4K panel is still under native width and stays sharp. */
 .brandmark{height:clamp(52px,13vmin,240px);width:auto;display:block;flex:0 0 auto}
+.brandslot{flex:0 0 auto;display:flex;align-items:center}
+/* The fallback for a masjid with no logo. Set at a size that holds its own
+   beside the clock rather than looking like a caption, because for most
+   masjids this IS the branding. */
+/* Sized to survive a long name. "Zakariyya Jaame Masjid" at the width the
+   Taiyabah lockup occupies pushed the dial onto a second row and squeezed the
+   Hijri date until it broke mid-phrase, so this is deliberately narrower than
+   the logo it stands in for and wraps to two lines instead of growing. */
+.wordmark{font-family:"Fraunces",Georgia,serif;font-weight:600;color:var(--on-1);
+  line-height:1.12;letter-spacing:.01em;max-width:clamp(165px,18.5vw,330px);
+  font-size:clamp(19px,2.5vmin,38px);overflow-wrap:break-word}
 .soundpill{display:flex;align-items:center;gap:9px;background:rgba(198,162,76,.18);
   border:1px solid rgba(198,162,76,.55);color:var(--on-1);border-radius:99px;
   padding:clamp(9px,1.05vmin,15px) clamp(14px,1.75vmin,24px);
@@ -263,6 +274,33 @@ a:focus-visible,
 .stationnote{font-size:15.5px;line-height:1.5;color:var(--ink);opacity:.82;
   margin:10px 2px 0;min-height:1.2em}
 @media (max-width:700px){ .tunerbtn{padding:10px;gap:4px} #tuner-btn-label{display:none} }
+
+/* ---- out-of-box setup ---- */
+/* Opaque, not a modal over the screen: at this point there is nothing behind
+   worth seeing, and a half-visible prayer timetable would invite someone to
+   try to read times that are not theirs yet. */
+.setup{position:fixed;inset:0;z-index:90;background:var(--brand-900,#2A0A1E);
+  display:flex;align-items:center;justify-content:center;padding:4vmin;overflow:auto}
+.setup-card{background:var(--card);color:var(--ink);border-radius:22px;
+  width:min(680px,100%);padding:clamp(22px,3.4vmin,40px);box-shadow:0 24px 70px rgba(0,0,0,.4)}
+.setup-steps{display:flex;gap:7px;margin-bottom:clamp(14px,2vmin,24px)}
+.setup-steps i{height:5px;border-radius:99px;background:rgba(60,11,42,.18);flex:1 1 0}
+.setup-steps i.on{background:var(--brand-800)}
+.setup-step h2{font-family:"Fraunces",Georgia,serif;font-weight:600;color:var(--brand-800);
+  font-size:clamp(25px,3.4vmin,40px);line-height:1.15;margin:0 0 .45em}
+.setup-step p{font-size:clamp(16px,1.75vmin,21px);line-height:1.5;margin:0 0 1em;max-width:52ch}
+.setup-sub{opacity:.72}
+.setup-btn{display:block;width:100%;min-height:56px;border-radius:13px;cursor:pointer;
+  font-family:inherit;font-size:clamp(17px,1.8vmin,21px);font-weight:600;margin-top:12px;
+  border:1px solid var(--brand-800);background:var(--brand-800);color:#fff}
+.setup-btn.ghost{background:none;color:var(--brand-800);border-color:var(--line)}
+.setup-btn[disabled]{opacity:.45;cursor:default}
+.setup-wifi{font-size:clamp(15.5px,1.6vmin,19px);font-weight:600;border-radius:11px;
+  padding:13px 15px;margin-bottom:6px;background:rgba(60,11,42,.06);border:1px solid var(--line)}
+.setup-wifi.ok{background:rgba(127,192,143,.16);border-color:rgba(127,192,143,.55)}
+.linklike{background:none;border:none;padding:0;font:inherit;color:var(--brand-800);
+  text-decoration:underline;cursor:pointer}
+@media (max-width:700px){ .setup-card{padding:20px} }
 
 .clockblock{text-align:right;flex:1 1 auto;min-width:0}
 .clock{display:flex;align-items:flex-start;justify-content:flex-end;gap:.1em;
@@ -561,7 +599,10 @@ body.nodata .daygroup,body.nodata .times{display:none}
 <div class="app">
   <header class="chrome">
     <div class="chrome-left">
-      <img class="brandmark" src="logo-cream.png" alt="Taiyabah Masjid">
+      <!-- Filled by applyMasjidIdentity(): a masjid that has supplied a logo
+           gets its logo, everyone else gets their name set as a wordmark. The
+           shell is the same for all of them; only the name changes. -->
+      <div class="brandslot" id="brandslot"></div>
       <button class="soundpill" id="sound-pill" type="button" hidden aria-label="Enable Adhan and Iqamah sound">
         <span class="dot"></span><span id="sound-pill-label">Listen live</span>
       </button>
@@ -618,7 +659,7 @@ body.nodata .daygroup,body.nodata .times{display:none}
   </nav>
 
   <div class="donate" id="donate" hidden>
-    <span class="code" id="donate-code">__DONATE_QR_SVG__</span>
+    <span class="code" id="donate-code"></span>
     <span class="cap" id="donate-cap">Scan to give</span>
   </div>
 
@@ -661,12 +702,54 @@ body.nodata .daygroup,body.nodata .times{display:none}
   </div>
 </div>
 
+<!-- Out-of-box setup. Shown when a device has never been set up, or when
+     ?setup is in the URL. A plain web visitor never sees it: there is no
+     masjid to choose on a wall screen and no wifi to join in a browser. -->
+<div class="setup" id="setup" hidden>
+  <div class="setup-card">
+    <div class="setup-steps" id="setup-dots" aria-hidden="true"></div>
+
+    <section class="setup-step" data-step="0">
+      <h2>Assalamu alaikum</h2>
+      <p>This screen shows your masjid&rsquo;s prayer times, and plays the adhan
+         live from the masjid at every salah.</p>
+      <p class="setup-sub">Two short steps and it&rsquo;s yours.</p>
+      <button class="setup-btn primary" type="button" data-go="1">Let&rsquo;s get you set up</button>
+    </section>
+
+    <section class="setup-step" data-step="1" hidden>
+      <h2>Connect to your Wi-Fi</h2>
+      <p>The screen needs Wi-Fi to keep your prayer times right and to carry
+         the masjid live.</p>
+      <div class="setup-wifi" id="setup-wifi-state">Checking&hellip;</div>
+      <button class="setup-btn primary" type="button" id="setup-wifi-btn">Choose Wi-Fi network</button>
+      <button class="setup-btn ghost" type="button" data-go="2" id="setup-wifi-skip">Skip for now</button>
+    </section>
+
+    <section class="setup-step" data-step="2" hidden>
+      <h2>Which masjid do you attend?</h2>
+      <p>Your times, your adhan and your jama&rsquo;ah will all come from the
+         masjid you pick. You can still listen to any of the others whenever
+         you like.</p>
+      <div class="stationlist" id="setup-masjids" role="radiogroup" aria-label="Your masjid"></div>
+    </section>
+
+    <section class="setup-step" data-step="3" hidden>
+      <h2 id="setup-done-h">All set</h2>
+      <p id="setup-done-p">Your screen is ready.</p>
+      <button class="setup-btn primary" type="button" id="setup-finish">Finish</button>
+    </section>
+  </div>
+</div>
+
 <div class="modalwrap" id="tuner-wrap" hidden>
   <div class="modal">
     <header><h3>Listen to another masjid</h3><button class="closebtn" id="tuner-close" type="button">Close</button></header>
     <div class="modalbody">
       <div class="stationlist" id="station-list" role="radiogroup" aria-label="Masjid to listen to"></div>
       <p class="stationnote" id="station-note"></p>
+      <p class="stationnote"><span id="tuner-whose"></span>
+        <button class="linklike" type="button" id="tuner-change">Change my masjid</button></p>
     </div>
   </div>
 </div>
@@ -681,13 +764,7 @@ body.nodata .daygroup,body.nodata .times{display:none}
 <div class="modalwrap" id="contact-wrap" hidden>
   <div class="modal">
     <header><h3>Visit &amp; contact</h3><button class="closebtn" id="contact-close" type="button">Close</button></header>
-    <div class="modalbody">
-      <div class="contactrow"><span class="k">Address</span><span>31a Draycott Street, Bolton, BL1 8HD</span></div>
-      <div class="contactrow"><span class="k">Phone</span><a href="tel:01204535997">01204 535 997</a></div>
-      <div class="contactrow"><span class="k">Email</span><a href="mailto:info@taiyabahmasjid.com">info@taiyabahmasjid.com</a></div>
-      <div class="contactrow"><span class="k">Website</span><a href="https://www.taiyabahmasjid.com" target="_blank" rel="noopener">taiyabahmasjid.com</a></div>
-      <div class="contactrow"><span class="k">Charity</span><span>Bolton Central Islamic Society · No. 1041569</span></div>
-    </div>
+    <div class="modalbody" id="contact-body"></div>
   </div>
 </div>
 
@@ -707,14 +784,72 @@ body.nodata .daygroup,body.nodata .times{display:none}
 <audio id="audio-iqamah" src="audio/iqamah-short.mp3" preload="auto"></audio>
 
 <script>
-const DATA = __TIMETABLE_JSON__;
-const NEWBUILD = __NEWBUILD_JSON__;
+/* Every masjid on this screen, each with its own times, stream and details.
+   All of them are inlined rather than fetched: ten masjids of two years each
+   is ~1.9MB raw but under 200KB over the wire once gzipped, and paying that
+   buys a page that boots with no network, works offline for good, and can
+   switch masjid instantly in a kitchen with bad wifi. */
+const MASJIDS = __MASJIDS_JSON__;
+const DEFAULT_MASJID = __DEFAULT_MASJID__;
+/* When to open the stream around a prayer. The same for every masjid,
+   because it is a fact about salah rather than about who is broadcasting. */
+const TUNING = __TUNING_JSON__;
 const OCCASIONS = __OCCASIONS_JSON__;
-const STREAM = __STREAM_JSON__;
-/* Every masjid this screen can tune to, home first. Built from stream.json
-   plus data/stations.json, so Taiyabah's URL exists in exactly one place. */
-const STATIONS = __STATIONS_JSON__;
-const HOME_STATION = (STATIONS.find(st => st.home) || STATIONS[0] || null);
+
+/* The chosen masjid, and the four views of it the rest of the page reads.
+   These keep their old names so that everything downstream — the renderers,
+   the audio, the appeal — did not have to change when the screen stopped
+   belonging to one masjid. */
+const MASJID_KEY = 'home.masjid';
+let MASJID = null, DATA = null, NEWBUILD = null, STREAM = null;
+
+function masjidById(id){ return MASJIDS.find(m => m.id === id) || null; }
+
+function storedMasjidId(){
+  try { return localStorage.getItem(MASJID_KEY); } catch(e){ return null; }
+}
+
+/* Falls back rather than failing: a device whose stored masjid has been
+   removed from the build shows the default one instead of a blank screen,
+   and the setup wizard can be re-run to pick again. */
+function setMasjid(id, remember){
+  const m = masjidById(id) || masjidById(DEFAULT_MASJID) || MASJIDS[0];
+  if(!m) return;
+  MASJID = m;
+  DATA = { days: m.days };
+  NEWBUILD = Object.assign({}, m.appeal || {}, { give: m.give || null });
+  /* Tuning policy is shared; only the endpoint and the name are the
+     masjid's own. Merged so STREAM.tuneLeadMinutes & co. still read as one
+     object the way they always did. */
+  STREAM = Object.assign({}, TUNING, m.stream || {});
+  if(remember){ try { localStorage.setItem(MASJID_KEY, m.id); } catch(e){} }
+  const keys = Object.keys(DATA.days).sort();
+  LAST_DAY = keys.length ? keys[keys.length-1] : null;
+  rebuildStations();
+}
+
+/* The dial lists every masjid that broadcasts, and "home" is whichever one
+   this device belongs to — so auto-tune, the adhan rule and the overnight
+   reset all follow the household's own masjid rather than a fixed one. */
+let STATIONS = [], HOME_STATION = null;
+let curStationId = null;
+/* The last date this masjid has times for. Per masjid, because one masjid
+   running out of timetable must not make the others look expired. */
+let LAST_DAY = null;
+function rebuildStations(){
+  STATIONS = MASJIDS
+    .filter(m => m.stream && m.stream.url && m.stream.enabled !== false)
+    .map(m => ({ id: m.id, name: m.name, url: m.stream.url, home: !!(MASJID && m.id === MASJID.id) }));
+  HOME_STATION = STATIONS.find(st => st.home) || STATIONS[0] || null;
+  curStationId = HOME_STATION ? HOME_STATION.id : null;
+}
+
+/* Chosen here, at the top, because everything below assumes DATA, STREAM and
+   NEWBUILD are populated — renderSupport() in particular runs at parse time.
+   A device that has been set up has a masjid stored; the masjid's own wall
+   screens never go through setup and get the default, which is why they
+   needed no change at all. */
+setMasjid(storedMasjidId() || DEFAULT_MASJID, false);
 const BRAND_MARK = __BRAND_MARK__;
 
 const PRAYERS = [
@@ -986,7 +1121,6 @@ const STATION_KEY = 'taiyabah.live.station';
    Taiyabah. A household that tunes away and forgets would otherwise have
    Fajr arrive as the recording for months, and nobody would connect the two.
    Honouring a stored value here is a one-line change if that is ever wanted. */
-let curStationId = HOME_STATION ? HOME_STATION.id : null;
 try { localStorage.removeItem(STATION_KEY); } catch(e){}
 
 function stationById(id){ return STATIONS.find(st => st.id === id) || null; }
@@ -1357,6 +1491,9 @@ function renderStations(){
     row.addEventListener('click', ()=>{ tuneTo(st.id); closeModal('tuner-wrap'); });
     list.appendChild(row);
   }
+  const whose = document.getElementById('tuner-whose');
+  if(whose) whose.textContent = MASJID
+    ? ('This screen shows ' + MASJID.name + '\u2019s times. ') : '';
   // Said plainly, because the consequence is easy to miss and lands at Fajr.
   if(note){
     note.textContent = onHomeStation()
@@ -1379,6 +1516,162 @@ document.getElementById('tuner-btn').addEventListener('click', (e)=>{
   if(cur) cur.focus();
 });
 document.getElementById('tuner-close').addEventListener('click', ()=>closeModal('tuner-wrap'));
+
+/* ---- out-of-box setup ----
+   Four screens: welcome, wifi, pick your masjid, done.
+
+   The wifi step cannot be done in the page. No browser can scan for networks
+   or take a password — there is no such API, and there should not be. What
+   Fully Kiosk does give us is fully.openWifiSettings(), which hands over to
+   Android's own wifi picker: a screen the household has seen before, that
+   handles WPA3 and captive portals properly, and that we would only have
+   reimplemented badly. So we open it, then watch for a connection and move on
+   by ourselves, which is the part that would otherwise strand someone on a
+   settings screen wondering what to press next.
+
+   With no Fully present (a browser, a wall screen, the test suite) the step
+   degrades to "connect however you normally would, then continue". */
+const SETUP = { step: 0, pick: null, timer: null };
+const setupEl = document.getElementById('setup');
+function fullyApi(){ return (typeof fully !== 'undefined' && fully) ? fully : null; }
+
+function setupOnline(){
+  /* On a real unit Fully is authoritative, including when it says NO. Falling
+     through to navigator.onLine on a negative answer made the step claim
+     "Connected" on a tablet with no wifi at all, which is the one thing this
+     screen exists to tell the truth about. navigator.onLine is only for the
+     case where there is no Fully to ask. */
+  const f = fullyApi();
+  if(f && typeof f.isWifiConnected === 'function'){
+    try { return !!f.isWifiConnected(); } catch(e){}
+  }
+  return navigator.onLine !== false;
+}
+function setupWifiName(){
+  const f = fullyApi();
+  if(f && typeof f.getWifiSsid === 'function'){
+    try { const n = f.getWifiSsid(); if(n) return String(n).replace(/^"|"$/g, ''); } catch(e){}
+  }
+  return null;
+}
+
+function setupShowStep(n){
+  SETUP.step = n;
+  for(const sec of setupEl.querySelectorAll('.setup-step')) sec.hidden = Number(sec.dataset.step) !== n;
+  const dots = document.getElementById('setup-dots');
+  dots.innerHTML = '';
+  for(let i = 0; i < 4; i++){
+    const d = document.createElement('i');
+    if(i <= n) d.classList.add('on');
+    dots.appendChild(d);
+  }
+  if(n === 1) setupWifiTick();
+  if(n === 2) setupRenderMasjids();
+  if(n === 3){
+    const m = masjidById(SETUP.pick) || MASJID;
+    document.getElementById('setup-done-h').textContent = 'All set';
+    document.getElementById('setup-done-p').textContent =
+      m ? ('This screen now shows ' + m.name + '’s prayer times, and will play the adhan live at every salah.')
+        : 'Your screen is ready.';
+  }
+  // Move focus to the step so a remote lands inside it, not on a stale button.
+  const first = setupEl.querySelector('.setup-step:not([hidden]) button, .setup-step:not([hidden]) .stationrow');
+  if(first) first.focus();
+}
+
+function setupWifiTick(){
+  const box = document.getElementById('setup-wifi-state');
+  const skip = document.getElementById('setup-wifi-skip');
+  if(!box) return;
+  const on = setupOnline();
+  const ssid = setupWifiName();
+  box.classList.toggle('ok', on);
+  box.textContent = on
+    ? (ssid ? ('Connected to ' + ssid) : 'Connected')
+    : 'Not connected yet';
+  if(skip) skip.textContent = on ? 'Continue' : 'Skip for now';
+  // Once it really is online, go on by itself — nobody should have to work
+  // out that the job is finished and this screen is still waiting.
+  if(on && SETUP.step === 1 && SETUP.autoAdvance){
+    SETUP.autoAdvance = false;
+    setTimeout(()=>{ if(SETUP.step === 1) setupShowStep(2); }, 900);
+  }
+}
+
+function setupRenderMasjids(){
+  const list = document.getElementById('setup-masjids');
+  if(!list) return;
+  list.innerHTML = '';
+  const chosen = SETUP.pick || (MASJID && MASJID.id);
+  for(const m of MASJIDS){
+    const row = document.createElement('button');
+    row.type = 'button';
+    row.className = 'stationrow';
+    row.setAttribute('role', 'radio');
+    row.setAttribute('aria-checked', m.id === chosen ? 'true' : 'false');
+    const tick = document.createElement('span');
+    tick.className = 'tick'; tick.setAttribute('aria-hidden', 'true');
+    tick.textContent = m.id === chosen ? '✓' : '';
+    const name = document.createElement('span');
+    name.className = 'sname'; name.textContent = m.name;
+    row.appendChild(tick); row.appendChild(name);
+    row.addEventListener('click', ()=>{
+      SETUP.pick = m.id;
+      setMasjid(m.id, true);
+      applyMasjidIdentity();
+      setupShowStep(3);
+    });
+    list.appendChild(row);
+  }
+}
+
+function setupOpen(step){
+  setupEl.hidden = false;
+  SETUP.pick = MASJID ? MASJID.id : null;
+  SETUP.autoAdvance = true;
+  setupShowStep(step || 0);
+  clearInterval(SETUP.timer);
+  SETUP.timer = setInterval(()=>{ if(SETUP.step === 1) setupWifiTick(); }, 2000);
+}
+function setupClose(){
+  clearInterval(SETUP.timer);
+  SETUP.timer = null;
+  setupEl.hidden = true;
+  focusAmbient();
+}
+
+setupEl.addEventListener('click', (e)=>{
+  const go = e.target.closest('[data-go]');
+  if(go) setupShowStep(Number(go.dataset.go));
+});
+document.getElementById('setup-wifi-btn').addEventListener('click', ()=>{
+  const f = fullyApi();
+  SETUP.autoAdvance = true;
+  if(f && typeof f.openWifiSettings === 'function'){
+    try { f.openWifiSettings(); return; } catch(e){}
+  }
+  // No Fully: say what to do rather than pretending a button did it.
+  document.getElementById('setup-wifi-state').textContent =
+    'Open Wi-Fi settings on this device, join your network, then come back and press Continue.';
+});
+document.getElementById('setup-finish').addEventListener('click', ()=>{
+  if(SETUP.pick) setMasjid(SETUP.pick, true);
+  applyMasjidIdentity();
+  setupClose();
+});
+document.getElementById('tuner-change').addEventListener('click', ()=>{
+  closeModal('tuner-wrap');
+  setupOpen(2);
+});
+
+/* Run setup when this device has never been set up and is a real unit (Fully
+   is present), or whenever ?setup is in the URL. A plain web visitor and the
+   masjid's own wall screens never see it. */
+(function maybeSetup(){
+  const forced = /[?&]setup\b/.test(location.search);
+  const unprovisioned = !storedMasjidId() && !!fullyApi();
+  if(forced || unprovisioned) setupOpen(0);
+})();
 
 function buildTriggersForDay(rec, baseDate){
   const isFriday = baseDate.getDay()===5 && !!rec.jummah;
@@ -1438,18 +1731,100 @@ function checkAudioTriggers(rec, baseDate, now){
   }
 }
 
-/* The QR is inlined at build time, so an empty block means either no QR
-   file or qrEnabled:false in the data. Either way, show nothing rather
-   than an empty frame. */
-(function donateQR(){
+/* The QR is inlined per masjid at build time. A masjid with no QR — or one
+   that has not set up giving at all — shows nothing rather than an empty
+   frame, which is how a masjid joins without having to supply a donation
+   link it does not have. */
+/* Everything on the screen that belongs to a masjid rather than to the
+   product. The shell — the sky, the type, the layout, the countdown — is the
+   same for every masjid; this is the thin layer that says whose screen it is.
+   Re-run whenever the choice changes, so switching masjid in setup does not
+   need a reload. */
+function applyMasjidIdentity(){
+  if(!MASJID) return;
+
+  document.title = MASJID.name + " — Prayer times";
+
+  /* A masjid that supplied a logo gets it. Everyone else gets their name set
+     as a wordmark, which is why joining needs no artwork. */
+  const slot = document.getElementById('brandslot');
+  if(slot){
+    slot.innerHTML = '';
+    if(MASJID.logo){
+      const img = document.createElement('img');
+      img.className = 'brandmark';
+      img.src = MASJID.logo;
+      img.alt = MASJID.name;
+      slot.appendChild(img);
+    } else {
+      const wm = document.createElement('div');
+      wm.className = 'wordmark';
+      wm.textContent = MASJID.name;
+      slot.appendChild(wm);
+    }
+  }
+
+  const c = MASJID.contact || null;
+  const body = document.getElementById('contact-body');
+  if(body){
+    body.innerHTML = '';
+    const row = (k, node) => {
+      const r = document.createElement('div');
+      r.className = 'contactrow';
+      const kk = document.createElement('span'); kk.className = 'k'; kk.textContent = k;
+      r.appendChild(kk); r.appendChild(node); body.appendChild(r);
+    };
+    const text = t => { const e = document.createElement('span'); e.textContent = t; return e; };
+    const link = (href, label) => {
+      const a = document.createElement('a');
+      a.href = href; a.textContent = label;
+      if(/^https?:/.test(href)){ a.target = '_blank'; a.rel = 'noopener'; }
+      return a;
+    };
+    if(c && c.address)  row('Address', text(c.address));
+    if(c && c.phone)    row('Phone',   link(c.phoneHref || ('tel:' + c.phone.replace(/\s+/g,'')), c.phone));
+    if(c && c.email)    row('Email',   link('mailto:' + c.email, c.email));
+    if(c && c.website)  row('Website', link(c.website, c.websiteLabel || c.website));
+    if(c && c.charity)  row('Charity', text(c.charity));
+    if(!body.children.length) body.appendChild(text('No contact details on file for this masjid yet.'));
+  }
+  const btnContact = document.getElementById('btn-contact');
+  if(btnContact) btnContact.hidden = !c;
+
+  /* The appeal is one masjid's fundraising campaign, not a feature of the
+     product. A masjid without one simply has no such button. */
+  const btnSupport = document.getElementById('btn-support');
+  if(btnSupport){
+    const hasAppeal = !!(MASJID.appeal && Object.keys(MASJID.appeal).length);
+    btnSupport.hidden = !hasAppeal;
+    const label = btnSupport.querySelector('.v');
+    if(hasAppeal && label && MASJID.appeal.eyebrow){
+      label.textContent = 'Support ' + (MASJID.appeal.eyebrow === 'The New Build'
+        ? 'the new build' : MASJID.appeal.eyebrow);
+    }
+  }
+
+  renderDonate();
+  if(typeof renderSupport === 'function') renderSupport();
+  updateSoundPill();
+  // Repaint now. Waiting for the next tick would leave the previous masjid's
+  // times under a new masjid's name for up to a second, right at the moment
+  // someone is looking to see whether their choice took.
+  if(typeof tick === 'function') tick();
+}
+
+function renderDonate(){
   const box = document.getElementById('donate');
   const code = document.getElementById('donate-code');
   if(!box || !code) return;
   const give = (NEWBUILD && NEWBUILD.give) || {};
-  const ok = give.qrEnabled !== false && code.querySelector('svg');
+  const svg = (MASJID && MASJID.qr) || '';
+  code.innerHTML = svg;
+  const ok = !!svg && give.qrEnabled !== false;
   box.hidden = !ok;
-  if(ok && give.qrLabel) document.getElementById('donate-cap').textContent = give.qrLabel;
-})();
+  const cap = document.getElementById('donate-cap');
+  if(ok && cap && give.qrLabel) cap.textContent = give.qrLabel;
+}
 
 /* ---------------- running out of timetable ----------------
    The timetable is a finite file — 2026 only, at the time of writing — and
@@ -1460,13 +1835,6 @@ function checkAudioTriggers(rec, baseDate, now){
    tell whether the times are missing or merely wrong.
    So the cliff is handled, and more importantly it is announced in advance
    while somebody can still act on it. */
-const LAST_DAY = (function(){
-  if(!DATA || !DATA.days) return null;
-  const keys = Object.keys(DATA.days);
-  if(!keys.length) return null;
-  keys.sort();
-  return keys[keys.length-1];
-})();
 const EXPIRY_NOTICE_DAYS = 45;   // about six weeks' warning
 
 function daysOfTimetableLeft(now){
@@ -1602,7 +1970,12 @@ function renderDay(rec, baseDate, now){
   const span  = Math.max(60000, end - start);
   const pct   = t => Math.max(0, Math.min(100, ((t - start) / span) * 100));
 
-  const key = ymd(baseDate) + "|" + current + "|" + (isFriday ? "f" : "-");
+  /* The masjid is part of the key. Without it, switching masjid on the same
+     day and in the same prayer period left the previous masjid's times on
+     screen — the memo is keyed on when, and the whole point of setup is that
+     WHOSE can change too. */
+  const key = (MASJID ? MASJID.id : "-") + "|" +
+              ymd(baseDate) + "|" + current + "|" + (isFriday ? "f" : "-");
   if(key !== lastDayKey){
     lastDayKey = key;
     const frag = document.createDocumentFragment();
@@ -1873,6 +2246,11 @@ document.getElementById('month-next').addEventListener('click', ()=>{
 /* ---------------- support (New Build) modal ---------------- */
 function renderSupport(){
   const nb = NEWBUILD;
+  /* Most masjids will have no fundraising appeal, and that is a normal
+     profile rather than a broken one. Leave the modal empty; the button that
+     opens it is hidden by applyMasjidIdentity(). */
+  const box = document.getElementById('support-body');
+  if(!nb || !nb.give || !nb.eyebrow){ if(box) box.innerHTML = ''; return; }
   /* The link on the home screen stays "Support the new build". Earlier
      layouts retitled it with the current phase ("Internal fixtures &
      fittings"), which names the project but asks for nothing — and this is
@@ -1964,6 +2342,8 @@ renderSupport();
    again without waiting for a tap. It may be refused (a cold start has no
    user gesture yet), which is precisely why the pill flips to
    "Sound paused · tap to resume" rather than claiming everything is fine. */
+applyMasjidIdentity();
+
 (function reportClock(){
   const drift = deviceClockOffsetMinutes();
   const zone = (()=>{ try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch(e){ return "unknown"; } })();

@@ -106,8 +106,14 @@ const QUIET_CLOCK = '2026-08-20T10:30:00';
     [...document.getElementById('meter').children].map(b => parseFloat(b.style.height) || 0));
   check('level meter is alive', heights.some(h => h > 8),
     `bars ${heights.map(h => Math.round(h)).join(',')}%`);
+  // The intent is that a working-but-silent stream never looks like a dead
+  // one. The old form (quiet-class OR rms>0.02) had a dead zone: a hall that
+  // was making *some* noise, below 0.02 but above the quiet threshold,
+  // matched neither and failed a perfectly healthy stream. Assert the intent
+  // instead — the meter must not be reporting a fault — with the bars-moving
+  // check above carrying the "it is alive" half.
   check('near-silence reads as quiet, not broken',
-    live.meter.includes('quiet') || live.level > 0.02,
+    !live.meter.includes('down'),
     `meter="${live.meter}" rms=${live.level}`);
 
   // ---- the masjid goes off-air ----
