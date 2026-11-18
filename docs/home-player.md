@@ -182,7 +182,14 @@ plain-HTTP mount is blocked as mixed content and fails silently).
 > Hotlinking a publicly reachable URL is technically easy and is not the question. Who appears on
 > that list is also a decision for the masjid committee rather than a technical one.
 
-Three behaviours are deliberate, and all three exist to protect Fajr:
+**The screen is always Taiyabah's; only the sound is chosen.** The times, the countdown, the date,
+the Hijri date, the Jumu'ah line and the branding never change, whatever is playing. The only things
+that follow the dial are the ones describing the sound itself: the dial button, the listen pill while
+live, and the lock-screen media metadata. `test-tuner.js` snapshots the whole face of the screen
+either side of a tune and fails if a single character of it moves, so this is enforced rather than
+remembered. No other masjid's timetable is held, needed, or maintained.
+
+Three further behaviours are deliberate, and all three exist to protect Fajr:
 
 | Behaviour | Why |
 | --- | --- |

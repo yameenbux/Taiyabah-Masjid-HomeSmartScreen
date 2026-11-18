@@ -175,6 +175,32 @@ function writeVariant() {
     check('our own live broadcast still does suppress it',
       supp.home === true, `suppress=${supp.home}`);
 
+    // ---- 6b. the screen is Taiyabah's, whatever is coming out of it ----
+    // The dial moves sound and nothing else: the times, the countdown target,
+    // the date and the Jumu'ah line are Taiyabah's at all times. Snapshotted
+    // either side of a tune so this stays true by test rather than by memory.
+    // #hero-count is excluded on purpose — it ticks every second.
+    const face = () => page.evaluate(() => ({
+      name: document.getElementById('hero-name').textContent.trim(),
+      at:   document.getElementById('hero-at').textContent.trim(),
+      date: document.getElementById('dateline').textContent.trim(),
+      jum:  document.getElementById('jummah-line').textContent.trim(),
+      times: document.getElementById('times').textContent.replace(/\s+/g, ' ').trim(),
+    }));
+    await page.evaluate(() => tuneTo(STATIONS[0].id));
+    await page.waitForTimeout(250);
+    const onHome = await face();
+    await page.evaluate(() => tuneTo('testmasjid'));
+    await page.waitForTimeout(250);
+    const onAway = await face();
+    for(const k of ['name','at','date','jum','times']){
+      check(`tuning away leaves Taiyabah's ${k} untouched`, onHome[k] === onAway[k],
+        onHome[k] === onAway[k] ? (onHome[k].slice(0, 46) || '(empty)')
+                                : `home="${onHome[k]}" away="${onAway[k]}"`);
+    }
+    check('and the times strip is not empty, so that comparison means something',
+      onHome.times.length > 20, `${onHome.times.length} chars`);
+
     // ---- 7. the dial comes home overnight ----
     await page.evaluate(() => tuneTo('testmasjid'));
     await page.waitForTimeout(200);
