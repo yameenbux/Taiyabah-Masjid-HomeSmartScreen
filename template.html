@@ -234,6 +234,36 @@ a:focus-visible,
 @media (max-width:700px){ .radio-vol{display:none} }
 @media (max-width:700px){ #sound-pill-label{display:none} .soundpill{padding:12px} }
 
+/* ---- the dial ---- */
+/* The FM receiver this screen replaces could reach every transmitter in the
+   town, and some people rightly count that as the better radio. This is that
+   band, as a list. Deliberately quieter than the sound pill: the home masjid
+   is the point of the screen and the others are an occasional errand, so this
+   reads as a label of where the dial sits rather than a call to action. */
+.tunerbtn{display:flex;align-items:center;gap:7px;background:rgba(247,243,234,.06);
+  border:1px solid rgba(201,178,194,.28);color:var(--on-2);border-radius:99px;
+  padding:clamp(7px,.8vmin,11px) clamp(11px,1.3vmin,17px);
+  font-size:clamp(14px,1.3vmin,19px);font-weight:600;cursor:pointer;white-space:nowrap;
+  min-height:44px;flex:0 0 auto}
+.tunerbtn .chev{opacity:.7;font-size:.85em}
+/* Tuned away from home: say so in colour as well as words, because the
+   consequence is real — Taiyabah's adhan arrives as the recording, not live. */
+.tunerbtn.away{background:rgba(198,162,76,.16);border-color:rgba(198,162,76,.5);color:var(--on-1)}
+.stationlist{display:flex;flex-direction:column;gap:8px;padding:14px 0 4px}
+.stationrow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+  background:none;border:1px solid var(--line);border-radius:12px;
+  padding:13px 15px;min-height:52px;cursor:pointer;color:var(--ink);
+  font-size:18px;font-weight:600;font-family:inherit}
+.stationrow:hover{background:rgba(60,11,42,.04)}
+.stationrow .tick{flex:0 0 auto;width:20px;color:var(--brand-800);font-size:19px}
+.stationrow .sname{flex:1 1 auto;min-width:0}
+.stationrow .stag{flex:0 0 auto;font-size:14px;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--brand-800);opacity:.72}
+.stationrow[aria-checked="true"]{border-color:var(--brand-800);background:rgba(60,11,42,.06)}
+.stationnote{font-size:15.5px;line-height:1.5;color:var(--ink);opacity:.82;
+  margin:10px 2px 0;min-height:1.2em}
+@media (max-width:700px){ .tunerbtn{padding:10px;gap:4px} #tuner-btn-label{display:none} }
+
 .clockblock{text-align:right;flex:1 1 auto;min-width:0}
 .clock{display:flex;align-items:flex-start;justify-content:flex-end;gap:.1em;
   font-family:"Fraunces",Georgia,serif;font-weight:300;color:var(--on-1);line-height:1}
@@ -538,6 +568,14 @@ body.nodata .daygroup,body.nodata .times{display:none}
       <div class="meter" id="meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <input class="radio-vol" id="radio-vol" type="range" min="0" max="100" value="85"
              aria-label="Live volume" title="Live volume">
+      <!-- The dial. Hidden entirely while there is only one station, so a
+           single-masjid configuration looks exactly as it did before this
+           feature existed. Shows where the dial IS, the way a radio does,
+           rather than a generic "choose" label. -->
+      <button class="tunerbtn" id="tuner-btn" type="button" hidden
+              aria-haspopup="dialog" aria-label="Choose which masjid to listen to">
+        <span id="tuner-btn-label">Taiyabah</span><span class="chev" aria-hidden="true">▾</span>
+      </button>
     </div>
     <div class="clockblock">
       <div class="clock tnum"><span class="hm" id="clock-hm">--:--</span><span class="ss" id="clock-ss">--</span></div>
@@ -623,6 +661,16 @@ body.nodata .daygroup,body.nodata .times{display:none}
   </div>
 </div>
 
+<div class="modalwrap" id="tuner-wrap" hidden>
+  <div class="modal">
+    <header><h3>Listen to another masjid</h3><button class="closebtn" id="tuner-close" type="button">Close</button></header>
+    <div class="modalbody">
+      <div class="stationlist" id="station-list" role="radiogroup" aria-label="Masjid to listen to"></div>
+      <p class="stationnote" id="station-note"></p>
+    </div>
+  </div>
+</div>
+
 <div class="modalwrap" id="support-wrap" hidden>
   <div class="modal">
     <header><h3>The New Build</h3><button class="closebtn" id="support-close" type="button">Close</button></header>
@@ -663,6 +711,10 @@ const DATA = __TIMETABLE_JSON__;
 const NEWBUILD = __NEWBUILD_JSON__;
 const OCCASIONS = __OCCASIONS_JSON__;
 const STREAM = __STREAM_JSON__;
+/* Every masjid this screen can tune to, home first. Built from stream.json
+   plus data/stations.json, so Taiyabah's URL exists in exactly one place. */
+const STATIONS = __STATIONS_JSON__;
+const HOME_STATION = (STATIONS.find(st => st.home) || STATIONS[0] || null);
 const BRAND_MARK = __BRAND_MARK__;
 
 const PRAYERS = [
@@ -882,7 +934,8 @@ function updateMediaSession(){
     const live = typeof LIVE !== 'undefined' && LIVE.state === 'live';
     navigator.mediaSession.metadata = new MediaMetadata({
       title: live ? "Live from the masjid" : "Adhan & Iqamah \u2014 standing by",
-      artist: (STREAM && STREAM.name) || "Taiyabah Masjid",
+      artist: (typeof curStation === "function" && curStation() && curStation().name)
+              || (STREAM && STREAM.name) || "Taiyabah Masjid",
       album: "Home Smart Screen",
       artwork: [{ src: "icon-512.png", sizes: "512x512", type: "image/png" }]
     });
@@ -927,6 +980,22 @@ function setUpMediaSession(){
    one tap at setup is exactly what switching a radio on has always been.
    ==================================================================== */
 const LIVE_KEY = 'taiyabah.live.on';
+const STATION_KEY = 'taiyabah.live.station';
+/* Which masjid the dial is on. Deliberately NOT restored across a reload:
+   the page reloads itself just after 2am, so every day starts back on
+   Taiyabah. A household that tunes away and forgets would otherwise have
+   Fajr arrive as the recording for months, and nobody would connect the two.
+   Honouring a stored value here is a one-line change if that is ever wanted. */
+let curStationId = HOME_STATION ? HOME_STATION.id : null;
+try { localStorage.removeItem(STATION_KEY); } catch(e){}
+
+function stationById(id){ return STATIONS.find(st => st.id === id) || null; }
+function curStation(){ return stationById(curStationId) || HOME_STATION; }
+function onHomeStation(){
+  const st = curStation();
+  return !!(st && HOME_STATION && st.id === HOME_STATION.id);
+}
+function multiStation(){ return STATIONS.length > 1; }
 const LIVE_VOL_KEY = 'taiyabah.live.vol';
 const audioLive = document.getElementById('audio-live');
 const meterEl = document.getElementById('meter');
@@ -948,7 +1017,10 @@ try {
 } catch(e){}
 audioLive.volume = (parseInt(volEl.value,10) || 85) / 100;
 
-function liveConfigured(){ return !!(STREAM && STREAM.enabled && STREAM.url); }
+function liveConfigured(){
+  const st = curStation();
+  return !!(STREAM && STREAM.enabled && st && st.url);
+}
 function liveAudible(){
   return LIVE.state === 'live' && !audioLive.muted && audioLive.volume > 0.01;
 }
@@ -961,7 +1033,8 @@ function liveConnect(){
   /* A fresh query string on every attempt. Without it a reconnect can be
      served the same dead buffered response from an intermediate cache and
      reconnect "successfully" to nothing. */
-  audioLive.src = STREAM.url + (STREAM.url.includes('?') ? '&' : '?') + 'r=' + Date.now();
+  const url = curStation().url;
+  audioLive.src = url + (url.includes('?') ? '&' : '?') + 'r=' + Date.now();
   audioLive.load();
   audioLive.play().catch(()=>{ /* the retry path owns this */ });
   updateSoundPill();
@@ -1070,6 +1143,11 @@ function prayerWindow(rec, baseDate, now){
 
 function autoTune(rec, baseDate, now){
   if(!liveConfigured()) return;
+  /* Prayer windows are built from Taiyabah's timetable, so they only mean
+     anything on Taiyabah's stream. Someone listening to another masjid is
+     not interrupted and not dragged back; the recorded adhan covers them
+     instead. Nothing here closes a connection it did not open. */
+  if(!onHomeStation()) return;
   const want = prayerWindow(rec, baseDate, now);
   if(want && !LIVE.wanted){
     console.info('[taiyabah] tuning in for the adhan');
@@ -1172,6 +1250,7 @@ function unlockSound(playConfirm){
 }
 function updateSoundPill(){
   soundPill.hidden = false;
+  updateTunerBtn();
   if(meterEl) meterEl.hidden = !(soundUnlocked && LIVE.wanted);
   if(volEl) volEl.hidden = !(soundUnlocked && LIVE.wanted && liveConfigured());
   if(!soundUnlocked){
@@ -1192,7 +1271,7 @@ function updateSoundPill(){
     // adhan: the recording still fires even with the masjid off-air.
     if(LIVE.state === 'live'){
       soundPill.classList.add('on');
-      soundPillLabel.textContent = (STREAM.name || "Masjid") +
+      soundPillLabel.textContent = (curStation().name || "Masjid") +
         (autoTuned ? " · live for salah" : " · live");
       return;
     }
@@ -1214,6 +1293,92 @@ soundPill.addEventListener('click', ()=>{
   // second tap switches it off, the way a radio has always worked.
   if(LIVE.wanted && !first) liveStop(); else liveStart();
 });
+
+/* ---- the dial ---- */
+/* Switching masjid mid-listen has to tear the old connection down before the
+   new one goes up: two live MP3 sockets would both play. liveStop() also
+   clears autoTuned, which is correct — once someone has turned the dial by
+   hand, the prayer windows no longer own this connection. */
+function tuneTo(id){
+  const st = stationById(id);
+  if(!st || id === curStationId) return;
+  const wasOn = LIVE.wanted;
+  if(wasOn) liveStop();
+  curStationId = id;
+  LIVE.attempts = 0;
+  console.info('[taiyabah] tuned to ' + st.name + (st.home ? ' (home)' : ''));
+  if(wasOn) liveStart();
+  renderStations();
+  updateSoundPill();
+  updateMediaSession();
+}
+
+function updateTunerBtn(){
+  const btn = document.getElementById('tuner-btn');
+  if(!btn) return;
+  // One station is not a choice: stay completely out of the way.
+  btn.hidden = !(multiStation() && liveConfigured());
+  if(btn.hidden) return;
+  const st = curStation();
+  const home = onHomeStation();
+  /* On the home masjid the name would sit directly beside the Taiyabah
+     wordmark and say nothing, while giving no hint that the other masjids
+     exist at all. Invite instead. Once the dial has moved, the name is the
+     whole point — it is the only thing on screen saying you are not hearing
+     your own masjid. */
+  document.getElementById('tuner-btn-label').textContent =
+    home ? 'Other masjids' : (st ? st.name : '');
+  btn.classList.toggle('away', !home);
+}
+
+function renderStations(){
+  const list = document.getElementById('station-list');
+  const note = document.getElementById('station-note');
+  if(!list) return;
+  list.innerHTML = '';
+  for(const st of STATIONS){
+    const row = document.createElement('button');
+    row.type = 'button';
+    row.className = 'stationrow';
+    row.setAttribute('role', 'radio');
+    const on = st.id === curStationId;
+    row.setAttribute('aria-checked', on ? 'true' : 'false');
+    const tick = document.createElement('span');
+    tick.className = 'tick'; tick.setAttribute('aria-hidden','true');
+    tick.textContent = on ? '\u2713' : '';
+    const name = document.createElement('span');
+    name.className = 'sname'; name.textContent = st.name;
+    row.appendChild(tick); row.appendChild(name);
+    if(st.home){
+      const tag = document.createElement('span');
+      tag.className = 'stag'; tag.textContent = 'Your masjid';
+      row.appendChild(tag);
+    }
+    row.addEventListener('click', ()=>{ tuneTo(st.id); closeModal('tuner-wrap'); });
+    list.appendChild(row);
+  }
+  // Said plainly, because the consequence is easy to miss and lands at Fajr.
+  if(note){
+    note.textContent = onHomeStation()
+      ? 'The adhan and salah come through live from Taiyabah at every prayer time, on their own.'
+      : 'While you are listening to another masjid, Taiyabah\u2019s adhan plays as the recording '
+        + 'instead of live. The screen returns to Taiyabah on its own overnight.';
+  }
+}
+
+document.getElementById('tuner-btn').addEventListener('click', (e)=>{
+  renderStations();
+  openModal('tuner-wrap', e.currentTarget);
+  /* openModal lands on the first focusable, which is the Close button in the
+     header — right for the other three modals, wrong for a list you came here
+     to choose from. On a TV remote that costs an extra press every time and
+     puts the D-pad on "Close" when the user is looking at the stations. Move
+     focus onto the one that is currently selected instead. */
+  const cur = document.querySelector('#station-list .stationrow[aria-checked="true"]')
+           || document.querySelector('#station-list .stationrow');
+  if(cur) cur.focus();
+});
+document.getElementById('tuner-close').addEventListener('click', ()=>closeModal('tuner-wrap'));
 
 function buildTriggersForDay(rec, baseDate){
   const isFriday = baseDate.getDay()===5 && !!rec.jummah;
@@ -1253,12 +1418,13 @@ function checkAudioTriggers(rec, baseDate, now){
     if(firedTriggers.has(t.id)) continue;
     const diff = now - t.at;
     if(diff >= 0 && diff < CATCHUP_WINDOW_MS){
-      /* If the masjid's own broadcast is playing, the real adhan is about
+      /* If OUR masjid's broadcast is playing, the real adhan is about
          to come through it from the real muadhin. Playing the recording on
          top would be two adhans at once, which is worse than either. The
          recording is the fallback for exactly the case where live is not
-         carrying it: switched off, still connecting, or off-air. */
-      if(t.kind==="adhan" && liveAudible()){
+         carrying it: switched off, still connecting, off-air, or tuned to
+         another masjid — whose programme is not our adhan. */
+      if(t.kind==="adhan" && liveAudible() && onHomeStation()){
         firedTriggers.add(t.id);
         console.info('[taiyabah] adhan is coming through the live stream — recording suppressed');
         continue;
@@ -1574,7 +1740,7 @@ document.getElementById('occasion').addEventListener('keydown', (e)=>{
    page behind it, and Escape closes and hands focus back to whichever
    button opened it. Add a fourth modal by calling these, not by copying
    the old inline .hidden = false pattern. */
-const MODAL_IDS = ['month-wrap','support-wrap','contact-wrap'];
+const MODAL_IDS = ['month-wrap','support-wrap','contact-wrap','tuner-wrap'];
 const modalOpeners = {};
 
 function focusablesIn(root){

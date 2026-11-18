@@ -98,6 +98,23 @@ git clone https://github.com/yameenbux/Taiyabah-Masjid-HomeSmartScreen.git test-
   it. Needs real network access to the host in `data/stream.json` — if that is unreachable it says
   SKIP rather than reporting a pass.
 
+  Its clock is pinned to 10:30 on 2026-08-20, which is a 7h45 gap between Fajr and Zuhr. Without
+  that the first assertion — the radio is off until someone switches it on — failed for roughly
+  three and a half hours a day, because auto-tune was legitimately opening the stream inside each
+  prayer window. A suite that cries wolf on a correct build is worse than no suite.
+
+- **`test-tuner.js`** — the dial that reaches other masjids. Runs offline. It generates a
+  multi-station copy of `index.html` next to the real one (so `sky/`, `audio/` and the logo still
+  resolve) and deletes it afterwards, which keeps `data/stations.json` empty in the repo until a
+  masjid has actually agreed to be listed. It checks that a single-station build shows no dial at
+  all; that the picker lists everyone, marks the home masjid and opens with focus on the current
+  station rather than on Close; that choosing one moves the stream URL, the label and the amber
+  "away" styling together; and the two rules that protect Fajr — a prayer window must not hijack
+  someone listening elsewhere, and another masjid being live must **not** suppress our recorded
+  adhan. Both of those carry negative controls: auto-tune must still fire on the home masjid, and
+  our own live broadcast must still suppress the recording. Without them the first halves would
+  pass just as well on a screen where the whole mechanism was dead.
+
   Two things worth knowing before you change the audio path. The stream URL must be the
   `/stream.mp3` endpoint: the bare host (which the masjid's own website links) returns
   `audio/mpeg` and plays fine in a desktop media player, but browsers reject it with

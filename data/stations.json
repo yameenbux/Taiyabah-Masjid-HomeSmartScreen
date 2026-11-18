@@ -1,0 +1,11 @@
+{
+  "note": "Other masjids a listener can tune to, the way the FM receiver this screen replaces could reach any transmitter in the town. Taiyabah itself is NOT listed here - it comes from stream.json, so its URL lives in exactly one place. An empty list is a working configuration: the tuner button stays hidden and the screen behaves as a single-masjid radio.",
+  "beforeYouAddOne": "Each device that tunes to another masjid consumes one of THAT masjid's listener slots and their bandwidth, not ours. A few hundred of our screens pointed at their mount could exhaust their plan and knock their own listeners off. So a masjid belongs in this list only once they have agreed to it. Ask first; this is spending someone else's money. Who appears here is also a decision for the masjid committee, not a technical one.",
+  "fields": {
+    "id": "short slug, unique, used only as a storage key",
+    "name": "how it is shown on screen - keep it short, it sits in a pill",
+    "url": "the stream endpoint. Check it plays in a browser, not just a media player: a bare host often returns audio/mpeg and is still rejected with NotSupportedError. See the warning in stream.json.",
+    "note": "free text for whoever maintains this - who agreed, when, and anything odd about the stream"
+  },
+  "stations": []
+}

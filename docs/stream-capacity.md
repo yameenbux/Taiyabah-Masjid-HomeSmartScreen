@@ -66,6 +66,14 @@ for the current MP3 mount. For households beyond earshot of the masjid that is i
 household close enough to hear the real adhan through an open window, the echo would be odd. Worth a
 moment's thought, not a blocker.
 
+## A note on the other-masjid dial
+
+Time spent listening to another masjid costs **their** bandwidth and one of **their** listener slots,
+not ours, so it does not add to the figures above — it subtracts slightly. That is precisely why their
+permission matters before a station goes in the list: at a few hundred units we would be quietly
+spending another charity's streaming budget. See the tuner section in
+[`home-player.md`](home-player.md).
+
 ## The app change this needs
 
 The player currently points `audio-live` at an MP3 URL, which browsers handle natively. **HLS needs

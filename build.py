@@ -111,6 +111,58 @@ def donation_qr():
     return markup.strip()
 
 
+HOME_STATION_ID = "taiyabah"
+
+
+def load_stations():
+    """One list of tunable masjids, home first.
+
+    Taiyabah's URL is only ever read from stream.json, so there is no second
+    copy of it to drift. Everything else comes from stations.json, which ships
+    empty on purpose: with one station the tuner UI stays hidden and the screen
+    is a single-masjid radio, exactly as before this existed.
+    """
+    stream = json.loads((ROOT / "data" / "stream.json").read_text(encoding="utf-8"))
+    others = json.loads((ROOT / "data" / "stations.json").read_text(encoding="utf-8"))
+
+    stations = [{
+        "id": HOME_STATION_ID,
+        "name": stream.get("name") or "Taiyabah Masjid",
+        "url": stream.get("url") or "",
+        "home": True,
+    }]
+
+    for i, st in enumerate(others.get("stations", [])):
+        where = "data/stations.json station %d" % i
+        for key in ("id", "name", "url"):
+            assert st.get(key), "%s is missing %r" % (where, key)
+        assert st["id"] != HOME_STATION_ID, (
+            "%s uses the reserved id %r — the home masjid comes from stream.json"
+            % (where, HOME_STATION_ID))
+        assert st["url"].startswith("https://"), (
+            "%s url must be https, got %r. The page is served over HTTPS, so a "
+            "plain-http stream is blocked as mixed content and fails silently."
+            % (where, st["url"]))
+        stations.append({
+            "id": st["id"], "name": st["name"], "url": st["url"], "home": False,
+        })
+
+    ids = [s["id"] for s in stations]
+    dupe_id = next((i for i in ids if ids.count(i) > 1), None)
+    assert dupe_id is None, "duplicate station id %r in data/stations.json" % dupe_id
+
+    urls = [s["url"] for s in stations]
+    dupe_url = next((u for u in urls if urls.count(u) > 1), None)
+    assert dupe_url is None, (
+        "two stations share the url %r. One of them is almost certainly a "
+        "copy-paste of the home masjid." % dupe_url)
+
+    if len(stations) > 1:
+        print("note: %d stations — the tuner is shown (%s)"
+              % (len(stations), ", ".join(s["name"] for s in stations)))
+    return stations
+
+
 def main():
     out = (ROOT / "template.html").read_text(encoding="utf-8")
 
@@ -119,6 +171,11 @@ def main():
     out = out.replace(
         "__TIMETABLE_JSON__",
         json.dumps(load_timetable(), separators=(",", ":"), ensure_ascii=False),
+    )
+
+    out = out.replace(
+        "__STATIONS_JSON__",
+        json.dumps(load_stations(), separators=(",", ":"), ensure_ascii=False),
     )
 
     for placeholder, relpath in SOURCES.items():
@@ -137,6 +194,7 @@ def main():
 
     assert "__TIMETABLE_JSON__" not in out, "__TIMETABLE_JSON__ was not substituted"
     assert "__DONATE_QR_SVG__" not in out, "__DONATE_QR_SVG__ was not substituted"
+    assert "__STATIONS_JSON__" not in out, "__STATIONS_JSON__ was not substituted"
     for placeholder in list(SOURCES) + list(OPTIONAL_ASSETS):
         assert placeholder not in out, "%s was not substituted" % placeholder
 

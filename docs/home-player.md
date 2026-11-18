@@ -164,6 +164,39 @@ coming back is a normal part of running a fleet, not an exception.
 
 ---
 
+## Listening to other masjids
+
+The FM receiver this replaces could reach every transmitter in Bolton, and some people will rightly
+count that as the better radio. The screen has a dial for the same reason: a **Other masjids** button
+beside the listen control opens a list, and choosing one tunes to it.
+
+**With one masjid configured the dial does not appear at all**, so nothing changes until you add
+someone. The list is `data/stations.json`; Taiyabah is not in it, because it comes from `stream.json`
+and should exist in exactly one place. The build refuses duplicate ids, duplicate URLs, a station
+reusing the reserved `taiyabah` id, and any non-HTTPS stream (the page is served over HTTPS, so a
+plain-HTTP mount is blocked as mixed content and fails silently).
+
+> **Ask the masjid first. This spends their money, not ours.** Every screen that tunes to another
+> masjid consumes one of *their* listener slots and *their* bandwidth. A few hundred of our units
+> pointed at their mount could exhaust their plan and knock their own congregation off the stream.
+> Hotlinking a publicly reachable URL is technically easy and is not the question. Who appears on
+> that list is also a decision for the masjid committee rather than a technical one.
+
+Three behaviours are deliberate, and all three exist to protect Fajr:
+
+| Behaviour | Why |
+| --- | --- |
+| Auto-tune only works on Taiyabah | The prayer windows are built from Taiyabah's timetable, so they mean nothing on another masjid's stream. Someone listening elsewhere is never interrupted or dragged back. |
+| The recorded adhan still plays when tuned away | Live playback normally suppresses the recording, because the real muadhin is about to come through. Another masjid's programme is **not** our adhan, so the recording is not suppressed — otherwise the household would get someone else's talk at Fajr with the radio apparently working perfectly. |
+| The dial returns to Taiyabah overnight | The page reloads itself just after 2am and comes back on the home masjid. A household that tunes away and forgets would otherwise have Fajr arrive as a recording for months without ever connecting the two. |
+
+The picker opens with focus on the station currently selected rather than on **Close**, so a TV remote
+lands where the choice is. `test-tuner.js` covers all of this, including a negative control that
+auto-tune still fires on the home masjid — without it, the "doesn't hijack" check would also pass on a
+screen where auto-tune was simply broken.
+
+---
+
 ## Diagnostics
 
 Over Fully Cloud, or `adb logcat | grep taiyabah` on the same network:

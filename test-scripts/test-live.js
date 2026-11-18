@@ -39,12 +39,33 @@ const state = p => p.evaluate(() => ({
 
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
+/* The clock has to be pinned, and it took a daily false alarm to notice.
+   This suite asserts the radio is off on load, but auto-tune legitimately
+   opens the stream inside any of the five prayer windows — roughly three and
+   a half hours a day on which a correct build "failed". Offset-based rather
+   than frozen so the countdown and the watchdog still tick.
+   2026-08-20 10:30 sits in a 7h45 gap between Fajr and Zuhr. */
+function fakeDateScript(iso) {
+  return `{
+    const RealDate = Date;
+    const target = new RealDate(${JSON.stringify(iso)}).getTime();
+    const offset = target - RealDate.now();
+    class FakeDate extends RealDate {
+      constructor(...args){ if(args.length===0){ super(RealDate.now()+offset); } else { super(...args); } }
+      static now(){ return RealDate.now()+offset; }
+    }
+    Date = FakeDate;
+  }`;
+}
+const QUIET_CLOCK = '2026-08-20T10:30:00';
+
 (async () => {
   const browser = await chromium.launch({
     args: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required'],
   });
   const ctx = await browser.newContext({ viewport: { width: 1920, height: 1080 }, timezoneId: 'Europe/London' });
   const page = await ctx.newPage();
+  await page.addInitScript(fakeDateScript(QUIET_CLOCK));
   const backoffs = [];
   page.on('console', m => {
     const t = m.text();
