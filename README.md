@@ -121,7 +121,8 @@ Set the device's screen timeout to **Never** and leave it plugged in, or it will
 
 | Setup | Guide |
 | --- | --- |
-| A locked-down tablet per home, supplied by the masjid | [`docs/adding-a-masjid.md`](docs/adding-a-masjid.md) | Putting another masjid on the screen: what to ask them for, the timetable format, and why there is no API for jamā'ah times |
+| A locked-down tablet per home, supplied by the masjid | [`docs/bolton-masjids.md`](docs/bolton-masjids.md) | Research on the other 26 Bolton masjids: what each publishes, their 454 MHz frequencies, who already streams, and why only one full-year timetable is obtainable from the web |
+| [`docs/adding-a-masjid.md`](docs/adding-a-masjid.md) | Putting another masjid on the screen: what to ask them for, the timetable format, and why there is no API for jamā'ah times |
 | [`docs/home-player.md`](docs/home-player.md) |
 | How many homes the live stream can carry | [`docs/stream-capacity.md`](docs/stream-capacity.md) |
 
