@@ -156,6 +156,12 @@ def load_masjids():
             "name": p["name"],
             "shortName": p.get("shortName") or p["name"],
             "logo": logo or None,
+            # The receiver number people already know this masjid by. Shown in
+            # the picker as a recognition aid; nothing receives it.
+            "frequency": p.get("frequency") or None,
+            # True until the masjid has confirmed its timetable. The screen
+            # says so in the open rather than letting it pass as fact.
+            "provisional": bool(p.get("provisional")),
             "contact": p.get("contact") or None,
             "stream": stream or None,
             "give": p.get("give") or None,

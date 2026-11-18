@@ -270,6 +270,14 @@ a:focus-visible,
 .stationrow .sname{flex:1 1 auto;min-width:0}
 .stationrow .stag{flex:0 0 auto;font-size:14px;font-weight:600;letter-spacing:.06em;
   text-transform:uppercase;color:var(--brand-800);opacity:.72}
+.stationrow .stag.warn{color:#9A4A12;opacity:.95}
+.stationrow .sfreq{flex:0 0 auto;font-size:14.5px;font-weight:600;
+  font-variant-numeric:tabular-nums;color:var(--ink);opacity:.55;letter-spacing:.01em}
+/* Sits above everything, including the setup overlay, because the one thing
+   it must never do is be mistaken for a real timetable. */
+.provisional{position:fixed;top:0;left:0;right:0;z-index:95;text-align:center;
+  background:#9A4A12;color:#FFF6EC;font-size:clamp(12px,1.3vmin,16px);font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;padding:5px 12px}
 .stationrow[aria-checked="true"]{border-color:var(--brand-800);background:rgba(60,11,42,.06)}
 .stationnote{font-size:15.5px;line-height:1.5;color:var(--ink);opacity:.82;
   margin:10px 2px 0;min-height:1.2em}
@@ -596,6 +604,9 @@ body.nodata .daygroup,body.nodata .times{display:none}
   <div class="sky-scrim"></div>
 </div>
 
+<div class="provisional" id="provisional" hidden>
+  Sample times — not confirmed by this masjid
+</div>
 <div class="app">
   <header class="chrome">
     <div class="chrome-left">
@@ -1483,6 +1494,15 @@ function renderStations(){
     const name = document.createElement('span');
     name.className = 'sname'; name.textContent = st.name;
     row.appendChild(tick); row.appendChild(name);
+    /* The number on the set in their kitchen. We do not receive 454 MHz — this
+       streams over the internet — but it is how people already know which
+       masjid they are hearing, so it is the fastest way to recognise a name. */
+    const mf = masjidById(st.id);
+    if(mf && mf.frequency){
+      const f = document.createElement('span');
+      f.className = 'sfreq'; f.textContent = mf.frequency;
+      row.appendChild(f);
+    }
     if(st.home){
       const tag = document.createElement('span');
       tag.className = 'stag'; tag.textContent = 'Your masjid';
@@ -1615,6 +1635,16 @@ function setupRenderMasjids(){
     const name = document.createElement('span');
     name.className = 'sname'; name.textContent = m.name;
     row.appendChild(tick); row.appendChild(name);
+    if(m.frequency){
+      const f = document.createElement('span');
+      f.className = 'sfreq'; f.textContent = m.frequency;
+      row.appendChild(f);
+    }
+    if(m.provisional){
+      const w = document.createElement('span');
+      w.className = 'stag warn'; w.textContent = 'Sample times';
+      row.appendChild(w);
+    }
     row.addEventListener('click', ()=>{
       SETUP.pick = m.id;
       setMasjid(m.id, true);
@@ -1668,7 +1698,9 @@ document.getElementById('tuner-change').addEventListener('click', ()=>{
    is present), or whenever ?setup is in the URL. A plain web visitor and the
    masjid's own wall screens never see it. */
 (function maybeSetup(){
-  const forced = /[?&]setup\b/.test(location.search);
+  // Hash as well as query: some hosts (and the artifact viewer) pass only a
+  // plain #hash through, so ?setup alone would never arrive.
+  const forced = /[?&]setup\b/.test(location.search) || /^#setup\b/.test(location.hash);
   const unprovisioned = !storedMasjidId() && !!fullyApi();
   if(forced || unprovisioned) setupOpen(0);
 })();
@@ -1803,6 +1835,12 @@ function applyMasjidIdentity(){
         ? 'the new build' : MASJID.appeal.eyebrow);
     }
   }
+
+  /* Times nobody at the masjid has confirmed are not allowed to look
+     confirmed. A screen in a kitchen is read as fact, so an unconfirmed
+     timetable says so in the open rather than in a profile field. */
+  const prov = document.getElementById('provisional');
+  if(prov) prov.hidden = !MASJID.provisional;
 
   renderDonate();
   if(typeof renderSupport === 'function') renderSupport();

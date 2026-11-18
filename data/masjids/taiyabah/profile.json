@@ -3,6 +3,8 @@
   "name": "Taiyabah Masjid",
   "shortName": "Taiyabah",
   "logo": "logo-cream.png",
+  "frequency": "454.100",
+  "frequencyNote": "UK Scanning Directory, submitted Jan 2014 — confirm with the masjid",
   "_note": "One masjid on the screen. Everything here is optional except id, name and timetables: a masjid with no give block simply shows no donation QR, one with no appeal shows no appeal link. That is how a masjid joins without having to supply things it does not have.",
   "contact": {
     "address": "31a Draycott Street, Bolton, BL1 8HD",
