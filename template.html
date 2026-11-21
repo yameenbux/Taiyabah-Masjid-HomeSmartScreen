@@ -245,7 +245,11 @@ a:focus-visible,
 /* Thinner than before because there are thirteen of them now instead of
    seven, and the row still has to sit in the header beside the pill, the
    volume and the dial without pushing the clock around. */
-.meter i{display:block;width:clamp(2.5px,.3vmin,5px);height:22%;border-radius:2px;
+/* .42vmin, not .3: measured on the iPad the narrower value fell through to
+   the 2.5px floor, which is thinner than the seven-bar row it replaces and
+   loses the shape the extra bars exist to show. At .42 the tablet gets
+   3.2px and the row still takes under 8% of the header. */
+.meter i{display:block;width:clamp(2.5px,.42vmin,5px);height:22%;border-radius:2px;
   background:var(--gold-bright);opacity:.85;
   /* Shorter than the 33ms tick on purpose. Anything longer and each bar is
      still travelling when the next value lands, so the row reaches neither
@@ -262,6 +266,11 @@ a:focus-visible,
 .radio-vol::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;
   background:var(--gold-bright);margin-top:-6px;border:none}
 .radio-vol::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--gold-bright);border:none}
+/* Shown when the device will not let the page set the level, so the control
+   does not sit there looking operable. */
+.radio-vol.dead{opacity:.3;cursor:not-allowed}
+.radio-vol.dead::-webkit-slider-thumb{background:var(--on-3)}
+.radio-vol.dead::-moz-range-thumb{background:var(--on-3)}
 @media (max-width:700px){ .radio-vol{display:none} }
 @media (max-width:700px){ #sound-pill-label{display:none} .soundpill{padding:12px} }
 
@@ -1195,7 +1204,8 @@ const LIVE = {
   frozenTicks: 0,
   timer: null,
   ctx: null, gain: null, analyser: null, buf: null, level: 0, quietFor: 0,
-  silentTicks: 0, meterWarned: false,
+  silentSince: 0,
+  graphBypassed: false,   // device plays the stream outside the graph
   lastSound: 0, analyserProven: false,
   onAir: null,            // what the masjid's server last said: true, false, or unknown
   airChecked: 0,
@@ -1372,11 +1382,33 @@ function liveStart(){
    while working on a desktop. Gain is honoured everywhere.
    The analyser sits AFTER the gain so the meter shows what is actually
    coming out of the speaker rather than what arrived from the network. */
+/* Wiring the element in is not free: from that moment the element's audio
+   goes THROUGH the graph instead of straight to the speaker, so if the
+   context is not running there is no sound at all. iOS only resumes a
+   context from inside a real gesture, and the adhan window opens on a
+   timer, with nobody touching a tablet on a wall — so building the graph
+   the moment we tune in risks silencing the one thing this screen exists
+   to play. The graph is therefore only ever attached to a context already
+   confirmed running, and otherwise waits for the next gesture. Until then
+   the element plays to the speaker by itself, which always works. */
 function liveSetUpAnalyser(){
   if(LIVE.analyser || !(window.AudioContext || window.webkitAudioContext)) return;
+  const Ctx = window.AudioContext || window.webkitAudioContext;
+  try { if(!LIVE.ctx) LIVE.ctx = new Ctx(); } catch(e){
+    console.info('[taiyabah] no audio context: ' + e.message); return;
+  }
+  if(LIVE.ctx.state !== 'running'){
+    /* Ask, but do not wire anything up on the strength of it — resume() is
+       async and is refused outright outside a gesture. */
+    LIVE.ctx.resume().then(liveBuildGraph).catch(()=>{});
+    return;
+  }
+  liveBuildGraph();
+}
+
+function liveBuildGraph(){
+  if(LIVE.analyser || !LIVE.ctx || LIVE.ctx.state !== 'running') return;
   try {
-    const Ctx = window.AudioContext || window.webkitAudioContext;
-    LIVE.ctx = new Ctx();
     const src = LIVE.ctx.createMediaElementSource(audioLive);
     LIVE.gain = LIVE.ctx.createGain();
     LIVE.gain.gain.value = liveWantedVolume();
@@ -1401,21 +1433,49 @@ function liveSetUpAnalyser(){
     src.connect(LIVE.gain);
     LIVE.gain.connect(LIVE.analyser);
     LIVE.analyser.connect(LIVE.ctx.destination);
+    console.info('[taiyabah] audio graph attached — on-screen volume is live');
   } catch(e){
     console.info('[taiyabah] level meter unavailable: ' + e.message);
     LIVE.analyser = null; LIVE.gain = null;
   }
-  liveResumeCtx();
+  updateVolControl();
 }
 
 /* Safari starts an AudioContext suspended and only resumes it from inside a
    real gesture. Once the element is wired into the graph a suspended context
    means no sound at all, so every plausible gesture tries again. */
 function liveResumeCtx(){
-  if(LIVE.ctx && LIVE.ctx.state === 'suspended') LIVE.ctx.resume().catch(()=>{});
+  if(LIVE.ctx && LIVE.ctx.state === 'suspended'){
+    LIVE.ctx.resume().then(liveBuildGraph).catch(()=>{});
+  }
+  /* The graph may have been skipped earlier for want of a gesture. This is
+     one, so try again — it is a no-op once the graph exists. */
+  if(LIVE.wanted && !LIVE.analyser) liveSetUpAnalyser();
 }
 ['pointerdown','keydown','touchend'].forEach(ev =>
   document.addEventListener(ev, liveResumeCtx, {passive:true}));
+
+/* Whether the on-screen slider actually controls the volume.
+   It only can if the gain node is carrying the audio. iOS makes
+   HTMLMediaElement.volume read-only, so where the graph is not in the path
+   there is nothing the page can do about the level and the hardware buttons
+   are the only control that exists. A slider that moves and changes nothing
+   is worse than no slider, so in that case it says so. */
+function liveVolumeWorks(){
+  return !!LIVE.gain && !LIVE.graphBypassed;
+}
+
+function updateVolControl(){
+  if(!volEl) return;
+  const live = LIVE.state === 'live' || LIVE.state === 'connecting';
+  const works = liveVolumeWorks();
+  volEl.classList.toggle('dead', live && !works);
+  volEl.disabled = live && !works;
+  volEl.title = (live && !works)
+    ? 'Use the tablet\u2019s own volume buttons \u2014 this device will not let the page set the level'
+    : 'Live volume';
+  volEl.setAttribute('aria-label', volEl.title);
+}
 
 function liveWantedVolume(){
   const v = parseInt(volEl && volEl.value, 10);
@@ -1655,11 +1715,28 @@ function liveMeterTick(){
     LIVE.lastSound = 0;
   }
   if(LIVE.state === 'live' && LIVE.analyser){
-    if(rms > 0.0008){ LIVE.silentTicks = 0; LIVE.meterWarned = false; }
-    else if(++LIVE.silentTicks === 600 && !LIVE.meterWarned){
-      LIVE.meterWarned = true;
-      console.info('[taiyabah] the level meter has read exact silence for 60s of live audio — ' +
-        'either the hall is genuinely silent or this device cannot analyse the stream');
+    if(rms > 0){
+      LIVE.silentSince = 0;
+      if(LIVE.graphBypassed){ LIVE.graphBypassed = false; updateVolControl(); }
+    } else if(!audioLive.paused && !audioLive.muted && audioLive.currentTime > 1){
+      /* EXACT zero, not merely quiet, and the distinction is what makes
+         this safe. getByteTimeDomainData is 8-bit, so its smallest step is
+         1/128, and anything actually arriving — even the encoder's own
+         noise floor, measured at -84dBFS on this stream — dithers the
+         bottom bit and reads about 0.006 rather than nothing. Bytes that
+         are all exactly 128 while the element says it is playing mean no
+         audio is reaching the graph at all: some versions of iOS Safari
+         keep playing a streamed element straight to the speaker and hand
+         the graph silence. The gain node is then not in the path, so the
+         slider cannot work however it is set. */
+      if(!LIVE.silentSince) LIVE.silentSince = nowMs;
+      else if(nowMs - LIVE.silentSince > 8000 && !LIVE.graphBypassed){
+        LIVE.graphBypassed = true;
+        updateVolControl();
+        console.info('[taiyabah] this device is playing the stream outside the audio graph: ' +
+          'the meter cannot read it and the on-screen volume cannot set it. ' +
+          'Volume is on the hardware buttons.');
+      }
     }
   }
 
@@ -1761,6 +1838,7 @@ function unlockSound(playConfirm){
   updateSoundPill();
 }
 function updateSoundPill(){
+  updateVolControl();
   soundPill.hidden = false;
   updateTunerBtn();
   if(meterEl) meterEl.hidden = !(soundUnlocked && LIVE.wanted);
