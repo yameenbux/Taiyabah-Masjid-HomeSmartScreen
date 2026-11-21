@@ -5,5 +5,7 @@
   "jumuahTailMinutes": 70,
   "autoTuneNote": "With autoTune on, the screen opens the live stream a few minutes before each adhan and closes it after the jamaa'ah, even when the radio has not been left on. That is what makes the adhan the masjid's own muadhin rather than the recording, and it carries the salah live. Leaving the radio switched on keeps it connected all day instead. jumuahTailMinutes is longer because of the khutbah.",
   "followAirtime": true,
-  "followAirtimeNote": "Poll the masjid's Shoutcast /stats endpoint and switch the radio on by itself whenever an encoder is connected, the way a receiver does once the transmitter is up. COST: a masjid that leaves its encoder running around the clock means every screen streams around the clock - about 42 GB per home per month at 128 kbps, roughly ten times what the prayer windows alone cost. Set false to go back to opening only around each prayer."
+  "followAirtimeNote": "Poll the masjid's Shoutcast /stats endpoint and switch the radio on by itself whenever an encoder is connected, the way a receiver does once the transmitter is up. COST: a masjid that leaves its encoder running around the clock means every screen streams around the clock - about 42 GB per home per month at 128 kbps, roughly ten times what the prayer windows alone cost. Set false to go back to opening only around each prayer.",
+  "nowHoldMinutes": 5,
+  "nowHoldNote": "How long the hero stays on a jamaa'ah after it starts, showing 'Now', before moving to the next prayer. 0 restores the old behaviour of switching the instant the countdown reaches zero."
 }
