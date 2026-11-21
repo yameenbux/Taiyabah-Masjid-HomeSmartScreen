@@ -110,12 +110,21 @@ Then open it from the new icon and **tap the sound pill once** — it should tur
 
 Set the device's screen timeout to **Never** and leave it plugged in, or it will sleep.
 
-**Put it on a TV:**
+**On the masjid's own wall screens:**
 
 | Setup | Guide |
 | --- | --- |
 | A small PC per screen (recommended — no app to build or sign) | [`docs/kiosk-windows.md`](docs/kiosk-windows.md) |
 | Fire TV / Android TV stick | [`docs/android-tv.md`](docs/android-tv.md) |
+
+**In people's homes** (replacing the FM transmitter) — a different problem with different answers:
+
+| Setup | Guide |
+| --- | --- |
+| A locked-down tablet per home, supplied by the masjid | [`docs/bolton-masjids.md`](docs/bolton-masjids.md) | Research on the other 26 Bolton masjids: what each publishes, their 454 MHz frequencies, who already streams, and why only one full-year timetable is obtainable from the web |
+| [`docs/adding-a-masjid.md`](docs/adding-a-masjid.md) | Putting another masjid on the screen: what to ask them for, the timetable format, and why there is no API for jamā'ah times |
+| [`docs/home-player.md`](docs/home-player.md) |
+| How many homes the live stream can carry | [`docs/stream-capacity.md`](docs/stream-capacity.md) |
 
 ## Run it locally
 
@@ -187,6 +196,8 @@ test-scripts/          ← Playwright test suite
 | [`docs/engineering-notes.md`](docs/engineering-notes.md) | Architecture, the data model, and every deliberate decision that might look like a bug. **Read before editing** |
 | [`docs/kiosk-windows.md`](docs/kiosk-windows.md) | Running a screen on a Windows mini PC: kiosk browser, never-sleep, auto-start, Tailscale remote access |
 | [`docs/android-tv.md`](docs/android-tv.md) | The Fire TV / Android TV app: building, signing, installing, asset links |
+| [`docs/home-player.md`](docs/home-player.md) | Putting a masjid-supplied, locked-down screen in people's homes: tablet spec, Fully Kiosk settings, provisioning at scale, and the autoplay test to run before buying |
+| [`docs/stream-capacity.md`](docs/stream-capacity.md) | Bandwidth and concurrent-listener maths at 200+ homes, and the HLS decision that follows from it |
 | [`test-scripts/README.md`](test-scripts/README.md) | What each test covers and how the fake-clock pattern works |
 
 ---

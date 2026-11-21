@@ -202,6 +202,17 @@ a:focus-visible,
    and the wordmark lands around 30px. The source is 780x552, so even the
    240px ceiling on a 4K panel is still under native width and stays sharp. */
 .brandmark{height:clamp(52px,13vmin,240px);width:auto;display:block;flex:0 0 auto}
+.brandslot{flex:0 0 auto;display:flex;align-items:center}
+/* The fallback for a masjid with no logo. Set at a size that holds its own
+   beside the clock rather than looking like a caption, because for most
+   masjids this IS the branding. */
+/* Sized to survive a long name. "Zakariyya Jaame Masjid" at the width the
+   Taiyabah lockup occupies pushed the dial onto a second row and squeezed the
+   Hijri date until it broke mid-phrase, so this is deliberately narrower than
+   the logo it stands in for and wraps to two lines instead of growing. */
+.wordmark{font-family:"Fraunces",Georgia,serif;font-weight:600;color:var(--on-1);
+  line-height:1.12;letter-spacing:.01em;max-width:clamp(165px,18.5vw,330px);
+  font-size:clamp(19px,2.5vmin,38px);overflow-wrap:break-word}
 .soundpill{display:flex;align-items:center;gap:9px;background:rgba(198,162,76,.18);
   border:1px solid rgba(198,162,76,.55);color:var(--on-1);border-radius:99px;
   padding:clamp(9px,1.05vmin,15px) clamp(14px,1.75vmin,24px);
@@ -233,6 +244,71 @@ a:focus-visible,
 .radio-vol::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--gold-bright);border:none}
 @media (max-width:700px){ .radio-vol{display:none} }
 @media (max-width:700px){ #sound-pill-label{display:none} .soundpill{padding:12px} }
+
+/* ---- the dial ---- */
+/* The FM receiver this screen replaces could reach every transmitter in the
+   town, and some people rightly count that as the better radio. This is that
+   band, as a list. Deliberately quieter than the sound pill: the home masjid
+   is the point of the screen and the others are an occasional errand, so this
+   reads as a label of where the dial sits rather than a call to action. */
+.tunerbtn{display:flex;align-items:center;gap:7px;background:rgba(247,243,234,.06);
+  border:1px solid rgba(201,178,194,.28);color:var(--on-2);border-radius:99px;
+  padding:clamp(7px,.8vmin,11px) clamp(11px,1.3vmin,17px);
+  font-size:clamp(14px,1.3vmin,19px);font-weight:600;cursor:pointer;white-space:nowrap;
+  min-height:44px;flex:0 0 auto}
+.tunerbtn .chev{opacity:.7;font-size:.85em}
+/* Tuned away from home: say so in colour as well as words, because the
+   consequence is real — Taiyabah's adhan arrives as the recording, not live. */
+.tunerbtn.away{background:rgba(198,162,76,.16);border-color:rgba(198,162,76,.5);color:var(--on-1)}
+.stationlist{display:flex;flex-direction:column;gap:8px;padding:14px 0 4px}
+.stationrow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+  background:none;border:1px solid var(--line);border-radius:12px;
+  padding:13px 15px;min-height:52px;cursor:pointer;color:var(--ink);
+  font-size:18px;font-weight:600;font-family:inherit}
+.stationrow:hover{background:rgba(60,11,42,.04)}
+.stationrow .tick{flex:0 0 auto;width:20px;color:var(--brand-800);font-size:19px}
+.stationrow .sname{flex:1 1 auto;min-width:0}
+.stationrow .stag{flex:0 0 auto;font-size:14px;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--brand-800);opacity:.72}
+.stationrow .stag.warn{color:#9A4A12;opacity:.95}
+.stationrow .sfreq{flex:0 0 auto;font-size:14.5px;font-weight:600;
+  font-variant-numeric:tabular-nums;color:var(--ink);opacity:.55;letter-spacing:.01em}
+/* Sits above everything, including the setup overlay, because the one thing
+   it must never do is be mistaken for a real timetable. */
+.provisional{position:fixed;top:0;left:0;right:0;z-index:95;text-align:center;
+  background:#9A4A12;color:#FFF6EC;font-size:clamp(12px,1.3vmin,16px);font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;padding:5px 12px}
+.stationrow[aria-checked="true"]{border-color:var(--brand-800);background:rgba(60,11,42,.06)}
+.stationnote{font-size:15.5px;line-height:1.5;color:var(--ink);opacity:.82;
+  margin:10px 2px 0;min-height:1.2em}
+@media (max-width:700px){ .tunerbtn{padding:10px;gap:4px} #tuner-btn-label{display:none} }
+
+/* ---- out-of-box setup ---- */
+/* Opaque, not a modal over the screen: at this point there is nothing behind
+   worth seeing, and a half-visible prayer timetable would invite someone to
+   try to read times that are not theirs yet. */
+.setup{position:fixed;inset:0;z-index:90;background:var(--brand-900,#2A0A1E);
+  display:flex;align-items:center;justify-content:center;padding:4vmin;overflow:auto}
+.setup-card{background:var(--card);color:var(--ink);border-radius:22px;
+  width:min(680px,100%);padding:clamp(22px,3.4vmin,40px);box-shadow:0 24px 70px rgba(0,0,0,.4)}
+.setup-steps{display:flex;gap:7px;margin-bottom:clamp(14px,2vmin,24px)}
+.setup-steps i{height:5px;border-radius:99px;background:rgba(60,11,42,.18);flex:1 1 0}
+.setup-steps i.on{background:var(--brand-800)}
+.setup-step h2{font-family:"Fraunces",Georgia,serif;font-weight:600;color:var(--brand-800);
+  font-size:clamp(25px,3.4vmin,40px);line-height:1.15;margin:0 0 .45em}
+.setup-step p{font-size:clamp(16px,1.75vmin,21px);line-height:1.5;margin:0 0 1em;max-width:52ch}
+.setup-sub{opacity:.72}
+.setup-btn{display:block;width:100%;min-height:56px;border-radius:13px;cursor:pointer;
+  font-family:inherit;font-size:clamp(17px,1.8vmin,21px);font-weight:600;margin-top:12px;
+  border:1px solid var(--brand-800);background:var(--brand-800);color:#fff}
+.setup-btn.ghost{background:none;color:var(--brand-800);border-color:var(--line)}
+.setup-btn[disabled]{opacity:.45;cursor:default}
+.setup-wifi{font-size:clamp(15.5px,1.6vmin,19px);font-weight:600;border-radius:11px;
+  padding:13px 15px;margin-bottom:6px;background:rgba(60,11,42,.06);border:1px solid var(--line)}
+.setup-wifi.ok{background:rgba(127,192,143,.16);border-color:rgba(127,192,143,.55)}
+.linklike{background:none;border:none;padding:0;font:inherit;color:var(--brand-800);
+  text-decoration:underline;cursor:pointer}
+@media (max-width:700px){ .setup-card{padding:20px} }
 
 .clockblock{text-align:right;flex:1 1 auto;min-width:0}
 .clock{display:flex;align-items:flex-start;justify-content:flex-end;gap:.1em;
@@ -270,7 +346,7 @@ a:focus-visible,
    wherever the day has got to. A plain divider would have been one more
    piece of furniture; this is the same hairline carrying the information
    the removed day-band used to. */
-.daygroup{flex:0 0 auto;margin-top:clamp(20px,3.4vmin,56px)}
+.daygroup{flex:0 0 auto;margin-top:clamp(26px,5.2vmin,84px)}
 .rule{position:relative;height:2px;background:rgba(201,178,194,.26);overflow:visible}
 .rule-fill{position:absolute;left:0;top:0;bottom:0;width:0;
   background:linear-gradient(90deg,rgba(198,162,76,.5),var(--gold-bright));
@@ -280,17 +356,29 @@ a:focus-visible,
   box-shadow:0 0 0 clamp(3px,.45vmin,7px) rgba(220,187,99,.22);transition:left 1s linear}
 
 /* ---- the six times: one row, no boxes ---- */
+/* Spacing here is bought, not invented. .stage above is flex:1 and bottom-
+   aligns the hero, so on a 1366x1024 iPad it was holding 172px of dead air
+   between the header and the countdown while these three lines crowded each
+   other at the floor in 24-29px steps. Everything added below comes out of
+   that slack. */
 .times{flex:0 0 auto;display:grid;grid-template-columns:repeat(6,1fr);
-  gap:clamp(10px,1.4vw,30px);margin-top:clamp(16px,2.4vmin,38px)}
-.t-item{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:clamp(2px,.5vmin,8px)}
-.t-name{display:flex;align-items:baseline;gap:.4em;flex-wrap:wrap;min-width:0}
-.t-en{font-size:clamp(15px,1.9vmin,29px);font-weight:600;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--on-2);line-height:1.3}
-.t-ar{font-family:"Amiri",serif;font-size:clamp(16px,2vmin,31px);color:var(--on-3);line-height:1.3}
+  gap:clamp(14px,2vw,44px);margin-top:clamp(28px,5.2vmin,82px)}
+.t-item{min-width:0;display:flex;flex-direction:column;align-items:flex-start;
+  gap:clamp(8px,1.25vmin,19px)}
+/* nowrap, because a wrapped "SUNRISE / الشروق" made its column a line taller
+   than the five beside it and the whole row looked misaligned. The tighter
+   tracking is what buys the space to keep them on one line. */
+.t-name{display:flex;align-items:baseline;gap:.42em;min-width:0;white-space:nowrap}
+.t-en{font-size:clamp(15px,1.72vmin,26px);font-weight:600;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--on-2);line-height:1.25}
+.t-ar{font-family:"Amiri",serif;font-size:clamp(15px,1.8vmin,28px);color:var(--on-3);line-height:1.25}
 .t-jamaah{font-family:"Fraunces",Georgia,serif;font-weight:400;color:var(--on-1);
-  font-size:clamp(24px,3.2vmin,54px);line-height:1.1}
+  font-size:clamp(26px,3.5vmin,58px);line-height:1.05}
 .t-jamaah.none{color:var(--on-3)}
-.t-begins{font-size:clamp(16px,1.85vmin,28px);color:var(--on-3);line-height:1.3}
+/* Third in the hierarchy and now looks it. At 1.85vmin it was nearly the
+   size of the prayer's own name, so each cell read as three competing lines
+   instead of a label, a time, and a footnote. */
+.t-begins{font-size:clamp(15px,1.5vmin,22px);color:var(--on-3);opacity:.82;line-height:1.25}
 /* Where we are now: the name goes gold and a rule appears under the time.
    Two cues, so it survives a colour-blind reader and a sunlit screen. */
 .t-item.is-now .t-en{color:var(--gold-bright)}
@@ -300,10 +388,13 @@ a:focus-visible,
 /* Horizon has no panels, so these are underlined links — but they are the
    only touch targets on the page, so they carry real padding to clear the
    44px minimum and a focus ring the D-pad can land on. */
-.quicklinks{flex:0 0 auto;display:flex;align-items:center;gap:clamp(16px,2.6vw,56px);
-  flex-wrap:wrap;margin-top:clamp(18px,2.8vmin,44px)}
+.quicklinks{display:flex;align-items:center;gap:clamp(16px,2.4vw,50px);
+  flex-wrap:wrap;min-width:0}
+/* Stepped down from 2.3vmin. These are three ways out of the screen, not
+   the point of it, and at the old size they carried more weight than the
+   prayer times directly above them. */
 .quicklink{background:none;border:none;color:var(--on-1);cursor:pointer;text-align:left;
-  font-size:clamp(18px,2.3vmin,37px);font-weight:500;line-height:1.2;
+  font-size:clamp(16px,1.95vmin,30px);font-weight:500;line-height:1.2;
   padding:clamp(9px,1.2vmin,18px) 0;min-height:44px;
   border-bottom:2px solid rgba(201,178,194,.4);
   transition:color .18s ease,border-color .18s ease}
@@ -379,22 +470,14 @@ a:focus-visible,
 body.nodata .daygroup,body.nodata .times{display:none}
 
 /* ---- the floor line ---- */
-.footline{flex:0 0 auto;display:flex;align-items:baseline;justify-content:space-between;
-  gap:clamp(12px,2.4vw,40px);margin-top:clamp(16px,2.4vmin,38px);
-  font-size:clamp(15px,1.7vmin,26px);color:var(--on-2);flex-wrap:wrap}
+.footline{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
+  gap:clamp(14px,2.4vw,44px);margin-top:clamp(30px,5.6vmin,88px);
+  font-size:clamp(15px,1.6vmin,24px);color:var(--on-2);flex-wrap:wrap}
 .jumline{display:flex;align-items:baseline;gap:.6em;min-width:0}
 .jumline .k{font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-bright)}
 .jumline .v{color:var(--on-2)}
-.sitefoot{display:flex;align-items:center;gap:clamp(6px,.8vmin,11px);white-space:nowrap;
-  user-select:none;pointer-events:none;letter-spacing:.14em;text-transform:uppercase;
-  /* --on-2, not --on-3: measured at 4.64:1 over the dusk sky on the dimmer
-     token, which clears the floor but leaves nothing for a future sky swap
-     or a different crop. Still the quietest thing on the screen. */
-  font-size:clamp(15px,1.5vmin,22px);color:var(--on-2)}
-.sitefoot .mark{height:clamp(14px,1.8vmin,26px);width:auto;display:block;opacity:.85}
 /* Text fallback if the logo file is missing — keeps the credit deliberate
    rather than leaving a broken-image icon on a masjid wall. */
-.sitefoot .wordmark{font-weight:600;letter-spacing:.04em;color:var(--on-2)}
 
 /* ---- arrival ---- */
 @keyframes riseIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
@@ -513,7 +596,6 @@ body.nodata .daygroup,body.nodata .times{display:none}
   .t-begins{font-size:clamp(16px,min(2vh,2.8vw),27px)}
   .quicklink{font-size:clamp(17px,min(2.2vh,3vw),30px)}
   .footline{font-size:clamp(15px,min(1.8vh,2.4vw),24px)}
-  .sitefoot{font-size:clamp(15px,min(1.6vh,2.2vw),21px)}
 }
 </style>
 </head>
@@ -528,16 +610,30 @@ body.nodata .daygroup,body.nodata .times{display:none}
   <div class="sky-scrim"></div>
 </div>
 
+<div class="provisional" id="provisional" hidden>
+  Sample times — not confirmed by this masjid
+</div>
 <div class="app">
   <header class="chrome">
     <div class="chrome-left">
-      <img class="brandmark" src="logo-cream.png" alt="Taiyabah Masjid">
+      <!-- Filled by applyMasjidIdentity(): a masjid that has supplied a logo
+           gets its logo, everyone else gets their name set as a wordmark. The
+           shell is the same for all of them; only the name changes. -->
+      <div class="brandslot" id="brandslot"></div>
       <button class="soundpill" id="sound-pill" type="button" hidden aria-label="Enable Adhan and Iqamah sound">
         <span class="dot"></span><span id="sound-pill-label">Listen live</span>
       </button>
       <div class="meter" id="meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <input class="radio-vol" id="radio-vol" type="range" min="0" max="100" value="85"
              aria-label="Live volume" title="Live volume">
+      <!-- The dial. Hidden entirely while there is only one station, so a
+           single-masjid configuration looks exactly as it did before this
+           feature existed. Shows where the dial IS, the way a radio does,
+           rather than a generic "choose" label. -->
+      <button class="tunerbtn" id="tuner-btn" type="button" hidden
+              aria-haspopup="dialog" aria-label="Choose which masjid to listen to">
+        <span id="tuner-btn-label">Taiyabah</span><span class="chev" aria-hidden="true">▾</span>
+      </button>
     </div>
     <div class="clockblock">
       <div class="clock tnum"><span class="hm" id="clock-hm">--:--</span><span class="ss" id="clock-ss">--</span></div>
@@ -566,33 +662,33 @@ body.nodata .daygroup,body.nodata .times{display:none}
 
   <section class="times" id="times"></section>
 
-  <nav class="quicklinks">
-    <button class="quicklink" id="btn-month" type="button">
-      <span class="v">This month</span>
-    </button>
-    <button class="quicklink primary" id="btn-support" type="button">
-      <span class="v">Support the new build</span>
-      <span class="go" aria-hidden="true">→</span>
-    </button>
-    <button class="quicklink" id="btn-contact" type="button">
-      <span class="v">Visit or get in touch</span>
-    </button>
-  </nav>
 
   <div class="donate" id="donate" hidden>
-    <span class="code" id="donate-code">__DONATE_QR_SVG__</span>
+    <span class="code" id="donate-code"></span>
     <span class="cap" id="donate-cap">Scan to give</span>
   </div>
 
   <div class="expiry" id="expiry" hidden><span class="dot"></span><span id="expiry-text"></span></div>
 
+  <!-- One floor row, not two. The links sat on their own line with the
+       Jumu'ah note on another below it, and after the MasjidOne credit came
+       out the whole right-hand half of that second line was empty while the
+       two rows crowded each other. They share a line now: links left,
+       Jumu'ah right, which gives a whole row back to the prayer times. -->
   <div class="footline">
+    <nav class="quicklinks">
+      <button class="quicklink" id="btn-month" type="button">
+        <span class="v">This month</span>
+      </button>
+      <button class="quicklink primary" id="btn-support" type="button">
+        <span class="v">Support the new build</span>
+        <span class="go" aria-hidden="true">→</span>
+      </button>
+      <button class="quicklink" id="btn-contact" type="button">
+        <span class="v">Visit or get in touch</span>
+      </button>
+    </nav>
     <div class="jumline" id="jummah-line"></div>
-    <div class="sitefoot">
-      <span class="prefix">Powered by</span>
-      <img class="mark" id="brand-mark" alt="MasjidOne" hidden>
-      <span class="wordmark" id="brand-word" hidden>MasjidOne</span>
-    </div>
   </div>
 </div>
 
@@ -623,6 +719,58 @@ body.nodata .daygroup,body.nodata .times{display:none}
   </div>
 </div>
 
+<!-- Out-of-box setup. Shown when a device has never been set up, or when
+     ?setup is in the URL. A plain web visitor never sees it: there is no
+     masjid to choose on a wall screen and no wifi to join in a browser. -->
+<div class="setup" id="setup" hidden>
+  <div class="setup-card">
+    <div class="setup-steps" id="setup-dots" aria-hidden="true"></div>
+
+    <section class="setup-step" data-step="0">
+      <h2>Assalamu alaikum</h2>
+      <p>This screen shows your masjid&rsquo;s prayer times, and plays the adhan
+         live from the masjid at every salah.</p>
+      <p class="setup-sub">Two short steps and it&rsquo;s yours.</p>
+      <button class="setup-btn primary" type="button" data-go="1">Let&rsquo;s get you set up</button>
+    </section>
+
+    <section class="setup-step" data-step="1" hidden>
+      <h2>Connect to your Wi-Fi</h2>
+      <p>The screen needs Wi-Fi to keep your prayer times right and to carry
+         the masjid live.</p>
+      <div class="setup-wifi" id="setup-wifi-state">Checking&hellip;</div>
+      <button class="setup-btn primary" type="button" id="setup-wifi-btn">Choose Wi-Fi network</button>
+      <button class="setup-btn ghost" type="button" data-go="2" id="setup-wifi-skip">Skip for now</button>
+    </section>
+
+    <section class="setup-step" data-step="2" hidden>
+      <h2>Which masjid do you attend?</h2>
+      <p>Your times, your adhan and your jama&rsquo;ah will all come from the
+         masjid you pick. You can still listen to any of the others whenever
+         you like.</p>
+      <div class="stationlist" id="setup-masjids" role="radiogroup" aria-label="Your masjid"></div>
+    </section>
+
+    <section class="setup-step" data-step="3" hidden>
+      <h2 id="setup-done-h">All set</h2>
+      <p id="setup-done-p">Your screen is ready.</p>
+      <button class="setup-btn primary" type="button" id="setup-finish">Finish</button>
+    </section>
+  </div>
+</div>
+
+<div class="modalwrap" id="tuner-wrap" hidden>
+  <div class="modal">
+    <header><h3>Listen to another masjid</h3><button class="closebtn" id="tuner-close" type="button">Close</button></header>
+    <div class="modalbody">
+      <div class="stationlist" id="station-list" role="radiogroup" aria-label="Masjid to listen to"></div>
+      <p class="stationnote" id="station-note"></p>
+      <p class="stationnote"><span id="tuner-whose"></span>
+        <button class="linklike" type="button" id="tuner-change">Change my masjid</button></p>
+    </div>
+  </div>
+</div>
+
 <div class="modalwrap" id="support-wrap" hidden>
   <div class="modal">
     <header><h3>The New Build</h3><button class="closebtn" id="support-close" type="button">Close</button></header>
@@ -633,13 +781,7 @@ body.nodata .daygroup,body.nodata .times{display:none}
 <div class="modalwrap" id="contact-wrap" hidden>
   <div class="modal">
     <header><h3>Visit &amp; contact</h3><button class="closebtn" id="contact-close" type="button">Close</button></header>
-    <div class="modalbody">
-      <div class="contactrow"><span class="k">Address</span><span>31a Draycott Street, Bolton, BL1 8HD</span></div>
-      <div class="contactrow"><span class="k">Phone</span><a href="tel:01204535997">01204 535 997</a></div>
-      <div class="contactrow"><span class="k">Email</span><a href="mailto:info@taiyabahmasjid.com">info@taiyabahmasjid.com</a></div>
-      <div class="contactrow"><span class="k">Website</span><a href="https://www.taiyabahmasjid.com" target="_blank" rel="noopener">taiyabahmasjid.com</a></div>
-      <div class="contactrow"><span class="k">Charity</span><span>Bolton Central Islamic Society · No. 1041569</span></div>
-    </div>
+    <div class="modalbody" id="contact-body"></div>
   </div>
 </div>
 
@@ -659,11 +801,72 @@ body.nodata .daygroup,body.nodata .times{display:none}
 <audio id="audio-iqamah" src="audio/iqamah-short.mp3" preload="auto"></audio>
 
 <script>
-const DATA = __TIMETABLE_JSON__;
-const NEWBUILD = __NEWBUILD_JSON__;
+/* Every masjid on this screen, each with its own times, stream and details.
+   All of them are inlined rather than fetched: ten masjids of two years each
+   is ~1.9MB raw but under 200KB over the wire once gzipped, and paying that
+   buys a page that boots with no network, works offline for good, and can
+   switch masjid instantly in a kitchen with bad wifi. */
+const MASJIDS = __MASJIDS_JSON__;
+const DEFAULT_MASJID = __DEFAULT_MASJID__;
+/* When to open the stream around a prayer. The same for every masjid,
+   because it is a fact about salah rather than about who is broadcasting. */
+const TUNING = __TUNING_JSON__;
 const OCCASIONS = __OCCASIONS_JSON__;
-const STREAM = __STREAM_JSON__;
-const BRAND_MARK = __BRAND_MARK__;
+
+/* The chosen masjid, and the four views of it the rest of the page reads.
+   These keep their old names so that everything downstream — the renderers,
+   the audio, the appeal — did not have to change when the screen stopped
+   belonging to one masjid. */
+const MASJID_KEY = 'home.masjid';
+let MASJID = null, DATA = null, NEWBUILD = null, STREAM = null;
+
+function masjidById(id){ return MASJIDS.find(m => m.id === id) || null; }
+
+function storedMasjidId(){
+  try { return localStorage.getItem(MASJID_KEY); } catch(e){ return null; }
+}
+
+/* Falls back rather than failing: a device whose stored masjid has been
+   removed from the build shows the default one instead of a blank screen,
+   and the setup wizard can be re-run to pick again. */
+function setMasjid(id, remember){
+  const m = masjidById(id) || masjidById(DEFAULT_MASJID) || MASJIDS[0];
+  if(!m) return;
+  MASJID = m;
+  DATA = { days: m.days };
+  NEWBUILD = Object.assign({}, m.appeal || {}, { give: m.give || null });
+  /* Tuning policy is shared; only the endpoint and the name are the
+     masjid's own. Merged so STREAM.tuneLeadMinutes & co. still read as one
+     object the way they always did. */
+  STREAM = Object.assign({}, TUNING, m.stream || {});
+  if(remember){ try { localStorage.setItem(MASJID_KEY, m.id); } catch(e){} }
+  const keys = Object.keys(DATA.days).sort();
+  LAST_DAY = keys.length ? keys[keys.length-1] : null;
+  rebuildStations();
+}
+
+/* The dial lists every masjid that broadcasts, and "home" is whichever one
+   this device belongs to — so auto-tune, the adhan rule and the overnight
+   reset all follow the household's own masjid rather than a fixed one. */
+let STATIONS = [], HOME_STATION = null;
+let curStationId = null;
+/* The last date this masjid has times for. Per masjid, because one masjid
+   running out of timetable must not make the others look expired. */
+let LAST_DAY = null;
+function rebuildStations(){
+  STATIONS = MASJIDS
+    .filter(m => m.stream && m.stream.url && m.stream.enabled !== false)
+    .map(m => ({ id: m.id, name: m.name, url: m.stream.url, home: !!(MASJID && m.id === MASJID.id) }));
+  HOME_STATION = STATIONS.find(st => st.home) || STATIONS[0] || null;
+  curStationId = HOME_STATION ? HOME_STATION.id : null;
+}
+
+/* Chosen here, at the top, because everything below assumes DATA, STREAM and
+   NEWBUILD are populated — renderSupport() in particular runs at parse time.
+   A device that has been set up has a masjid stored; the masjid's own wall
+   screens never go through setup and get the default, which is why they
+   needed no change at all. */
+setMasjid(storedMasjidId() || DEFAULT_MASJID, false);
 
 const PRAYERS = [
   {key:"fajr",    en:"Fajr",    ar:"الفجر"},
@@ -882,7 +1085,8 @@ function updateMediaSession(){
     const live = typeof LIVE !== 'undefined' && LIVE.state === 'live';
     navigator.mediaSession.metadata = new MediaMetadata({
       title: live ? "Live from the masjid" : "Adhan & Iqamah \u2014 standing by",
-      artist: (STREAM && STREAM.name) || "Taiyabah Masjid",
+      artist: (typeof curStation === "function" && curStation() && curStation().name)
+              || (STREAM && STREAM.name) || "Taiyabah Masjid",
       album: "Home Smart Screen",
       artwork: [{ src: "icon-512.png", sizes: "512x512", type: "image/png" }]
     });
@@ -927,6 +1131,21 @@ function setUpMediaSession(){
    one tap at setup is exactly what switching a radio on has always been.
    ==================================================================== */
 const LIVE_KEY = 'taiyabah.live.on';
+const STATION_KEY = 'taiyabah.live.station';
+/* Which masjid the dial is on. Deliberately NOT restored across a reload:
+   the page reloads itself just after 2am, so every day starts back on
+   Taiyabah. A household that tunes away and forgets would otherwise have
+   Fajr arrive as the recording for months, and nobody would connect the two.
+   Honouring a stored value here is a one-line change if that is ever wanted. */
+try { localStorage.removeItem(STATION_KEY); } catch(e){}
+
+function stationById(id){ return STATIONS.find(st => st.id === id) || null; }
+function curStation(){ return stationById(curStationId) || HOME_STATION; }
+function onHomeStation(){
+  const st = curStation();
+  return !!(st && HOME_STATION && st.id === HOME_STATION.id);
+}
+function multiStation(){ return STATIONS.length > 1; }
 const LIVE_VOL_KEY = 'taiyabah.live.vol';
 const audioLive = document.getElementById('audio-live');
 const meterEl = document.getElementById('meter');
@@ -939,18 +1158,27 @@ const LIVE = {
   lastTime: -1,
   frozenTicks: 0,
   timer: null,
-  ctx: null, analyser: null, buf: null, level: 0, quietFor: 0,
+  ctx: null, gain: null, analyser: null, buf: null, level: 0, quietFor: 0,
+  silentTicks: 0, meterWarned: false,
+  onAir: null,            // what the masjid's server last said: true, false, or unknown
+  airChecked: 0,
 };
 try { LIVE.wanted = localStorage.getItem(LIVE_KEY) === '1'; } catch(e){}
 try {
   const v = parseInt(localStorage.getItem(LIVE_VOL_KEY), 10);
   if(!isNaN(v)) volEl.value = v;
 } catch(e){}
-audioLive.volume = (parseInt(volEl.value,10) || 85) / 100;
+try { audioLive.volume = (parseInt(volEl.value,10) || 85) / 100; } catch(e){}
 
-function liveConfigured(){ return !!(STREAM && STREAM.enabled && STREAM.url); }
+function liveConfigured(){
+  const st = curStation();
+  return !!(STREAM && STREAM.enabled && st && st.url);
+}
 function liveAudible(){
-  return LIVE.state === 'live' && !audioLive.muted && audioLive.volume > 0.01;
+  /* On iOS audioLive.volume is stuck at 1 however the slider is set, so the
+     gain is the only honest answer to "would anyone actually hear this". */
+  const vol = LIVE.gain ? LIVE.gain.gain.value : audioLive.volume;
+  return LIVE.state === 'live' && !audioLive.muted && vol > 0.01;
 }
 
 function liveConnect(){
@@ -961,14 +1189,101 @@ function liveConnect(){
   /* A fresh query string on every attempt. Without it a reconnect can be
      served the same dead buffered response from an intermediate cache and
      reconnect "successfully" to nothing. */
-  audioLive.src = STREAM.url + (STREAM.url.includes('?') ? '&' : '?') + 'r=' + Date.now();
+  const url = curStation().url;
+  audioLive.src = url + (url.includes('?') ? '&' : '?') + 'r=' + Date.now();
   audioLive.load();
   audioLive.play().catch(()=>{ /* the retry path owns this */ });
   updateSoundPill();
 }
 
+/* ---- is the masjid actually on air? ----
+   Until now the only way to find out was to open the stream and see what
+   happened, which cannot tell "the masjid has stopped broadcasting" apart
+   from "the network dropped" — both arrive as a stalled audio element, and
+   both got the same hopeful reconnect loop.
+   Shoutcast answers the question directly. /stats returns streamstatus: 1
+   when an encoder is connected and 0 when nobody is broadcasting, with
+   Access-Control-Allow-Origin: * so the page may simply ask. Polling it
+   means the screen can say "off air" when that is the truth, stop retrying
+   a stream that nobody is sending, and come on by itself the moment the
+   masjid starts. */
+function liveStatusUrl(){
+  const st = curStation();
+  if(!st || !st.url) return null;
+  if(st.statusUrl) return st.statusUrl;
+  try {
+    const u = new URL(st.url);
+    return u.origin + '/stats?sid=1&json=1';
+  } catch(e){ return null; }
+}
+
+function liveApplyAirState(onAir){
+  const was = LIVE.onAir;
+  LIVE.onAir = onAir;
+  LIVE.airChecked = Date.now();
+  if(was === onAir) return;
+
+  if(onAir === false){
+    /* Nobody is broadcasting. Say so, and stop hammering a stream that has
+       nothing on the other end — the backoff was designed for a network
+       that might come back in seconds, not for a masjid that has finished
+       for the night. */
+    console.info('[taiyabah] masjid is off air');
+    clearTimeout(LIVE.timer);
+    LIVE.attempts = 0;
+    if(LIVE.wanted){
+      LIVE.state = 'offair';
+      try { audioLive.pause(); audioLive.removeAttribute('src'); audioLive.load(); } catch(e){}
+    }
+  } else if(onAir === true){
+    console.info('[taiyabah] masjid is on air');
+    if(LIVE.wanted && LIVE.state !== 'live'){
+      LIVE.attempts = 0;
+      liveConnect();
+    }
+  }
+  updateSoundPill();
+  updateMediaSession();
+}
+
+function liveCheckAir(){
+  const url = liveStatusUrl();
+  if(!url || !liveConfigured()) return;
+  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  if(ctrl) setTimeout(()=>{ try { ctrl.abort(); } catch(e){} }, 8000);
+  fetch(url + '&_=' + Date.now(), ctrl ? {signal: ctrl.signal} : undefined)
+    .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
+    .then(d => {
+      liveApplyAirState(Number(d.streamstatus) === 1);
+      LIVE.listeners = Number(d.currentlisteners);
+      /* On air, wanted by nobody yet, and allowed to follow the masjid:
+         switch on. This is what makes it behave like the radio it replaces
+         — the set does not wait to be asked once the transmitter is up. */
+      if(LIVE.onAir === true && !LIVE.wanted && soundUnlocked &&
+         STREAM && STREAM.followAirtime !== false && onHomeStation()){
+        console.info('[taiyabah] masjid came on air — tuning in');
+        liveStart();
+      }
+    })
+    .catch(()=>{
+      /* Unknown, not off. A blocked fetch or a flaky connection must not be
+         reported to anyone as the masjid having stopped, so this falls back
+         to the behaviour that existed before: open the stream and see. */
+      if(LIVE.onAir !== null){ LIVE.onAir = null; updateSoundPill(); }
+    });
+}
+liveCheckAir();
+setInterval(liveCheckAir, 20000);
+
 function liveRetry(reason){
   if(!LIVE.wanted) return;
+  if(LIVE.onAir === false){
+    /* Confirmed off air. Retrying achieves nothing; the status poll will
+       reconnect the moment somebody starts broadcasting again. */
+    LIVE.state = 'offair';
+    updateSoundPill();
+    return;
+  }
   LIVE.attempts++;
   const wait = Math.min(30000, 1000 * Math.pow(2, Math.min(LIVE.attempts - 1, 5)));
   LIVE.state = LIVE.attempts >= 4 ? 'failed' : 'retrying';
@@ -1001,21 +1316,54 @@ function liveStart(){
    gesture on most platforms, so it is built on the same tap that starts
    the radio. If it cannot be built the meter still animates from the
    element's own state rather than sitting dead. */
+/* element -> gain -> analyser -> speakers.
+   The gain node is not an optimisation, it is the only way to set the volume
+   on an iPad. iOS makes HTMLMediaElement.volume read-only: assigning to it
+   is silently ignored, the hardware buttons are the only control Safari
+   offers, and that is why the on-screen slider did nothing on the tablet
+   while working on a desktop. Gain is honoured everywhere.
+   The analyser sits AFTER the gain so the meter shows what is actually
+   coming out of the speaker rather than what arrived from the network. */
 function liveSetUpAnalyser(){
-  if(LIVE.analyser || !window.AudioContext) return;
+  if(LIVE.analyser || !(window.AudioContext || window.webkitAudioContext)) return;
   try {
-    LIVE.ctx = new AudioContext();
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    LIVE.ctx = new Ctx();
     const src = LIVE.ctx.createMediaElementSource(audioLive);
+    LIVE.gain = LIVE.ctx.createGain();
+    LIVE.gain.gain.value = liveWantedVolume();
     LIVE.analyser = LIVE.ctx.createAnalyser();
     LIVE.analyser.fftSize = 1024;
     LIVE.buf = new Uint8Array(LIVE.analyser.fftSize);
-    src.connect(LIVE.analyser);
+    src.connect(LIVE.gain);
+    LIVE.gain.connect(LIVE.analyser);
     LIVE.analyser.connect(LIVE.ctx.destination);
   } catch(e){
     console.info('[taiyabah] level meter unavailable: ' + e.message);
-    LIVE.analyser = null;
+    LIVE.analyser = null; LIVE.gain = null;
   }
+  liveResumeCtx();
+}
+
+/* Safari starts an AudioContext suspended and only resumes it from inside a
+   real gesture. Once the element is wired into the graph a suspended context
+   means no sound at all, so every plausible gesture tries again. */
+function liveResumeCtx(){
   if(LIVE.ctx && LIVE.ctx.state === 'suspended') LIVE.ctx.resume().catch(()=>{});
+}
+['pointerdown','keydown','touchend'].forEach(ev =>
+  document.addEventListener(ev, liveResumeCtx, {passive:true}));
+
+function liveWantedVolume(){
+  const v = parseInt(volEl && volEl.value, 10);
+  return (isNaN(v) ? 85 : v) / 100;
+}
+/* Set it in both places: gain where the graph exists, element volume for the
+   browsers that honour it and for before the graph is built. */
+function liveApplyVolume(){
+  const v = liveWantedVolume();
+  if(LIVE.gain) { try { LIVE.gain.gain.value = v; } catch(e){} }
+  try { audioLive.volume = v; } catch(e){}
 }
 
 audioLive.addEventListener('playing', ()=>{
@@ -1034,7 +1382,8 @@ audioLive.addEventListener('waiting', ()=>{
 
 volEl.addEventListener('input', ()=>{
   const v = parseInt(volEl.value, 10) || 0;
-  audioLive.volume = v / 100;
+  liveApplyVolume();
+  liveResumeCtx();
   try { localStorage.setItem(LIVE_VOL_KEY, String(v)); } catch(e){}
 });
 
@@ -1070,6 +1419,16 @@ function prayerWindow(rec, baseDate, now){
 
 function autoTune(rec, baseDate, now){
   if(!liveConfigured()) return;
+  /* Prayer windows are built from Taiyabah's timetable, so they only mean
+     anything on Taiyabah's stream. Someone listening to another masjid is
+     not interrupted and not dragged back; the recorded adhan covers them
+     instead. Nothing here closes a connection it did not open. */
+  if(!onHomeStation()) return;
+  /* And if the masjid's own server says nobody is broadcasting, a prayer
+     window has nothing to open. Opening it anyway just fails, and worse, it
+     would leave LIVE.wanted set so the recorded adhan is held back waiting
+     for a live one that is not coming. */
+  if(LIVE.onAir === false) return;
   const want = prayerWindow(rec, baseDate, now);
   if(want && !LIVE.wanted){
     console.info('[taiyabah] tuning in for the adhan');
@@ -1113,9 +1472,9 @@ function liveWatchdog(){
 function liveMeterTick(){
   if(!meterEl) return;
   const bars = meterEl.children;
-  if(LIVE.state === 'failed' || LIVE.state === 'off'){
+  if(LIVE.state === 'failed' || LIVE.state === 'off' || LIVE.state === 'offair'){
     meterEl.className = LIVE.state === 'failed' ? 'meter down' : 'meter';
-    if(LIVE.state === 'off') for(const b of bars) b.style.height = '8%';
+    if(LIVE.state !== 'failed') for(const b of bars) b.style.height = '8%';
     return;
   }
   let rms = 0;
@@ -1126,6 +1485,18 @@ function liveMeterTick(){
     rms = Math.sqrt(sum / LIVE.buf.length);
   }
   LIVE.level = LIVE.level * 0.6 + rms * 0.4;
+  /* An analyser that reads a flat zero for a minute of live audio is not a
+     quiet hall, it is a broken graph — iOS has shipped that bug more than
+     once for streamed media. Say so once, so the next person does not have
+     to guess which of the two they are looking at. */
+  if(LIVE.state === 'live' && LIVE.analyser){
+    if(rms > 0.0008){ LIVE.silentTicks = 0; LIVE.meterWarned = false; }
+    else if(++LIVE.silentTicks === 600 && !LIVE.meterWarned){
+      LIVE.meterWarned = true;
+      console.info('[taiyabah] the level meter has read exact silence for 60s of live audio — ' +
+        'either the hall is genuinely silent or this device cannot analyse the stream');
+    }
+  }
   /* A masjid between prayers sits around 0.006 RMS — real room tone, not
      silence. Scaled so that reads as a visible flicker rather than nothing,
      because "connected but quiet" must never look like "broken". */
@@ -1133,13 +1504,25 @@ function liveMeterTick(){
   meterEl.className = 'meter' + (LIVE.state === 'live' && norm < 0.12 ? ' quiet' : '');
   for(let i=0;i<bars.length;i++){
     const centre = 1 - Math.abs(i - (bars.length-1)/2) / bars.length;
-    /* The floor is 22%, not zero. A masjid between prayers really is near
-       silent, and bars collapsed to a hairline look exactly like a dead
-       stream — which is the one thing this meter exists to rule out. The
-       quiet state is a low, visible shimmer; the adhan takes it to full. */
-    const h = LIVE.state === 'live'
-      ? 22 + norm * 78 * (0.55 + centre * 0.65) * (0.75 + Math.random()*0.5)
-      : 22 + ((Date.now()/220 + i) % 2) * 16;   // connecting: a slow travelling blip
+    /* Three states, and the quiet one is the one that matters.
+       A masjid between prayers really is near silent, so the measured level
+       is ~0 and every bar sat at exactly the 22% floor: a motionless row of
+       dots, which is indistinguishable from a dead stream and was read as
+       exactly that on a real tablet. A meter whose whole job is to prove the
+       stream is alive must never be still while it is alive. So when it is
+       live and quiet the bars breathe on a slow travelling wave — low
+       enough to be honest that nothing is being said, moving enough that
+       nobody mistakes it for broken. Real level takes over the moment there
+       is any. */
+    let h;
+    if(LIVE.state === 'live' && norm >= 0.12){
+      h = 22 + norm * 78 * (0.55 + centre * 0.65) * (0.75 + Math.random()*0.5);
+    } else if(LIVE.state === 'live'){
+      const wave = Math.sin(Date.now()/520 - i * 0.7) * 0.5 + 0.5;
+      h = 22 + wave * (9 + centre * 7) + norm * 78 * 0.4;
+    } else {
+      h = 22 + ((Date.now()/220 + i) % 2) * 16;   // connecting: a travelling blip
+    }
     bars[i].style.height = Math.max(22, Math.min(100, h)) + '%';
   }
 }
@@ -1172,6 +1555,7 @@ function unlockSound(playConfirm){
 }
 function updateSoundPill(){
   soundPill.hidden = false;
+  updateTunerBtn();
   if(meterEl) meterEl.hidden = !(soundUnlocked && LIVE.wanted);
   if(volEl) volEl.hidden = !(soundUnlocked && LIVE.wanted && liveConfigured());
   if(!soundUnlocked){
@@ -1192,19 +1576,27 @@ function updateSoundPill(){
     // adhan: the recording still fires even with the masjid off-air.
     if(LIVE.state === 'live'){
       soundPill.classList.add('on');
-      soundPillLabel.textContent = (STREAM.name || "Masjid") +
+      soundPillLabel.textContent = (curStation().name || "Masjid") +
         (autoTuned ? " · live for salah" : " · live");
       return;
     }
     soundPill.classList.remove('on');
     soundPillLabel.textContent =
-      LIVE.state === 'failed' ? "Masjid off-air · adhan will still play"
+      /* 'offair' is the masjid's own server telling us nobody is
+         broadcasting. 'failed' is us being unable to reach a stream that
+         may well be fine. Different facts, different words. */
+      LIVE.state === 'offair'  ? (curStation().name || "Masjid") + " is off air"
+      : LIVE.state === 'failed'  ? "Can't reach the masjid · adhan will still play"
       : LIVE.state === 'retrying' ? "Reconnecting\u2026"
       : "Connecting\u2026";
     return;
   }
   soundPill.classList.add('on');
-  soundPillLabel.textContent = liveConfigured() ? "Tap to listen live" : "Sound on · tap to test";
+  if(!liveConfigured()){ soundPillLabel.textContent = "Sound on · tap to test"; return; }
+  soundPillLabel.textContent =
+      LIVE.onAir === false ? (curStation().name || "Masjid") + " is off air"
+    : LIVE.onAir === true  ? "Live now · tap to listen"
+    : "Tap to listen live";
 }
 soundPill.addEventListener('click', ()=>{
   const first = !soundUnlocked;
@@ -1214,6 +1606,272 @@ soundPill.addEventListener('click', ()=>{
   // second tap switches it off, the way a radio has always worked.
   if(LIVE.wanted && !first) liveStop(); else liveStart();
 });
+
+/* ---- the dial ---- */
+/* Switching masjid mid-listen has to tear the old connection down before the
+   new one goes up: two live MP3 sockets would both play. liveStop() also
+   clears autoTuned, which is correct — once someone has turned the dial by
+   hand, the prayer windows no longer own this connection. */
+function tuneTo(id){
+  const st = stationById(id);
+  if(!st || id === curStationId) return;
+  const wasOn = LIVE.wanted;
+  if(wasOn) liveStop();
+  curStationId = id;
+  LIVE.attempts = 0;
+  console.info('[taiyabah] tuned to ' + st.name + (st.home ? ' (home)' : ''));
+  if(wasOn) liveStart();
+  renderStations();
+  updateSoundPill();
+  updateMediaSession();
+}
+
+function updateTunerBtn(){
+  const btn = document.getElementById('tuner-btn');
+  if(!btn) return;
+  // One station is not a choice: stay completely out of the way.
+  btn.hidden = !(multiStation() && liveConfigured());
+  if(btn.hidden) return;
+  const st = curStation();
+  const home = onHomeStation();
+  /* On the home masjid the name would sit directly beside the Taiyabah
+     wordmark and say nothing, while giving no hint that the other masjids
+     exist at all. Invite instead. Once the dial has moved, the name is the
+     whole point — it is the only thing on screen saying you are not hearing
+     your own masjid. */
+  document.getElementById('tuner-btn-label').textContent =
+    home ? 'Other masjids' : (st ? st.name : '');
+  btn.classList.toggle('away', !home);
+}
+
+function renderStations(){
+  const list = document.getElementById('station-list');
+  const note = document.getElementById('station-note');
+  if(!list) return;
+  list.innerHTML = '';
+  for(const st of STATIONS){
+    const row = document.createElement('button');
+    row.type = 'button';
+    row.className = 'stationrow';
+    row.setAttribute('role', 'radio');
+    const on = st.id === curStationId;
+    row.setAttribute('aria-checked', on ? 'true' : 'false');
+    const tick = document.createElement('span');
+    tick.className = 'tick'; tick.setAttribute('aria-hidden','true');
+    tick.textContent = on ? '\u2713' : '';
+    const name = document.createElement('span');
+    name.className = 'sname'; name.textContent = st.name;
+    row.appendChild(tick); row.appendChild(name);
+    /* The number on the set in their kitchen. We do not receive 454 MHz — this
+       streams over the internet — but it is how people already know which
+       masjid they are hearing, so it is the fastest way to recognise a name. */
+    const mf = masjidById(st.id);
+    if(mf && mf.frequency){
+      const f = document.createElement('span');
+      f.className = 'sfreq'; f.textContent = mf.frequency;
+      row.appendChild(f);
+    }
+    if(st.home){
+      const tag = document.createElement('span');
+      tag.className = 'stag'; tag.textContent = 'Your masjid';
+      row.appendChild(tag);
+    }
+    row.addEventListener('click', ()=>{ tuneTo(st.id); closeModal('tuner-wrap'); });
+    list.appendChild(row);
+  }
+  const whose = document.getElementById('tuner-whose');
+  if(whose) whose.textContent = MASJID
+    ? ('This screen shows ' + MASJID.name + '\u2019s times. ') : '';
+  // Said plainly, because the consequence is easy to miss and lands at Fajr.
+  if(note){
+    note.textContent = onHomeStation()
+      ? 'The adhan and salah come through live from Taiyabah at every prayer time, on their own.'
+      : 'While you are listening to another masjid, Taiyabah\u2019s adhan plays as the recording '
+        + 'instead of live. The screen returns to Taiyabah on its own overnight.';
+  }
+}
+
+document.getElementById('tuner-btn').addEventListener('click', (e)=>{
+  renderStations();
+  openModal('tuner-wrap', e.currentTarget);
+  /* openModal lands on the first focusable, which is the Close button in the
+     header — right for the other three modals, wrong for a list you came here
+     to choose from. On a TV remote that costs an extra press every time and
+     puts the D-pad on "Close" when the user is looking at the stations. Move
+     focus onto the one that is currently selected instead. */
+  const cur = document.querySelector('#station-list .stationrow[aria-checked="true"]')
+           || document.querySelector('#station-list .stationrow');
+  if(cur) cur.focus();
+});
+document.getElementById('tuner-close').addEventListener('click', ()=>closeModal('tuner-wrap'));
+
+/* ---- out-of-box setup ----
+   Four screens: welcome, wifi, pick your masjid, done.
+
+   The wifi step cannot be done in the page. No browser can scan for networks
+   or take a password — there is no such API, and there should not be. What
+   Fully Kiosk does give us is fully.openWifiSettings(), which hands over to
+   Android's own wifi picker: a screen the household has seen before, that
+   handles WPA3 and captive portals properly, and that we would only have
+   reimplemented badly. So we open it, then watch for a connection and move on
+   by ourselves, which is the part that would otherwise strand someone on a
+   settings screen wondering what to press next.
+
+   With no Fully present (a browser, a wall screen, the test suite) the step
+   degrades to "connect however you normally would, then continue". */
+const SETUP = { step: 0, pick: null, timer: null };
+const setupEl = document.getElementById('setup');
+function fullyApi(){ return (typeof fully !== 'undefined' && fully) ? fully : null; }
+
+function setupOnline(){
+  /* On a real unit Fully is authoritative, including when it says NO. Falling
+     through to navigator.onLine on a negative answer made the step claim
+     "Connected" on a tablet with no wifi at all, which is the one thing this
+     screen exists to tell the truth about. navigator.onLine is only for the
+     case where there is no Fully to ask. */
+  const f = fullyApi();
+  if(f && typeof f.isWifiConnected === 'function'){
+    try { return !!f.isWifiConnected(); } catch(e){}
+  }
+  return navigator.onLine !== false;
+}
+function setupWifiName(){
+  const f = fullyApi();
+  if(f && typeof f.getWifiSsid === 'function'){
+    try { const n = f.getWifiSsid(); if(n) return String(n).replace(/^"|"$/g, ''); } catch(e){}
+  }
+  return null;
+}
+
+function setupShowStep(n){
+  SETUP.step = n;
+  for(const sec of setupEl.querySelectorAll('.setup-step')) sec.hidden = Number(sec.dataset.step) !== n;
+  const dots = document.getElementById('setup-dots');
+  dots.innerHTML = '';
+  for(let i = 0; i < 4; i++){
+    const d = document.createElement('i');
+    if(i <= n) d.classList.add('on');
+    dots.appendChild(d);
+  }
+  if(n === 1) setupWifiTick();
+  if(n === 2) setupRenderMasjids();
+  if(n === 3){
+    const m = masjidById(SETUP.pick) || MASJID;
+    document.getElementById('setup-done-h').textContent = 'All set';
+    document.getElementById('setup-done-p').textContent =
+      m ? ('This screen now shows ' + m.name + '’s prayer times, and will play the adhan live at every salah.')
+        : 'Your screen is ready.';
+  }
+  // Move focus to the step so a remote lands inside it, not on a stale button.
+  const first = setupEl.querySelector('.setup-step:not([hidden]) button, .setup-step:not([hidden]) .stationrow');
+  if(first) first.focus();
+}
+
+function setupWifiTick(){
+  const box = document.getElementById('setup-wifi-state');
+  const skip = document.getElementById('setup-wifi-skip');
+  if(!box) return;
+  const on = setupOnline();
+  const ssid = setupWifiName();
+  box.classList.toggle('ok', on);
+  box.textContent = on
+    ? (ssid ? ('Connected to ' + ssid) : 'Connected')
+    : 'Not connected yet';
+  if(skip) skip.textContent = on ? 'Continue' : 'Skip for now';
+  // Once it really is online, go on by itself — nobody should have to work
+  // out that the job is finished and this screen is still waiting.
+  if(on && SETUP.step === 1 && SETUP.autoAdvance){
+    SETUP.autoAdvance = false;
+    setTimeout(()=>{ if(SETUP.step === 1) setupShowStep(2); }, 900);
+  }
+}
+
+function setupRenderMasjids(){
+  const list = document.getElementById('setup-masjids');
+  if(!list) return;
+  list.innerHTML = '';
+  const chosen = SETUP.pick || (MASJID && MASJID.id);
+  for(const m of MASJIDS){
+    const row = document.createElement('button');
+    row.type = 'button';
+    row.className = 'stationrow';
+    row.setAttribute('role', 'radio');
+    row.setAttribute('aria-checked', m.id === chosen ? 'true' : 'false');
+    const tick = document.createElement('span');
+    tick.className = 'tick'; tick.setAttribute('aria-hidden', 'true');
+    tick.textContent = m.id === chosen ? '✓' : '';
+    const name = document.createElement('span');
+    name.className = 'sname'; name.textContent = m.name;
+    row.appendChild(tick); row.appendChild(name);
+    if(m.frequency){
+      const f = document.createElement('span');
+      f.className = 'sfreq'; f.textContent = m.frequency;
+      row.appendChild(f);
+    }
+    if(m.provisional){
+      const w = document.createElement('span');
+      w.className = 'stag warn'; w.textContent = 'Sample times';
+      row.appendChild(w);
+    }
+    row.addEventListener('click', ()=>{
+      SETUP.pick = m.id;
+      setMasjid(m.id, true);
+      applyMasjidIdentity();
+      setupShowStep(3);
+    });
+    list.appendChild(row);
+  }
+}
+
+function setupOpen(step){
+  setupEl.hidden = false;
+  SETUP.pick = MASJID ? MASJID.id : null;
+  SETUP.autoAdvance = true;
+  setupShowStep(step || 0);
+  clearInterval(SETUP.timer);
+  SETUP.timer = setInterval(()=>{ if(SETUP.step === 1) setupWifiTick(); }, 2000);
+}
+function setupClose(){
+  clearInterval(SETUP.timer);
+  SETUP.timer = null;
+  setupEl.hidden = true;
+  focusAmbient();
+}
+
+setupEl.addEventListener('click', (e)=>{
+  const go = e.target.closest('[data-go]');
+  if(go) setupShowStep(Number(go.dataset.go));
+});
+document.getElementById('setup-wifi-btn').addEventListener('click', ()=>{
+  const f = fullyApi();
+  SETUP.autoAdvance = true;
+  if(f && typeof f.openWifiSettings === 'function'){
+    try { f.openWifiSettings(); return; } catch(e){}
+  }
+  // No Fully: say what to do rather than pretending a button did it.
+  document.getElementById('setup-wifi-state').textContent =
+    'Open Wi-Fi settings on this device, join your network, then come back and press Continue.';
+});
+document.getElementById('setup-finish').addEventListener('click', ()=>{
+  if(SETUP.pick) setMasjid(SETUP.pick, true);
+  applyMasjidIdentity();
+  setupClose();
+});
+document.getElementById('tuner-change').addEventListener('click', ()=>{
+  closeModal('tuner-wrap');
+  setupOpen(2);
+});
+
+/* Run setup when this device has never been set up and is a real unit (Fully
+   is present), or whenever ?setup is in the URL. A plain web visitor and the
+   masjid's own wall screens never see it. */
+(function maybeSetup(){
+  // Hash as well as query: some hosts (and the artifact viewer) pass only a
+  // plain #hash through, so ?setup alone would never arrive.
+  const forced = /[?&]setup\b/.test(location.search) || /^#setup\b/.test(location.hash);
+  const unprovisioned = !storedMasjidId() && !!fullyApi();
+  if(forced || unprovisioned) setupOpen(0);
+})();
 
 function buildTriggersForDay(rec, baseDate){
   const isFriday = baseDate.getDay()===5 && !!rec.jummah;
@@ -1253,12 +1911,13 @@ function checkAudioTriggers(rec, baseDate, now){
     if(firedTriggers.has(t.id)) continue;
     const diff = now - t.at;
     if(diff >= 0 && diff < CATCHUP_WINDOW_MS){
-      /* If the masjid's own broadcast is playing, the real adhan is about
+      /* If OUR masjid's broadcast is playing, the real adhan is about
          to come through it from the real muadhin. Playing the recording on
          top would be two adhans at once, which is worse than either. The
          recording is the fallback for exactly the case where live is not
-         carrying it: switched off, still connecting, or off-air. */
-      if(t.kind==="adhan" && liveAudible()){
+         carrying it: switched off, still connecting, off-air, or tuned to
+         another masjid — whose programme is not our adhan. */
+      if(t.kind==="adhan" && liveAudible() && onHomeStation()){
         firedTriggers.add(t.id);
         console.info('[taiyabah] adhan is coming through the live stream — recording suppressed');
         continue;
@@ -1272,18 +1931,106 @@ function checkAudioTriggers(rec, baseDate, now){
   }
 }
 
-/* The QR is inlined at build time, so an empty block means either no QR
-   file or qrEnabled:false in the data. Either way, show nothing rather
-   than an empty frame. */
-(function donateQR(){
+/* The QR is inlined per masjid at build time. A masjid with no QR — or one
+   that has not set up giving at all — shows nothing rather than an empty
+   frame, which is how a masjid joins without having to supply a donation
+   link it does not have. */
+/* Everything on the screen that belongs to a masjid rather than to the
+   product. The shell — the sky, the type, the layout, the countdown — is the
+   same for every masjid; this is the thin layer that says whose screen it is.
+   Re-run whenever the choice changes, so switching masjid in setup does not
+   need a reload. */
+function applyMasjidIdentity(){
+  if(!MASJID) return;
+
+  document.title = MASJID.name + " — Prayer times";
+
+  /* A masjid that supplied a logo gets it. Everyone else gets their name set
+     as a wordmark, which is why joining needs no artwork. */
+  const slot = document.getElementById('brandslot');
+  if(slot){
+    slot.innerHTML = '';
+    if(MASJID.logo){
+      const img = document.createElement('img');
+      img.className = 'brandmark';
+      img.src = MASJID.logo;
+      img.alt = MASJID.name;
+      slot.appendChild(img);
+    } else {
+      const wm = document.createElement('div');
+      wm.className = 'wordmark';
+      wm.textContent = MASJID.name;
+      slot.appendChild(wm);
+    }
+  }
+
+  const c = MASJID.contact || null;
+  const body = document.getElementById('contact-body');
+  if(body){
+    body.innerHTML = '';
+    const row = (k, node) => {
+      const r = document.createElement('div');
+      r.className = 'contactrow';
+      const kk = document.createElement('span'); kk.className = 'k'; kk.textContent = k;
+      r.appendChild(kk); r.appendChild(node); body.appendChild(r);
+    };
+    const text = t => { const e = document.createElement('span'); e.textContent = t; return e; };
+    const link = (href, label) => {
+      const a = document.createElement('a');
+      a.href = href; a.textContent = label;
+      if(/^https?:/.test(href)){ a.target = '_blank'; a.rel = 'noopener'; }
+      return a;
+    };
+    if(c && c.address)  row('Address', text(c.address));
+    if(c && c.phone)    row('Phone',   link(c.phoneHref || ('tel:' + c.phone.replace(/\s+/g,'')), c.phone));
+    if(c && c.email)    row('Email',   link('mailto:' + c.email, c.email));
+    if(c && c.website)  row('Website', link(c.website, c.websiteLabel || c.website));
+    if(c && c.charity)  row('Charity', text(c.charity));
+    if(!body.children.length) body.appendChild(text('No contact details on file for this masjid yet.'));
+  }
+  const btnContact = document.getElementById('btn-contact');
+  if(btnContact) btnContact.hidden = !c;
+
+  /* The appeal is one masjid's fundraising campaign, not a feature of the
+     product. A masjid without one simply has no such button. */
+  const btnSupport = document.getElementById('btn-support');
+  if(btnSupport){
+    const hasAppeal = !!(MASJID.appeal && Object.keys(MASJID.appeal).length);
+    btnSupport.hidden = !hasAppeal;
+    const label = btnSupport.querySelector('.v');
+    if(hasAppeal && label && MASJID.appeal.eyebrow){
+      label.textContent = 'Support ' + (MASJID.appeal.eyebrow === 'The New Build'
+        ? 'the new build' : MASJID.appeal.eyebrow);
+    }
+  }
+
+  /* Times nobody at the masjid has confirmed are not allowed to look
+     confirmed. A screen in a kitchen is read as fact, so an unconfirmed
+     timetable says so in the open rather than in a profile field. */
+  const prov = document.getElementById('provisional');
+  if(prov) prov.hidden = !MASJID.provisional;
+
+  renderDonate();
+  if(typeof renderSupport === 'function') renderSupport();
+  updateSoundPill();
+  // Repaint now. Waiting for the next tick would leave the previous masjid's
+  // times under a new masjid's name for up to a second, right at the moment
+  // someone is looking to see whether their choice took.
+  if(typeof tick === 'function') tick();
+}
+
+function renderDonate(){
   const box = document.getElementById('donate');
   const code = document.getElementById('donate-code');
   if(!box || !code) return;
   const give = (NEWBUILD && NEWBUILD.give) || {};
-  const ok = give.qrEnabled !== false && code.querySelector('svg');
+  const svg = (MASJID && MASJID.qr) || '';
+  code.innerHTML = svg;
+  const ok = !!svg && give.qrEnabled !== false;
   box.hidden = !ok;
-  if(ok && give.qrLabel) document.getElementById('donate-cap').textContent = give.qrLabel;
-})();
+  const cap = document.getElementById('donate-cap');
+  if(ok && cap && give.qrLabel) cap.textContent = give.qrLabel;
+}
 
 /* ---------------- running out of timetable ----------------
    The timetable is a finite file — 2026 only, at the time of writing — and
@@ -1294,13 +2041,6 @@ function checkAudioTriggers(rec, baseDate, now){
    tell whether the times are missing or merely wrong.
    So the cliff is handled, and more importantly it is announced in advance
    while somebody can still act on it. */
-const LAST_DAY = (function(){
-  if(!DATA || !DATA.days) return null;
-  const keys = Object.keys(DATA.days);
-  if(!keys.length) return null;
-  keys.sort();
-  return keys[keys.length-1];
-})();
 const EXPIRY_NOTICE_DAYS = 45;   // about six weeks' warning
 
 function daysOfTimetableLeft(now){
@@ -1436,7 +2176,12 @@ function renderDay(rec, baseDate, now){
   const span  = Math.max(60000, end - start);
   const pct   = t => Math.max(0, Math.min(100, ((t - start) / span) * 100));
 
-  const key = ymd(baseDate) + "|" + current + "|" + (isFriday ? "f" : "-");
+  /* The masjid is part of the key. Without it, switching masjid on the same
+     day and in the same prayer period left the previous masjid's times on
+     screen — the memo is keyed on when, and the whole point of setup is that
+     WHOSE can change too. */
+  const key = (MASJID ? MASJID.id : "-") + "|" +
+              ymd(baseDate) + "|" + current + "|" + (isFriday ? "f" : "-");
   if(key !== lastDayKey){
     lastDayKey = key;
     const frag = document.createDocumentFragment();
@@ -1574,7 +2319,7 @@ document.getElementById('occasion').addEventListener('keydown', (e)=>{
    page behind it, and Escape closes and hands focus back to whichever
    button opened it. Add a fourth modal by calling these, not by copying
    the old inline .hidden = false pattern. */
-const MODAL_IDS = ['month-wrap','support-wrap','contact-wrap'];
+const MODAL_IDS = ['month-wrap','support-wrap','contact-wrap','tuner-wrap'];
 const modalOpeners = {};
 
 function focusablesIn(root){
@@ -1707,6 +2452,11 @@ document.getElementById('month-next').addEventListener('click', ()=>{
 /* ---------------- support (New Build) modal ---------------- */
 function renderSupport(){
   const nb = NEWBUILD;
+  /* Most masjids will have no fundraising appeal, and that is a normal
+     profile rather than a broken one. Leave the modal empty; the button that
+     opens it is hidden by applyMasjidIdentity(). */
+  const box = document.getElementById('support-body');
+  if(!nb || !nb.give || !nb.eyebrow){ if(box) box.innerHTML = ''; return; }
   /* The link on the home screen stays "Support the new build". Earlier
      layouts retitled it with the current phase ("Internal fixtures &
      fittings"), which names the project but asks for nothing — and this is
@@ -1773,24 +2523,6 @@ document.addEventListener('visibilitychange', ()=>{
 });
 window.addEventListener('focus', tick);
 
-/* The MasjidOne credit. BRAND_MARK is filled in by build.py and is null
-   whenever the logo file is not in the repo, so the page simply never
-   requests it — the earlier version asked unconditionally and fell back on
-   the error, which worked but logged a 404 on every load of every device
-   forever, and that noise is what hides a real error when one appears.
-   Dropping the real logo in at that path and rebuilding is still the only
-   step needed. The error handler stays for the case where the file exists
-   at build time but fails to load on the device. */
-(function brandMark(){
-  const img = document.getElementById('brand-mark');
-  const word = document.getElementById('brand-word');
-  if(!img || !word) return;
-  const useWordmark = ()=>{ img.hidden = true; word.hidden = false; };
-  if(!BRAND_MARK){ useWordmark(); return; }
-  img.addEventListener('error', useWordmark, {once:true});
-  img.addEventListener('load', ()=>{ img.hidden = false; word.hidden = true; }, {once:true});
-  img.src = BRAND_MARK;
-})();
 
 /* ---------------- boot ---------------- */
 renderSupport();
@@ -1798,6 +2530,8 @@ renderSupport();
    again without waiting for a tap. It may be refused (a cold start has no
    user gesture yet), which is precisely why the pill flips to
    "Sound paused · tap to resume" rather than claiming everything is fine. */
+applyMasjidIdentity();
+
 (function reportClock(){
   const drift = deviceClockOffsetMinutes();
   const zone = (()=>{ try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch(e){ return "unknown"; } })();
