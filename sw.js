@@ -1,18 +1,17 @@
 /* Taiyabah Home Interface — service worker
-   Caches the app shell (page, icons, fonts-free CSS, audio) so a tablet or TV
+   Caches the app shell (page, icons, sky photographs) so a tablet or TV
    left on this page keeps working through a brief Wi-Fi drop, and so it can
    be "installed" from the browser (Add to Home Screen / pin to Smart TV
    launcher) like the companion app. Network-first for index.html so a
-   published fix reaches the device quickly; cache-first for the large,
-   rarely-changing audio files. */
-/* BUMP THIS whenever you replace a cached asset *at the same path* — a new
-   Adhan recording over audio/adhan-full.mp3, redrawn icons, an edited
-   manifest. Everything below except index.html is served cache-first and is
-   never revalidated, so without a bump an existing install keeps serving the
+   published fix reaches the device quickly; cache-first for the images.
+   There is no audio to cache: the adhan comes live from the masjid. */
+/* BUMP THIS whenever you replace a cached asset *at the same path* — a
+   redrawn icon, a re-exported sky, an edited manifest. Everything below
+   except index.html is served cache-first and is never revalidated, so without a bump an existing install keeps serving the
    old file forever and you get a bug report you cannot reproduce. Renaming a
    file to a new path is safe without a bump (new URL, not in the cache).
    index.html is network-first, so page changes need no bump. */
-const CACHE = "taiyabah-home-v3";
+const CACHE = "taiyabah-home-v4";
 const SHELL = [
   "./",
   "./index.html",
@@ -20,8 +19,6 @@ const SHELL = [
   "./logo-cream.png",
   "./icon-192.png",
   "./icon-512.png",
-  "./audio/adhan-full.mp3",
-  "./audio/iqamah-short.mp3",
 ];
 /* The four sky backgrounds, cached separately and allowed to fail. They are
    a nice-to-have — the page falls back to the plain gradient without them —

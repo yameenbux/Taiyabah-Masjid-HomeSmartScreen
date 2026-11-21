@@ -137,7 +137,11 @@ const QUIET_CLOCK = '2026-08-20T10:30:00';
      which is a different fact the status poll reports separately and which
      test-airtime.js covers. The two used to share one message. */
   check('says it cannot reach the masjid', /can.t reach/i.test(down.label), down.label);
-  check('and still promises the adhan', /adhan/i.test(down.label), down.label);
+  /* It used to promise "adhan will still play", because a recording stood
+     in when the stream was down. The recordings are gone - the masjid's own
+     broadcast carries the adhan and a recording over the top was two adhans
+     out of step - so the screen must no longer make that promise. */
+  check('and makes no promise it cannot keep', !/adhan will still play/i.test(down.label), down.label);
   check('meter shows the fault', down.meter.includes('down'), down.meter);
 
   // ---- and comes back on its own ----
@@ -153,7 +157,7 @@ const QUIET_CLOCK = '2026-08-20T10:30:00';
     liveStop();
     return { audible: liveAudible(), state: LIVE.state };
   });
-  check('recorded adhan is used when live is not carrying it',
+  check('and reports itself inaudible while the stream is down',
     fallback.audible === false, `liveAudible()=${fallback.audible}`);
 
   await browser.close();
