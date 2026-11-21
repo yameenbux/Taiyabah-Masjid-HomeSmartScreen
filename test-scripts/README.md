@@ -103,6 +103,19 @@ git clone https://github.com/yameenbux/Taiyabah-Masjid-HomeSmartScreen.git test-
   three and a half hours a day, because auto-tune was legitimately opening the stream inside each
   prayer window. A suite that cries wolf on a correct build is worse than no suite.
 
+- **`test-airtime.js`** — whether the screen knows the masjid is actually broadcasting, and
+  whether the volume slider does anything. It drives Shoutcast's `/stats` endpoint from the test
+  rather than the real masjid, so it is deterministic and runs whether or not Bolton is on air. It
+  checks that `streamstatus: 0` is reported as "off air" in those words and stops the retry loop
+  rather than hammering a stream nobody is sending; that the radio comes on by itself the moment an
+  encoder connects; that an **unreachable** status endpoint is treated as unknown and never
+  announced as the masjid having stopped; and that moving the slider moves a GainNode, because on
+  iOS `HTMLMediaElement.volume` is read-only and the slider did nothing at all on a real iPad.
+
+  Its clock is pinned to the same quiet gap as `test-live.js`, for the same reason: auto-tune opens
+  the stream inside any prayer window regardless of the mocked status, so without a fixed clock the
+  "it did not switch itself on" checks fail for about three and a half hours a day.
+
 - **`test-tuner.js`** — the dial that reaches other masjids. Runs offline. It generates a
   multi-station copy of `index.html` next to the real one (so `sky/`, `audio/` and the logo still
   resolve) and deletes it afterwards, which keeps `data/stations.json` empty in the repo until a

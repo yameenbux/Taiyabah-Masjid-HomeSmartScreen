@@ -461,16 +461,8 @@ body.nodata .daygroup,body.nodata .times{display:none}
 .jumline{display:flex;align-items:baseline;gap:.6em;min-width:0}
 .jumline .k{font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-bright)}
 .jumline .v{color:var(--on-2)}
-.sitefoot{display:flex;align-items:center;gap:clamp(6px,.8vmin,11px);white-space:nowrap;
-  user-select:none;pointer-events:none;letter-spacing:.14em;text-transform:uppercase;
-  /* --on-2, not --on-3: measured at 4.64:1 over the dusk sky on the dimmer
-     token, which clears the floor but leaves nothing for a future sky swap
-     or a different crop. Still the quietest thing on the screen. */
-  font-size:clamp(15px,1.5vmin,22px);color:var(--on-2)}
-.sitefoot .mark{height:clamp(14px,1.8vmin,26px);width:auto;display:block;opacity:.85}
 /* Text fallback if the logo file is missing — keeps the credit deliberate
    rather than leaving a broken-image icon on a masjid wall. */
-.sitefoot .wordmark{font-weight:600;letter-spacing:.04em;color:var(--on-2)}
 
 /* ---- arrival ---- */
 @keyframes riseIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
@@ -589,7 +581,6 @@ body.nodata .daygroup,body.nodata .times{display:none}
   .t-begins{font-size:clamp(16px,min(2vh,2.8vw),27px)}
   .quicklink{font-size:clamp(17px,min(2.2vh,3vw),30px)}
   .footline{font-size:clamp(15px,min(1.8vh,2.4vw),24px)}
-  .sitefoot{font-size:clamp(15px,min(1.6vh,2.2vw),21px)}
 }
 </style>
 </head>
@@ -678,11 +669,6 @@ body.nodata .daygroup,body.nodata .times{display:none}
 
   <div class="footline">
     <div class="jumline" id="jummah-line"></div>
-    <div class="sitefoot">
-      <span class="prefix">Powered by</span>
-      <img class="mark" id="brand-mark" alt="MasjidOne" hidden>
-      <span class="wordmark" id="brand-word" hidden>MasjidOne</span>
-    </div>
   </div>
 </div>
 
@@ -861,7 +847,6 @@ function rebuildStations(){
    screens never go through setup and get the default, which is why they
    needed no change at all. */
 setMasjid(storedMasjidId() || DEFAULT_MASJID, false);
-const BRAND_MARK = __BRAND_MARK__;
 
 const PRAYERS = [
   {key:"fajr",    en:"Fajr",    ar:"الفجر"},
@@ -1153,21 +1138,27 @@ const LIVE = {
   lastTime: -1,
   frozenTicks: 0,
   timer: null,
-  ctx: null, analyser: null, buf: null, level: 0, quietFor: 0,
+  ctx: null, gain: null, analyser: null, buf: null, level: 0, quietFor: 0,
+  silentTicks: 0, meterWarned: false,
+  onAir: null,            // what the masjid's server last said: true, false, or unknown
+  airChecked: 0,
 };
 try { LIVE.wanted = localStorage.getItem(LIVE_KEY) === '1'; } catch(e){}
 try {
   const v = parseInt(localStorage.getItem(LIVE_VOL_KEY), 10);
   if(!isNaN(v)) volEl.value = v;
 } catch(e){}
-audioLive.volume = (parseInt(volEl.value,10) || 85) / 100;
+try { audioLive.volume = (parseInt(volEl.value,10) || 85) / 100; } catch(e){}
 
 function liveConfigured(){
   const st = curStation();
   return !!(STREAM && STREAM.enabled && st && st.url);
 }
 function liveAudible(){
-  return LIVE.state === 'live' && !audioLive.muted && audioLive.volume > 0.01;
+  /* On iOS audioLive.volume is stuck at 1 however the slider is set, so the
+     gain is the only honest answer to "would anyone actually hear this". */
+  const vol = LIVE.gain ? LIVE.gain.gain.value : audioLive.volume;
+  return LIVE.state === 'live' && !audioLive.muted && vol > 0.01;
 }
 
 function liveConnect(){
@@ -1185,8 +1176,94 @@ function liveConnect(){
   updateSoundPill();
 }
 
+/* ---- is the masjid actually on air? ----
+   Until now the only way to find out was to open the stream and see what
+   happened, which cannot tell "the masjid has stopped broadcasting" apart
+   from "the network dropped" — both arrive as a stalled audio element, and
+   both got the same hopeful reconnect loop.
+   Shoutcast answers the question directly. /stats returns streamstatus: 1
+   when an encoder is connected and 0 when nobody is broadcasting, with
+   Access-Control-Allow-Origin: * so the page may simply ask. Polling it
+   means the screen can say "off air" when that is the truth, stop retrying
+   a stream that nobody is sending, and come on by itself the moment the
+   masjid starts. */
+function liveStatusUrl(){
+  const st = curStation();
+  if(!st || !st.url) return null;
+  if(st.statusUrl) return st.statusUrl;
+  try {
+    const u = new URL(st.url);
+    return u.origin + '/stats?sid=1&json=1';
+  } catch(e){ return null; }
+}
+
+function liveApplyAirState(onAir){
+  const was = LIVE.onAir;
+  LIVE.onAir = onAir;
+  LIVE.airChecked = Date.now();
+  if(was === onAir) return;
+
+  if(onAir === false){
+    /* Nobody is broadcasting. Say so, and stop hammering a stream that has
+       nothing on the other end — the backoff was designed for a network
+       that might come back in seconds, not for a masjid that has finished
+       for the night. */
+    console.info('[taiyabah] masjid is off air');
+    clearTimeout(LIVE.timer);
+    LIVE.attempts = 0;
+    if(LIVE.wanted){
+      LIVE.state = 'offair';
+      try { audioLive.pause(); audioLive.removeAttribute('src'); audioLive.load(); } catch(e){}
+    }
+  } else if(onAir === true){
+    console.info('[taiyabah] masjid is on air');
+    if(LIVE.wanted && LIVE.state !== 'live'){
+      LIVE.attempts = 0;
+      liveConnect();
+    }
+  }
+  updateSoundPill();
+  updateMediaSession();
+}
+
+function liveCheckAir(){
+  const url = liveStatusUrl();
+  if(!url || !liveConfigured()) return;
+  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  if(ctrl) setTimeout(()=>{ try { ctrl.abort(); } catch(e){} }, 8000);
+  fetch(url + '&_=' + Date.now(), ctrl ? {signal: ctrl.signal} : undefined)
+    .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
+    .then(d => {
+      liveApplyAirState(Number(d.streamstatus) === 1);
+      LIVE.listeners = Number(d.currentlisteners);
+      /* On air, wanted by nobody yet, and allowed to follow the masjid:
+         switch on. This is what makes it behave like the radio it replaces
+         — the set does not wait to be asked once the transmitter is up. */
+      if(LIVE.onAir === true && !LIVE.wanted && soundUnlocked &&
+         STREAM && STREAM.followAirtime !== false && onHomeStation()){
+        console.info('[taiyabah] masjid came on air — tuning in');
+        liveStart();
+      }
+    })
+    .catch(()=>{
+      /* Unknown, not off. A blocked fetch or a flaky connection must not be
+         reported to anyone as the masjid having stopped, so this falls back
+         to the behaviour that existed before: open the stream and see. */
+      if(LIVE.onAir !== null){ LIVE.onAir = null; updateSoundPill(); }
+    });
+}
+liveCheckAir();
+setInterval(liveCheckAir, 20000);
+
 function liveRetry(reason){
   if(!LIVE.wanted) return;
+  if(LIVE.onAir === false){
+    /* Confirmed off air. Retrying achieves nothing; the status poll will
+       reconnect the moment somebody starts broadcasting again. */
+    LIVE.state = 'offair';
+    updateSoundPill();
+    return;
+  }
   LIVE.attempts++;
   const wait = Math.min(30000, 1000 * Math.pow(2, Math.min(LIVE.attempts - 1, 5)));
   LIVE.state = LIVE.attempts >= 4 ? 'failed' : 'retrying';
@@ -1219,21 +1296,54 @@ function liveStart(){
    gesture on most platforms, so it is built on the same tap that starts
    the radio. If it cannot be built the meter still animates from the
    element's own state rather than sitting dead. */
+/* element -> gain -> analyser -> speakers.
+   The gain node is not an optimisation, it is the only way to set the volume
+   on an iPad. iOS makes HTMLMediaElement.volume read-only: assigning to it
+   is silently ignored, the hardware buttons are the only control Safari
+   offers, and that is why the on-screen slider did nothing on the tablet
+   while working on a desktop. Gain is honoured everywhere.
+   The analyser sits AFTER the gain so the meter shows what is actually
+   coming out of the speaker rather than what arrived from the network. */
 function liveSetUpAnalyser(){
-  if(LIVE.analyser || !window.AudioContext) return;
+  if(LIVE.analyser || !(window.AudioContext || window.webkitAudioContext)) return;
   try {
-    LIVE.ctx = new AudioContext();
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    LIVE.ctx = new Ctx();
     const src = LIVE.ctx.createMediaElementSource(audioLive);
+    LIVE.gain = LIVE.ctx.createGain();
+    LIVE.gain.gain.value = liveWantedVolume();
     LIVE.analyser = LIVE.ctx.createAnalyser();
     LIVE.analyser.fftSize = 1024;
     LIVE.buf = new Uint8Array(LIVE.analyser.fftSize);
-    src.connect(LIVE.analyser);
+    src.connect(LIVE.gain);
+    LIVE.gain.connect(LIVE.analyser);
     LIVE.analyser.connect(LIVE.ctx.destination);
   } catch(e){
     console.info('[taiyabah] level meter unavailable: ' + e.message);
-    LIVE.analyser = null;
+    LIVE.analyser = null; LIVE.gain = null;
   }
+  liveResumeCtx();
+}
+
+/* Safari starts an AudioContext suspended and only resumes it from inside a
+   real gesture. Once the element is wired into the graph a suspended context
+   means no sound at all, so every plausible gesture tries again. */
+function liveResumeCtx(){
   if(LIVE.ctx && LIVE.ctx.state === 'suspended') LIVE.ctx.resume().catch(()=>{});
+}
+['pointerdown','keydown','touchend'].forEach(ev =>
+  document.addEventListener(ev, liveResumeCtx, {passive:true}));
+
+function liveWantedVolume(){
+  const v = parseInt(volEl && volEl.value, 10);
+  return (isNaN(v) ? 85 : v) / 100;
+}
+/* Set it in both places: gain where the graph exists, element volume for the
+   browsers that honour it and for before the graph is built. */
+function liveApplyVolume(){
+  const v = liveWantedVolume();
+  if(LIVE.gain) { try { LIVE.gain.gain.value = v; } catch(e){} }
+  try { audioLive.volume = v; } catch(e){}
 }
 
 audioLive.addEventListener('playing', ()=>{
@@ -1252,7 +1362,8 @@ audioLive.addEventListener('waiting', ()=>{
 
 volEl.addEventListener('input', ()=>{
   const v = parseInt(volEl.value, 10) || 0;
-  audioLive.volume = v / 100;
+  liveApplyVolume();
+  liveResumeCtx();
   try { localStorage.setItem(LIVE_VOL_KEY, String(v)); } catch(e){}
 });
 
@@ -1293,6 +1404,11 @@ function autoTune(rec, baseDate, now){
      not interrupted and not dragged back; the recorded adhan covers them
      instead. Nothing here closes a connection it did not open. */
   if(!onHomeStation()) return;
+  /* And if the masjid's own server says nobody is broadcasting, a prayer
+     window has nothing to open. Opening it anyway just fails, and worse, it
+     would leave LIVE.wanted set so the recorded adhan is held back waiting
+     for a live one that is not coming. */
+  if(LIVE.onAir === false) return;
   const want = prayerWindow(rec, baseDate, now);
   if(want && !LIVE.wanted){
     console.info('[taiyabah] tuning in for the adhan');
@@ -1336,9 +1452,9 @@ function liveWatchdog(){
 function liveMeterTick(){
   if(!meterEl) return;
   const bars = meterEl.children;
-  if(LIVE.state === 'failed' || LIVE.state === 'off'){
+  if(LIVE.state === 'failed' || LIVE.state === 'off' || LIVE.state === 'offair'){
     meterEl.className = LIVE.state === 'failed' ? 'meter down' : 'meter';
-    if(LIVE.state === 'off') for(const b of bars) b.style.height = '8%';
+    if(LIVE.state !== 'failed') for(const b of bars) b.style.height = '8%';
     return;
   }
   let rms = 0;
@@ -1349,6 +1465,18 @@ function liveMeterTick(){
     rms = Math.sqrt(sum / LIVE.buf.length);
   }
   LIVE.level = LIVE.level * 0.6 + rms * 0.4;
+  /* An analyser that reads a flat zero for a minute of live audio is not a
+     quiet hall, it is a broken graph — iOS has shipped that bug more than
+     once for streamed media. Say so once, so the next person does not have
+     to guess which of the two they are looking at. */
+  if(LIVE.state === 'live' && LIVE.analyser){
+    if(rms > 0.0008){ LIVE.silentTicks = 0; LIVE.meterWarned = false; }
+    else if(++LIVE.silentTicks === 600 && !LIVE.meterWarned){
+      LIVE.meterWarned = true;
+      console.info('[taiyabah] the level meter has read exact silence for 60s of live audio — ' +
+        'either the hall is genuinely silent or this device cannot analyse the stream');
+    }
+  }
   /* A masjid between prayers sits around 0.006 RMS — real room tone, not
      silence. Scaled so that reads as a visible flicker rather than nothing,
      because "connected but quiet" must never look like "broken". */
@@ -1356,13 +1484,25 @@ function liveMeterTick(){
   meterEl.className = 'meter' + (LIVE.state === 'live' && norm < 0.12 ? ' quiet' : '');
   for(let i=0;i<bars.length;i++){
     const centre = 1 - Math.abs(i - (bars.length-1)/2) / bars.length;
-    /* The floor is 22%, not zero. A masjid between prayers really is near
-       silent, and bars collapsed to a hairline look exactly like a dead
-       stream — which is the one thing this meter exists to rule out. The
-       quiet state is a low, visible shimmer; the adhan takes it to full. */
-    const h = LIVE.state === 'live'
-      ? 22 + norm * 78 * (0.55 + centre * 0.65) * (0.75 + Math.random()*0.5)
-      : 22 + ((Date.now()/220 + i) % 2) * 16;   // connecting: a slow travelling blip
+    /* Three states, and the quiet one is the one that matters.
+       A masjid between prayers really is near silent, so the measured level
+       is ~0 and every bar sat at exactly the 22% floor: a motionless row of
+       dots, which is indistinguishable from a dead stream and was read as
+       exactly that on a real tablet. A meter whose whole job is to prove the
+       stream is alive must never be still while it is alive. So when it is
+       live and quiet the bars breathe on a slow travelling wave — low
+       enough to be honest that nothing is being said, moving enough that
+       nobody mistakes it for broken. Real level takes over the moment there
+       is any. */
+    let h;
+    if(LIVE.state === 'live' && norm >= 0.12){
+      h = 22 + norm * 78 * (0.55 + centre * 0.65) * (0.75 + Math.random()*0.5);
+    } else if(LIVE.state === 'live'){
+      const wave = Math.sin(Date.now()/520 - i * 0.7) * 0.5 + 0.5;
+      h = 22 + wave * (9 + centre * 7) + norm * 78 * 0.4;
+    } else {
+      h = 22 + ((Date.now()/220 + i) % 2) * 16;   // connecting: a travelling blip
+    }
     bars[i].style.height = Math.max(22, Math.min(100, h)) + '%';
   }
 }
@@ -1422,13 +1562,21 @@ function updateSoundPill(){
     }
     soundPill.classList.remove('on');
     soundPillLabel.textContent =
-      LIVE.state === 'failed' ? "Masjid off-air · adhan will still play"
+      /* 'offair' is the masjid's own server telling us nobody is
+         broadcasting. 'failed' is us being unable to reach a stream that
+         may well be fine. Different facts, different words. */
+      LIVE.state === 'offair'  ? (curStation().name || "Masjid") + " is off air"
+      : LIVE.state === 'failed'  ? "Can't reach the masjid · adhan will still play"
       : LIVE.state === 'retrying' ? "Reconnecting\u2026"
       : "Connecting\u2026";
     return;
   }
   soundPill.classList.add('on');
-  soundPillLabel.textContent = liveConfigured() ? "Tap to listen live" : "Sound on · tap to test";
+  if(!liveConfigured()){ soundPillLabel.textContent = "Sound on · tap to test"; return; }
+  soundPillLabel.textContent =
+      LIVE.onAir === false ? (curStation().name || "Masjid") + " is off air"
+    : LIVE.onAir === true  ? "Live now · tap to listen"
+    : "Tap to listen live";
 }
 soundPill.addEventListener('click', ()=>{
   const first = !soundUnlocked;
@@ -2355,24 +2503,6 @@ document.addEventListener('visibilitychange', ()=>{
 });
 window.addEventListener('focus', tick);
 
-/* The MasjidOne credit. BRAND_MARK is filled in by build.py and is null
-   whenever the logo file is not in the repo, so the page simply never
-   requests it — the earlier version asked unconditionally and fell back on
-   the error, which worked but logged a 404 on every load of every device
-   forever, and that noise is what hides a real error when one appears.
-   Dropping the real logo in at that path and rebuilding is still the only
-   step needed. The error handler stays for the case where the file exists
-   at build time but fails to load on the device. */
-(function brandMark(){
-  const img = document.getElementById('brand-mark');
-  const word = document.getElementById('brand-word');
-  if(!img || !word) return;
-  const useWordmark = ()=>{ img.hidden = true; word.hidden = false; };
-  if(!BRAND_MARK){ useWordmark(); return; }
-  img.addEventListener('error', useWordmark, {once:true});
-  img.addEventListener('load', ()=>{ img.hidden = false; word.hidden = true; }, {once:true});
-  img.src = BRAND_MARK;
-})();
 
 /* ---------------- boot ---------------- */
 renderSupport();

@@ -66,6 +66,13 @@ const QUIET_CLOCK = '2026-08-20T10:30:00';
   const ctx = await browser.newContext({ viewport: { width: 1920, height: 1080 }, timezoneId: 'Europe/London' });
   const page = await ctx.newPage();
   await page.addInitScript(fakeDateScript(QUIET_CLOCK));
+  /* This suite is about the audio recovery path, so the air-status poll is
+     blocked throughout: with it answering, the radio switches itself on as
+     soon as the masjid is broadcasting and "off until someone switches it
+     on" stops being true. Blocking it leaves onAir unknown, which is the
+     fallback this suite was written against. test-airtime.js covers the
+     poll itself. */
+  await page.route('**/stats**', r => r.abort());
   const backoffs = [];
   page.on('console', m => {
     const t = m.text();
@@ -125,7 +132,11 @@ const QUIET_CLOCK = '2026-08-20T10:30:00';
     `waits ${backoffs.join('s, ')}s`);
   check('rising backoff', backoffs.every((v, i) => i === 0 || v >= backoffs[i - 1]),
     backoffs.join(','));
-  check('says off-air plainly', /off-air/i.test(down.label), down.label);
+  /* This scenario aborts the network, so the honest statement is that we
+     cannot REACH the masjid — not that the masjid has stopped broadcasting,
+     which is a different fact the status poll reports separately and which
+     test-airtime.js covers. The two used to share one message. */
+  check('says it cannot reach the masjid', /can.t reach/i.test(down.label), down.label);
   check('and still promises the adhan', /adhan/i.test(down.label), down.label);
   check('meter shows the fault', down.meter.includes('down'), down.meter);
 

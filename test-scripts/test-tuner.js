@@ -84,6 +84,7 @@ function writeVariant() {
     {
       const page = await ctx.newPage();
       await page.addInitScript(fakeDateScript(QUIET));
+      await page.route('**/stats**', r => r.abort());
       await page.goto('file://' + REAL, { waitUntil: 'load' });
       await page.waitForTimeout(900);
       const n = await page.evaluate(() => MASJIDS.length);
@@ -97,6 +98,10 @@ function writeVariant() {
     const page = await ctx.newPage();
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
+    /* Block the air-status poll. Auto-tune is what this suite is about, and
+       with the poll live the radio is already on before any prayer window
+       opens, which makes "a prayer window did not start this" unprovable. */
+    await page.route('**/stats**', r => r.abort());
     await page.addInitScript(fakeDateScript(QUIET));
     await page.goto('file://' + VARIANT, { waitUntil: 'load' });
     await page.waitForTimeout(900);

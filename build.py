@@ -37,16 +37,6 @@ SOURCES = {
     "__TUNING_JSON__": "data/tuning.json",
 }
 
-# Optional asset. The page used to request masjidone-logo.svg unconditionally
-# and fall back to a text wordmark on error — which worked, but logged a 404
-# on every load of every device, forever, and that noise is exactly what
-# hides a real error when one turns up. Resolve it at build time instead: if
-# the file is not in the repo the page never asks for it.
-OPTIONAL_ASSETS = {
-    "__BRAND_MARK__": "masjidone-logo.svg",
-}
-
-
 def load_timetable(folder, masjid_id):
     """Merge every timetable-YYYY.json in a masjid's folder into one blob.
 
@@ -208,15 +198,7 @@ def main():
             json.dumps(blob, separators=(",", ":"), ensure_ascii=False),
         )
 
-    for placeholder, relpath in OPTIONAL_ASSETS.items():
-        present = (ROOT / relpath).exists()
-        out = out.replace(placeholder, json.dumps(relpath if present else None))
-        if not present:
-            print("note: %s is not in the repo — the page will use its text "
-                  "fallback and will not request it" % relpath)
-
-    for placeholder in ["__MASJIDS_JSON__", "__DEFAULT_MASJID__"] \
-            + list(SOURCES) + list(OPTIONAL_ASSETS):
+    for placeholder in ["__MASJIDS_JSON__", "__DEFAULT_MASJID__"] + list(SOURCES):
         assert placeholder not in out, "%s was not substituted" % placeholder
 
     (ROOT / "index.html").write_text(out, encoding="utf-8")

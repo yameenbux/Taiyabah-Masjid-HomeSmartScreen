@@ -61,9 +61,15 @@ qr.save(
     FOLDER / "donate-qr.svg",
     scale=1,
     border=3,
-    dark="#3C0B2A",     # brand maroon, near-black against the tile
-    light="#F7F3EA",    # solid cream tile: no translucency to read through
+    dark="#000000",     # true black
+    light="#FFFFFF",    # true white
 )
+# Black on white, not brand maroon on cream. The branded version measured
+# about 13:1 instead of 21:1, and at the size this renders on a tablet —
+# roughly three screen pixels per module — the anti-aliased edge of every
+# module carried enough of the cream into the maroon to make the whole code
+# look smudged. A QR is not a place to spend brand colour: the only thing it
+# has to do is resolve under a phone camera held at arm's length.
 
 # segno writes width/height and no viewBox, which means CSS can stretch the
 # element without scaling the artwork — the code ends up a few pixels wide in
@@ -72,7 +78,14 @@ qr.save(
 out = FOLDER / "donate-qr.svg"
 markup = out.read_text(encoding="utf-8")
 if "viewBox" not in markup:
-    size = qr.symbol_size(scale=1, border=2)[0]
+    # The SAME border the image was saved with. This read border=2 while the
+    # save above used border=3, so a 35-unit drawing was mapped into a
+    # 33-unit box: the browser scaled it up and clipped two modules off the
+    # right and bottom, which is the entire quiet zone on those two sides.
+    # A cropped quiet zone is a code some scanners refuse and all of them
+    # resolve more slowly, and on screen it reads as a code that has been
+    # cut off.
+    size = qr.symbol_size(scale=1, border=3)[0]
     markup = markup.replace(
         '<svg xmlns="http://www.w3.org/2000/svg"',
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 %d %d"' % (size, size),
