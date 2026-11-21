@@ -191,8 +191,18 @@ a:focus-visible,
    ===================================================================== */
 
 /* ---- chrome: logo left, clock right, nothing in between ---- */
+/* Above the hero, always. On a 1024x768 iPad the header has more in it
+   than the width holds, so .chrome-left wraps the meter and the volume
+   onto a second line — and the hero, being taller than the room left for
+   it, used to overflow upward and land on top of them. Measured on that
+   viewport, every tap aimed at the volume slider was landing on the word
+   "Fajr" instead, and dragging it left the value untouched at 85. That,
+   not anything about iOS, is why the slider "did nothing" on the tablet.
+   The sizing below stops them meeting at all; this is the belt to that
+   pair of braces, because a control you cannot touch is the worst way to
+   fail. */
 .chrome{flex:0 0 auto;display:flex;align-items:flex-start;justify-content:space-between;
-  gap:clamp(12px,2vw,36px)}
+  gap:clamp(12px,2vw,36px);position:relative;z-index:2}
 .chrome-left{display:flex;align-items:center;gap:clamp(18px,3.4vw,68px);min-width:0;flex-wrap:wrap}
 /* The masjid's own mark, and the only branding on the screen — sized as a
    proportion of the display rather than as a web-page logo. The lockup
@@ -259,6 +269,7 @@ a:focus-visible,
   transition:height .03s linear}
 .meter.quiet i{background:var(--on-3);opacity:.6}
 .meter.down i{background:var(--danger);opacity:.75;height:22%!important;transition:none}
+.audiobits{display:flex;align-items:center;gap:clamp(10px,1.4vw,22px);flex:0 0 auto}
 .radio-vol{appearance:none;-webkit-appearance:none;background:none;cursor:pointer;
   width:clamp(64px,7vw,130px);height:28px;flex:0 0 auto}
 .radio-vol::-webkit-slider-runnable-track{height:3px;border-radius:99px;background:rgba(201,178,194,.35)}
@@ -369,6 +380,23 @@ a:focus-visible,
 /* "Now" is a word, not six digits, so it loses the tabular figures and the
    tight tracking that exist to stop a ticking clock jittering. */
 .hero-count.word{font-variant-numeric:normal;letter-spacing:-.01em}
+/* Short and narrow at once — a landscape iPad — is the one shape where the
+   header wraps to two lines AND the hero wants more height than is left:
+   measured at 1024x768 the hero asked for 264px of a 187px stage and the
+   overflow went upward, over the controls. Scoped to exactly that case so
+   a 1280x800 laptop or a 1080p TV, which both have room, keep the full
+   size. The countdown is the one thing this screen exists to show, so it
+   gives up the least it can: 11.6vmin rather than 18.5.
+   The 900px lower bound keeps a phone in landscape out of it: it is short
+   too, but its header does not wrap, and shrinking the hero there pushed
+   the countdown down to its floor until it was no bigger than the times
+   below it — which test-layout caught. */
+@media (max-height:820px) and (min-width:900px) and (max-width:1100px){
+  .hero-k{margin-bottom:clamp(6px,.8vmin,32px)}
+  .hero-name{font-size:clamp(28px,5.2vmin,124px)}
+  .hero-count{font-size:clamp(48px,11.6vmin,310px)}
+  .hero-at{font-size:clamp(16px,2.1vmin,42px)}
+}
 /* It pulses to catch an eye across a room. Slow and shallow on purpose: a
    hard flash on a screen that lives on a kitchen wall all day is the kind
    of thing people cover with a tea towel. */
@@ -663,9 +691,15 @@ body.nodata .daygroup,body.nodata .times{display:none}
       <button class="soundpill" id="sound-pill" type="button" hidden aria-label="Enable Adhan and Iqamah sound">
         <span class="dot"></span><span id="sound-pill-label">Listen live</span>
       </button>
-      <div class="meter" id="meter" aria-hidden="true"></div>
-      <input class="radio-vol" id="radio-vol" type="range" min="0" max="100" value="85"
-             aria-label="Live volume" title="Live volume">
+      <!-- Grouped so they wrap together. Apart, on a 1024px header, the
+           meter stayed on the first line and the slider dropped to the
+           second on its own, where a bare range input reads as a stray
+           rule with a dot on it rather than as a volume control. -->
+      <div class="audiobits">
+        <div class="meter" id="meter" aria-hidden="true"></div>
+        <input class="radio-vol" id="radio-vol" type="range" min="0" max="100" value="85"
+               aria-label="Live volume" title="Live volume">
+      </div>
       <!-- The dial. Hidden entirely while there is only one station, so a
            single-masjid configuration looks exactly as it did before this
            feature existed. Shows where the dial IS, the way a radio does,
@@ -1204,7 +1238,7 @@ const LIVE = {
   frozenTicks: 0,
   timer: null,
   ctx: null, gain: null, analyser: null, buf: null, level: 0, quietFor: 0,
-  silentSince: 0,
+  silentSince: 0, meterLoudAt: 0,
   graphBypassed: false,   // device plays the stream outside the graph
   lastSound: 0, analyserProven: false,
   onAir: null,            // what the masjid's server last said: true, false, or unknown
@@ -1653,6 +1687,11 @@ function liveWatchdog(){
    Bands are log-spaced, because pitch is. Linear bins would spend most of
    the row on 10-20kHz, where a speech stream has nothing at all, and leave
    every voice crammed into the first two bars. */
+/* Just above the 0.006 that getByteTimeDomainData reads for silence: it has
+   to clear the floor without clearing real speech, which barely gets above
+   it. */
+const METER_SOUND_FLOOR = 0.0078;
+const METER_SOUND_HOLD_MS = 1200;
 const METER_BARS = 13;
 const METER_BAND_LO = 60;      // Hz — below this is rumble and handling noise
 const METER_BAND_HI = 6000;    // Hz — above this a 128kbps voice stream is empty
@@ -1740,8 +1779,21 @@ function liveMeterTick(){
     }
   }
 
-  const norm = Math.min(1, LIVE.level * 14);
-  const quiet = LIVE.state === 'live' && norm < 0.12;
+  /* Whether to show the spectrum or the breathing wave, and it needs a
+     hold rather than a bare threshold. Measured against this masjid's own
+     Isha jamaah: the recitation arrives at -30dBFS, which reads only
+     0.0099 to 0.0169 here, against a quantisation floor of 0.006 — the
+     whole of real speech lives in a sliver above the floor, and it dips
+     below any fixed line in the gaps between words. A bare comparison
+     therefore flipped the row out of the spectrum and back into the
+     decorative wave several times per phrase, mid-recitation, which is
+     the opposite of showing the sound.
+     So any reading above the line latches the spectrum on for a further
+     second and a bit: longer than the gap between words, far shorter than
+     the gap between prayers. */
+  if(rms > METER_SOUND_FLOOR) LIVE.meterLoudAt = nowMs;
+  const quiet = LIVE.state === 'live' &&
+    (nowMs - (LIVE.meterLoudAt || 0) > METER_SOUND_HOLD_MS);
   meterEl.className = 'meter' + (quiet ? ' quiet' : '');
 
   let spectrum = null;
