@@ -240,10 +240,19 @@ a:focus-visible,
    on, and is it working. The meter is the important half — a masjid mic is
    near-silent most of the day, and without a moving level a working stream
    and a dead one look exactly the same. */
-.meter{display:flex;align-items:flex-end;gap:clamp(2px,.25vmin,4px);
-  height:clamp(16px,2.1vmin,32px);flex:0 0 auto}
-.meter i{display:block;width:clamp(3px,.36vmin,6px);height:22%;border-radius:2px;
-  background:var(--gold-bright);opacity:.85;transition:height .12s linear}
+.meter{display:flex;align-items:flex-end;gap:clamp(1.5px,.18vmin,3px);
+  height:clamp(16px,2.3vmin,36px);flex:0 0 auto}
+/* Thinner than before because there are thirteen of them now instead of
+   seven, and the row still has to sit in the header beside the pill, the
+   volume and the dial without pushing the clock around. */
+.meter i{display:block;width:clamp(2.5px,.3vmin,5px);height:22%;border-radius:2px;
+  background:var(--gold-bright);opacity:.85;
+  /* Shorter than the 33ms tick on purpose. Anything longer and each bar is
+     still travelling when the next value lands, so the row reaches neither
+     the peaks nor the troughs and a syllable turns into a gentle swell.
+     The smoothing that belongs here is done in JS, where it can be fast up
+     and slow down; CSS only has to take the stepping off. */
+  transition:height .03s linear}
 .meter.quiet i{background:var(--on-3);opacity:.6}
 .meter.down i{background:var(--danger);opacity:.75;height:22%!important;transition:none}
 .radio-vol{appearance:none;-webkit-appearance:none;background:none;cursor:pointer;
@@ -645,7 +654,7 @@ body.nodata .daygroup,body.nodata .times{display:none}
       <button class="soundpill" id="sound-pill" type="button" hidden aria-label="Enable Adhan and Iqamah sound">
         <span class="dot"></span><span id="sound-pill-label">Listen live</span>
       </button>
-      <div class="meter" id="meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="meter" id="meter" aria-hidden="true"></div>
       <input class="radio-vol" id="radio-vol" type="range" min="0" max="100" value="85"
              aria-label="Live volume" title="Live volume">
       <!-- The dial. Hidden entirely while there is only one station, so a
@@ -1373,7 +1382,22 @@ function liveSetUpAnalyser(){
     LIVE.gain.gain.value = liveWantedVolume();
     LIVE.analyser = LIVE.ctx.createAnalyser();
     LIVE.analyser.fftSize = 1024;
+    /* The default 0.8 is built for a VU needle, and it is also measured
+       per frame, so it got looser when the meter went from 10fps to 30.
+       0.45 keeps frame-to-frame noise off the bars while leaving the
+       spectrum free to change shape between one syllable and the next. */
+    LIVE.analyser.smoothingTimeConstant = 0.45;
+    /* The default window is -100dB to -30dB, which is wrong for this in both
+       directions: -100 puts the noise floor of a 128kbps stream on the scale,
+       and -30 is quiet enough that ordinary speech sits above the top of it,
+       so every band pins at full height the moment anyone talks. Measured on
+       a tone at -5dBFS the whole row slammed to 100%. -82 to -18 keeps the
+       hiss off the bottom and leaves speech somewhere in the middle, which is
+       where it has to be for the shape to mean anything. */
+    LIVE.analyser.minDecibels = -82;
+    LIVE.analyser.maxDecibels = -18;
     LIVE.buf = new Uint8Array(LIVE.analyser.fftSize);
+    LIVE.freq = new Uint8Array(LIVE.analyser.frequencyBinCount);
     src.connect(LIVE.gain);
     LIVE.gain.connect(LIVE.analyser);
     LIVE.analyser.connect(LIVE.ctx.destination);
@@ -1556,17 +1580,65 @@ function liveWatchdog(){
   }
 }
 
-/* Drives the bars. Deliberately not requestAnimationFrame: this runs for
-   months on a Fire Stick, and 10fps of seven bars is invisible on a CPU
-   graph where rAF is not. */
+/* The meter.
+   It used to drive all seven bars from one number — the overall RMS — with
+   a fixed centre-weighted shape and a little randomness on top. That moves
+   as a single lump, which reads as decoration rather than as the sound, and
+   it looks the same whether the muadhin is mid-phrase or a door has banged.
+   Each bar now owns a slice of the spectrum, so the shape of what you see
+   is the shape of what you hear: low voice energy swells the left, the
+   consonants and the mic's air flicker on the right, and a sustained note
+   holds one part of the row up while the rest falls away.
+
+   Bands are log-spaced, because pitch is. Linear bins would spend most of
+   the row on 10-20kHz, where a speech stream has nothing at all, and leave
+   every voice crammed into the first two bars. */
+const METER_BARS = 13;
+const METER_BAND_LO = 60;      // Hz — below this is rumble and handling noise
+const METER_BAND_HI = 6000;    // Hz — above this a 128kbps voice stream is empty
+let meterBands = null;         // [startBin, endBin] per bar
+let meterHeights = new Array(METER_BARS).fill(22);
+
+(function buildMeter(){
+  if(!meterEl) return;
+  const frag = document.createDocumentFragment();
+  for(let i=0;i<METER_BARS;i++) frag.appendChild(document.createElement('i'));
+  meterEl.replaceChildren(frag);
+})();
+
+function meterBandsFor(sampleRate, bins){
+  /* Worked out once, from the context's real sample rate rather than an
+     assumed 44.1k — a tablet that opens its context at 48k would otherwise
+     have every band sitting slightly low. */
+  const nyquist = sampleRate / 2;
+  const binOf = hz => Math.max(1, Math.min(bins - 1, Math.round(hz / nyquist * bins)));
+  const out = [];
+  for(let i=0;i<METER_BARS;i++){
+    const lo = METER_BAND_LO * Math.pow(METER_BAND_HI/METER_BAND_LO, i/METER_BARS);
+    const hi = METER_BAND_LO * Math.pow(METER_BAND_HI/METER_BAND_LO, (i+1)/METER_BARS);
+    const a = binOf(lo), b = Math.max(binOf(hi), a + 1);
+    out.push([a, b]);
+  }
+  return out;
+}
+
+let meterLast = 0;
 function liveMeterTick(){
   if(!meterEl) return;
   const bars = meterEl.children;
+  const nowMs = Date.now();
+  const dt = Math.min(250, Math.max(16, nowMs - (meterLast || nowMs - 100)));
+  meterLast = nowMs;
+  const fall = 1 - Math.exp(-dt / 120);
   if(LIVE.state === 'failed' || LIVE.state === 'off' || LIVE.state === 'offair'){
     meterEl.className = LIVE.state === 'failed' ? 'meter down' : 'meter';
     if(LIVE.state !== 'failed') for(const b of bars) b.style.height = '8%';
     return;
   }
+
+  /* Time-domain RMS still drives the level, because "is anything being
+     said" and its thresholds are calibrated on it. The frequency data is
+     for the picture only. */
   let rms = 0;
   if(LIVE.analyser && LIVE.state === 'live'){
     LIVE.analyser.getByteTimeDomainData(LIVE.buf);
@@ -1576,34 +1648,12 @@ function liveMeterTick(){
   }
   LIVE.level = LIVE.level * 0.6 + rms * 0.4;
 
-  /* Whether anything is actually being broadcast, as opposed to whether an
-     encoder happens to be connected. The masjid leaves its encoder running
-     around the clock — streamstatus reads 1 at four in the afternoon with
-     nobody in the hall — so the server can never tell us "nothing is
-     happening right now", which is the thing a listener wants to know.
-     The level can. Anything above the floor counts as live and is held for
-     a while so gaps between sentences do not flicker the label; sustained
-     silence reads as nothing on air.
-     Only trusted once the analyser has proved it works on this device: if
-     it cannot read the stream at all it returns a flat zero, and calling
-     that "nothing on air" would be a lie told all day. */
   if(LIVE.state === 'live'){
-    /* Two different thresholds doing two different jobs. Any reading at all
-       above the noise floor proves the analyser works on this device — a
-       broken one returns a flat exact zero, which is what we must not
-       mistake for a quiet hall. Room tone between prayers measures about
-       0.006 here, so proving it does NOT require anyone to speak; waiting
-       for a loud reading left the screen saying "connected" all afternoon
-       when it could already tell nothing was on air. */
     if(rms > 0.0008) LIVE.analyserProven = true;
     if(rms > 0.012)  LIVE.lastSound = Date.now();
   } else {
     LIVE.lastSound = 0;
   }
-  /* An analyser that reads a flat zero for a minute of live audio is not a
-     quiet hall, it is a broken graph — iOS has shipped that bug more than
-     once for streamed media. Say so once, so the next person does not have
-     to guess which of the two they are looking at. */
   if(LIVE.state === 'live' && LIVE.analyser){
     if(rms > 0.0008){ LIVE.silentTicks = 0; LIVE.meterWarned = false; }
     else if(++LIVE.silentTicks === 600 && !LIVE.meterWarned){
@@ -1612,36 +1662,58 @@ function liveMeterTick(){
         'either the hall is genuinely silent or this device cannot analyse the stream');
     }
   }
-  /* A masjid between prayers sits around 0.006 RMS — real room tone, not
-     silence. Scaled so that reads as a visible flicker rather than nothing,
-     because "connected but quiet" must never look like "broken". */
+
   const norm = Math.min(1, LIVE.level * 14);
-  meterEl.className = 'meter' + (LIVE.state === 'live' && norm < 0.12 ? ' quiet' : '');
+  const quiet = LIVE.state === 'live' && norm < 0.12;
+  meterEl.className = 'meter' + (quiet ? ' quiet' : '');
+
+  let spectrum = null;
+  if(LIVE.analyser && LIVE.freq && LIVE.state === 'live' && !quiet){
+    LIVE.analyser.getByteFrequencyData(LIVE.freq);
+    if(!meterBands && LIVE.ctx) meterBands = meterBandsFor(LIVE.ctx.sampleRate, LIVE.freq.length);
+    spectrum = LIVE.freq;
+  }
+
   for(let i=0;i<bars.length;i++){
-    const centre = 1 - Math.abs(i - (bars.length-1)/2) / bars.length;
-    /* Three states, and the quiet one is the one that matters.
-       A masjid between prayers really is near silent, so the measured level
-       is ~0 and every bar sat at exactly the 22% floor: a motionless row of
-       dots, which is indistinguishable from a dead stream and was read as
-       exactly that on a real tablet. A meter whose whole job is to prove the
-       stream is alive must never be still while it is alive. So when it is
-       live and quiet the bars breathe on a slow travelling wave — low
-       enough to be honest that nothing is being said, moving enough that
-       nobody mistakes it for broken. Real level takes over the moment there
-       is any. */
-    let h;
-    if(LIVE.state === 'live' && norm >= 0.12){
-      h = 22 + norm * 78 * (0.55 + centre * 0.65) * (0.75 + Math.random()*0.5);
+    let target;
+    if(spectrum && meterBands){
+      const [a,b] = meterBands[i];
+      let peak = 0;
+      for(let k=a;k<b;k++) if(spectrum[k] > peak) peak = spectrum[k];
+      target = 22 + (peak / 255) * 78;
     } else if(LIVE.state === 'live'){
-      const wave = Math.sin(Date.now()/520 - i * 0.7) * 0.5 + 0.5;
-      h = 22 + wave * (9 + centre * 7) + norm * 78 * 0.4;
+      // live but under the quiet threshold: the slow breathing wave
+      const wave = Math.sin(Date.now()/520 - i * 0.55) * 0.5 + 0.5;
+      target = 22 + wave * (9 + 6 * (1 - Math.abs(i-(bars.length-1)/2)/bars.length));
     } else {
-      h = 22 + ((Date.now()/220 + i) % 2) * 16;   // connecting: a travelling blip
+      target = 22 + ((Date.now()/220 + i) % 2) * 16;   // connecting: a travelling blip
     }
-    bars[i].style.height = Math.max(22, Math.min(100, h)) + '%';
+    /* Fast up, slow down. A meter that falls as quickly as it rises looks
+       like noise; letting it drop gently is what makes a voice read as a
+       voice. The fall is worked out from elapsed time, not per tick, so it
+       takes the same time whether we are running at 10fps or 30fps.
+       120ms is picked off syllable rate: people speak at 3-7 syllables a
+       second, so a fall much slower than that bridges straight over the
+       gaps between them. Measured against a steady synthetic voice at
+       300ms the row held flat for two seconds and moved only when the
+       speaker drew breath; what makes it live on real audio is mostly the
+       spectrum changing shape, not the overall level. */
+    const prev = meterHeights[i] || 22;
+    meterHeights[i] = target > prev ? target : prev + (target - prev) * fall;
+    bars[i].style.height = Math.max(8, Math.min(100, meterHeights[i])).toFixed(1) + '%';
   }
 }
-setInterval(liveMeterTick, 100);
+/* The rate is the sound's to set. Ten frames a second is plenty for the
+   breathing wave it shows for most of the day, and running that slowly is
+   what keeps the meter off the CPU graph on a device that stays on for
+   months. But 10fps is visibly steppy on actual speech, where the whole
+   point is that the row moves with the voice, so while something is being
+   said it goes to 30. */
+function meterSchedule(){
+  const busy = LIVE.state === 'live' && meterEl && !/\bquiet\b/.test(meterEl.className);
+  setTimeout(() => { liveMeterTick(); meterSchedule(); }, busy ? 33 : 100);
+}
+meterSchedule();
 
 function unlockSound(playConfirm){
   soundUnlocked = true;
