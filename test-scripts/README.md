@@ -103,6 +103,18 @@ git clone https://github.com/yameenbux/Taiyabah-Masjid-HomeSmartScreen.git test-
   three and a half hours a day, because auto-tune was legitimately opening the stream inside each
   prayer window. A suite that cries wolf on a correct build is worse than no suite.
 
+- **`test-now.js`** — the five minutes a prayer is actually happening. The countdown used to hit
+  zero and the hero jumped straight to the next prayer, so the one moment this screen exists for was
+  the one moment it never showed. It checks that each jamā'ah holds on "Now" for the configured
+  window and then moves on, for all five prayers and Jumu'ah; that Isha rolls into tomorrow's Fajr
+  once its window closes; that the eyebrow stops saying "next" while it is happening; and that the
+  pulse is dropped for anyone who has asked for reduced motion.
+
+  Every check pins the clock to a real minute of a real day from the repo's own timetable. Note the
+  fake clock is offset-based and keeps ticking: an earlier version pinned to one second before
+  Maghrib, and page load plus the settle wait pushed the assertion past the jamā'ah so it read "Now"
+  — the right answer to the wrong question. Leave margin either side of a boundary.
+
 - **`test-airtime.js`** — whether the screen knows the masjid is actually broadcasting, and
   whether the volume slider does anything. It drives Shoutcast's `/stats` endpoint from the test
   rather than the real masjid, so it is deterministic and runs whether or not Bolton is on air. It

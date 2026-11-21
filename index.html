@@ -337,6 +337,17 @@ a:focus-visible,
 .hero-count{font-family:"Fraunces",Georgia,serif;font-weight:200;color:var(--on-1);
   font-size:clamp(62px,18.5vmin,310px);line-height:.88;letter-spacing:-.045em;
   margin:clamp(4px,.8vmin,14px) 0 clamp(10px,1.6vmin,26px) -.022em}
+/* "Now" is a word, not six digits, so it loses the tabular figures and the
+   tight tracking that exist to stop a ticking clock jittering. */
+.hero-count.word{font-variant-numeric:normal;letter-spacing:-.01em}
+/* It pulses to catch an eye across a room. Slow and shallow on purpose: a
+   hard flash on a screen that lives on a kitchen wall all day is the kind
+   of thing people cover with a tea towel. */
+.hero-count.is-now{color:var(--gold-bright);animation:nowPulse 1.6s ease-in-out infinite}
+@keyframes nowPulse{0%,100%{opacity:1}50%{opacity:.42}}
+@media (prefers-reduced-motion: reduce){
+  .hero-count.is-now{animation:none;opacity:1}
+}
 .hero-at{font-size:clamp(19px,2.6vmin,42px);color:var(--on-2);font-weight:400;line-height:1.35}
 .hero-at b{color:var(--on-1);font-weight:600}
 .hero-at .tomorrow{color:var(--gold-bright);font-weight:600}
@@ -810,7 +821,7 @@ const MASJIDS = [{"id":"taiyabah","name":"Taiyabah Masjid","shortName":"Taiyabah
 const DEFAULT_MASJID = "taiyabah";
 /* When to open the stream around a prayer. The same for every masjid,
    because it is a fact about salah rather than about who is broadcasting. */
-const TUNING = {"autoTune":true,"tuneLeadMinutes":3,"tuneTailMinutes":25,"jumuahTailMinutes":70,"autoTuneNote":"With autoTune on, the screen opens the live stream a few minutes before each adhan and closes it after the jamaa'ah, even when the radio has not been left on. That is what makes the adhan the masjid's own muadhin rather than the recording, and it carries the salah live. Leaving the radio switched on keeps it connected all day instead. jumuahTailMinutes is longer because of the khutbah.","followAirtime":true,"followAirtimeNote":"Poll the masjid's Shoutcast /stats endpoint and switch the radio on by itself whenever an encoder is connected, the way a receiver does once the transmitter is up. COST: a masjid that leaves its encoder running around the clock means every screen streams around the clock - about 42 GB per home per month at 128 kbps, roughly ten times what the prayer windows alone cost. Set false to go back to opening only around each prayer."};
+const TUNING = {"autoTune":true,"tuneLeadMinutes":3,"tuneTailMinutes":25,"jumuahTailMinutes":70,"autoTuneNote":"With autoTune on, the screen opens the live stream a few minutes before each adhan and closes it after the jamaa'ah, even when the radio has not been left on. That is what makes the adhan the masjid's own muadhin rather than the recording, and it carries the salah live. Leaving the radio switched on keeps it connected all day instead. jumuahTailMinutes is longer because of the khutbah.","followAirtime":true,"followAirtimeNote":"Poll the masjid's Shoutcast /stats endpoint and switch the radio on by itself whenever an encoder is connected, the way a receiver does once the transmitter is up. COST: a masjid that leaves its encoder running around the clock means every screen streams around the clock - about 42 GB per home per month at 128 kbps, roughly ten times what the prayer windows alone cost. Set false to go back to opening only around each prayer.","nowHoldMinutes":5,"nowHoldNote":"How long the hero stays on a jamaa'ah after it starts, showing 'Now', before moving to the next prayer. 0 restores the old behaviour of switching the instant the countdown reaches zero."};
 const OCCASIONS = {"ramadan":{"enabled":true,"title":"Ramadan Mubarak","arabic":"رَمَضَان مُبَارَك","message":"May this blessed month bring peace, patience and closeness to Allah for you and your family."},"eidFitr":{"enabled":true,"title":"Eid Mubarak","arabic":"عِيد مُبَارَك","message":"Taqabbal Allahu minna wa minkum — may Allah accept it from us and from you.","durationDays":3},"eidAdha":{"enabled":true,"title":"Eid Mubarak","arabic":"عِيد مُبَارَك","message":"Taqabbal Allahu minna wa minkum — may Allah accept it from us and from you.","durationDays":4}};
 
 /* The chosen masjid, and the four views of it the rest of the page reads.
@@ -925,15 +936,26 @@ function atToday(base,t){ const [h,m]=t.split(":").map(Number); const d=new Date
 function dayRec(d){ return (DATA && DATA.days) ? DATA.days[ymd(d)] || null : null; }
 function addDays(d,n){ const r=new Date(d); r.setDate(r.getDate()+n); return r; }
 
+/* How long the screen stays on a jamaa'ah after it has started.
+   Without this the countdown hit zero and the hero jumped straight to the
+   next prayer, so the one moment the screen exists for - "it is happening
+   now" - was the one moment it never showed. Somebody walking in at 4:09
+   saw a countdown to Isha and no sign that Maghrib had just begun. */
+const NOW_HOLD_MS = ((TUNING && TUNING.nowHoldMinutes != null ? TUNING.nowHoldMinutes : 5)) * 60000;
+
 function computeNext(rec, baseDate, now){
   for(const k of JAMAAT_ORDER){
     const t = atToday(baseDate, rec.jamaat[k]);
-    if(t > now) return {key:k, at:t, tomorrow:false};
+    if(t > now) return {key:k, at:t, tomorrow:false, isNow:false};
+    /* Started, but only just. Hold here rather than running on to the next
+       one. Checked inside the same ordered walk, so the hold can never skip
+       a prayer or show two at once. */
+    if(now - t < NOW_HOLD_MS) return {key:k, at:t, tomorrow:false, isNow:true};
   }
   const tomorrow = addDays(baseDate,1);
   const rec2 = dayRec(tomorrow);
   if(!rec2) return null;
-  return {key:"fajr", at:atToday(tomorrow, rec2.jamaat.fajr), tomorrow:true, tomorrowRec:rec2};
+  return {key:"fajr", at:atToday(tomorrow, rec2.jamaat.fajr), tomorrow:true, tomorrowRec:rec2, isNow:false};
 }
 
 function currentPeriodKey(rec, baseDate, now){
@@ -2127,13 +2149,28 @@ function renderHero(rec, baseDate, now){
     ? `Jumu'ah <span class="ar">\u0627\u0644\u062c\u0645\u0639\u0629</span>`
     : `${meta.en} <span class="ar">${meta.ar}</span>`;
 
+  const kEl = document.getElementById('hero-k');
+  const at = isFriday ? rec.jummah.first : (next.tomorrow ? next.tomorrowRec.jamaat.fajr : rec.jamaat[next.key]);
+
+  if(next.isNow){
+    /* The word, not 00:00:00. A frozen row of zeros reads as a stopped
+       clock; "Now" is the only thing on this screen that is an event
+       rather than a time. */
+    cdEl.textContent = "Now";
+    cdEl.classList.add('is-now', 'word');
+    if(kEl) kEl.textContent = "Jam\u0101'ah";
+    atEl.innerHTML = `started at <b>${hm12(at)}</b>`;
+    return;
+  }
+
+  cdEl.classList.remove('is-now', 'word');
+  if(kEl) kEl.textContent = "Next jam\u0101'ah";
   const diff = Math.max(0, next.at - now);
   const hh = Math.floor(diff/3600000);
   const mm = Math.floor((diff%3600000)/60000);
   const ss = Math.floor((diff%60000)/1000);
   cdEl.textContent = pad(hh)+":"+pad(mm)+":"+pad(ss);
 
-  const at = isFriday ? rec.jummah.first : (next.tomorrow ? next.tomorrowRec.jamaat.fajr : rec.jamaat[next.key]);
   atEl.innerHTML = `at <b>${hm12(at)}</b>` +
     (next.tomorrow ? ` <span class="tomorrow">\u00b7 tomorrow</span>` : "");
 }
