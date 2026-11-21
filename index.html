@@ -808,8 +808,6 @@ body.nodata .daygroup,body.nodata .times{display:none}
      the stream is a different origin. preload="none" so a screen that is
      never switched on never opens the connection. -->
 <audio id="audio-live" crossorigin="anonymous" preload="none" playsinline></audio>
-<audio id="audio-adhan" src="audio/adhan-full.mp3" preload="auto"></audio>
-<audio id="audio-iqamah" src="audio/iqamah-short.mp3" preload="auto"></audio>
 
 <script>
 /* Every masjid on this screen, each with its own times, stream and details.
@@ -1009,16 +1007,12 @@ function getOccasion(now){
    first Jumu'ah — that's the only Jumu'ah given an audio trigger (see
    README: home alerts follow the single congregational Jama'ah, not the
    second overflow Jumu'ah). Each trigger fires once per calendar day. */
-const audioAdhan = document.getElementById('audio-adhan');
-const audioIqamah = document.getElementById('audio-iqamah');
 const audioKeepAlive = document.getElementById('audio-keepalive');
 const soundPill = document.getElementById('sound-pill');
 const soundPillLabel = document.getElementById('sound-pill-label');
 const SOUND_KEY = 'taiyabah-sound-unlocked';
 let soundUnlocked = false;
 try { soundUnlocked = localStorage.getItem(SOUND_KEY) === '1'; } catch(e){}
-let firedTriggers = new Set();
-let firedForDate = null;
 
 /* ---- keep-alive ----------------------------------------------------------
    The failure this exists to stop: a tablet left alone dims, the OS
@@ -1388,12 +1382,63 @@ function liveApplyVolume(){
   try { audioLive.volume = v; } catch(e){}
 }
 
+/* ---- catching up to the masjid ----
+   Shoutcast hands a new listener a burst of already-buffered audio the
+   moment it connects: measured at about 14 seconds of it on this server.
+   The player starts at the beginning of that burst, so it begins a quarter
+   of a minute behind the hall and stays there — the adhan arrives late and
+   anyone who can hear the masjid itself hears it twice, out of step.
+   Nothing can stop the server sending it, but the player does not have to
+   play it. Jumping to the end of what is buffered skips the backlog and
+   lands on the live edge, with a short cushion so the next packet is
+   already in hand. A live MP3 stream is not reliably seekable, so this is
+   best-effort and wrapped accordingly. */
+/* What this can and cannot fix, because the obvious version of it is a
+   trap and I walked into it.
+   Shoutcast hands a new listener about 14 seconds of already-broadcast
+   audio on connect, so the media timeline BEGINS 14 seconds in the past.
+   The browser paces its own download and never exposes that as a seekable
+   backlog — it holds a cushion of roughly 2.3s and no more — so seeking
+   inside the buffer cannot reach past it. Trimming that cushion to claw
+   back the lag measured beautifully and sounded awful: each jump left too
+   little buffered, the element stalled, rebuffered to 2.3s and was trimmed
+   again, a skip every two seconds for as long as it played. A choppy
+   stream is worse than a late one.
+   So the threshold sits well above the browser's natural cushion. It never
+   fires in normal playback. It exists for the one case that is genuinely
+   broken: a device that slept or rebuffered badly and woke holding a long
+   backlog, which would otherwise keep it minutes behind for the rest of
+   the day.
+   The 14 seconds is a server setting — the burst/backlog on the masjid's
+   Shoutcast host — and can only be turned down there. */
+const LIVE_LAG_LIMIT = 8;      // seconds; far above the ~2.3s the browser keeps
+const LIVE_LAG_TARGET = 2.5;   // leave the browser its cushion, or it stalls
+
+function liveTrimLag(why){
+  if(LIVE.state !== 'live') return;
+  try {
+    const b = audioLive.buffered;
+    if(!b || !b.length) return;
+    const edge = b.end(b.length - 1);
+    const behind = edge - audioLive.currentTime;
+    if(behind <= LIVE_LAG_LIMIT) return;
+    const to = Math.max(0, edge - LIVE_LAG_TARGET);
+    audioLive.currentTime = to;
+    console.info('[taiyabah] skipped ' + behind.toFixed(1) + 's of backlog to catch up with the masjid (' + why + ')');
+  } catch(e){ /* not seekable on this device — live with the lag */ }
+}
+
 audioLive.addEventListener('playing', ()=>{
   LIVE.attempts = 0; LIVE.state = 'live'; LIVE.frozenTicks = 0;
   if(LIVE.ctx && LIVE.ctx.state === 'suspended') LIVE.ctx.resume().catch(()=>{});
+  /* Deliberately not trimmed on connect. 'playing' re-fires after every
+     stall, so a trim here is what turned one jump into a loop of them. */
   updateSoundPill();
   updateMediaSession();
 });
+/* And on a slow drip afterwards, because a device that rebuffers or sleeps
+   wakes up behind again and would otherwise stay there all day. */
+setInterval(()=>liveTrimLag('drift'), 10000);
 audioLive.addEventListener('error',   ()=> liveRetry('errored'));
 audioLive.addEventListener('ended',   ()=> liveRetry('ended'));
 audioLive.addEventListener('stalled', ()=> liveRetry('stalled'));
@@ -1560,14 +1605,14 @@ function unlockSound(playConfirm){
   // remembered across closing and reopening a Home Screen app, so this
   // pill deliberately stays visible (as an "ON, tap to test" state)
   // rather than disappearing, in case it needs tapping again.
-  [audioAdhan, audioIqamah].forEach(a=>{
-    const audible = playConfirm && a===audioIqamah;
-    a.muted = !audible;
-    a.currentTime = 0;
-    a.play().then(()=>{
-      if(!audible){ a.pause(); a.currentTime = 0; a.muted = false; }
-    }).catch(()=>{ a.muted = false; });
-  });
+  /* The keep-alive loop is what gets primed now that there are no
+     recordings to prime. It is near-silent and runs anyway, so one
+     play/pause cycle inside this handler buys the same user-engaged audio
+     permission the two recordings used to. */
+  try {
+    audioKeepAlive.currentTime = 0;
+    audioKeepAlive.play().catch(()=>{});
+  } catch(e){}
   // Same gesture starts the keep-alive loop, which is the only moment
   // we're guaranteed permission to start audio at all.
   keepAliveMissedTicks = 0;
@@ -1608,7 +1653,7 @@ function updateSoundPill(){
          broadcasting. 'failed' is us being unable to reach a stream that
          may well be fine. Different facts, different words. */
       LIVE.state === 'offair'  ? (curStation().name || "Masjid") + " is off air"
-      : LIVE.state === 'failed'  ? "Can't reach the masjid · adhan will still play"
+      : LIVE.state === 'failed'  ? "Can't reach the masjid"
       : LIVE.state === 'retrying' ? "Reconnecting\u2026"
       : "Connecting\u2026";
     return;
@@ -1913,45 +1958,6 @@ function buildTriggersForDay(rec, baseDate){
   return withAdhan;
 }
 
-/* A tab/Home-Screen app that's been backgrounded, or whose screen has
-   locked, has its timers frozen by the OS — a trigger due while that's
-   happening is simply not seen at the moment it happens. Rather than
-   silently lose it, a 3-minute catch-up window means reopening the app
-   shortly after still plays it late, which is far better than never for
-   a devotional reminder (unlike the mosque's own kiosk screens, which
-   care about second-perfect timing because someone's always watching
-   them). Retries each tick until it actually succeeds or the window
-   closes, in case play() is blocked once but not the next second. */
-const CATCHUP_WINDOW_MS = 3*60000;
-
-function checkAudioTriggers(rec, baseDate, now){
-  const dayKey = ymd(baseDate);
-  if(firedForDate !== dayKey){ firedForDate = dayKey; firedTriggers = new Set(); }
-  if(!soundUnlocked) return;
-  const triggers = buildTriggersForDay(rec, baseDate);
-  for(const t of triggers){
-    if(firedTriggers.has(t.id)) continue;
-    const diff = now - t.at;
-    if(diff >= 0 && diff < CATCHUP_WINDOW_MS){
-      /* If OUR masjid's broadcast is playing, the real adhan is about
-         to come through it from the real muadhin. Playing the recording on
-         top would be two adhans at once, which is worse than either. The
-         recording is the fallback for exactly the case where live is not
-         carrying it: switched off, still connecting, off-air, or tuned to
-         another masjid — whose programme is not our adhan. */
-      if(t.kind==="adhan" && liveAudible() && onHomeStation()){
-        firedTriggers.add(t.id);
-        console.info('[taiyabah] adhan is coming through the live stream — recording suppressed');
-        continue;
-      }
-      const player = t.kind==="adhan" ? audioAdhan : audioIqamah;
-      player.currentTime = 0;
-      player.play().then(()=>{ firedTriggers.add(t.id); }).catch(()=>{ /* retry next tick */ });
-    } else if(diff >= CATCHUP_WINDOW_MS){
-      firedTriggers.add(t.id); // too late — give up quietly, don't retry forever
-    }
-  }
-}
 
 /* The QR is inlined per masjid at build time. A masjid with no QR — or one
    that has not set up giving at all — shows nothing rather than an empty
@@ -2316,7 +2322,6 @@ function tick(){
     renderJummahBanner(now);
     renderExpiryNotice(now);
     autoTune(rec, now, now);
-    checkAudioTriggers(rec, now, now);
   } else {
     // Past the end of the timetable. Say so, rather than leaving the
     // markup's placeholder dashes on a wall for weeks.

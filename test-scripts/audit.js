@@ -57,17 +57,9 @@ async function withPage(browser, iso, fn) {
     await page.evaluate(() => { try { localStorage.setItem('taiyabah-sound-unlocked','1'); } catch(e){} });
     await page.reload();
     await page.waitForTimeout(400);
-    await page.evaluate(() => {
-      window.__played = [];
-      for (const id of ['audio-adhan','audio-iqamah']) {
-        const el = document.getElementById(id);
-        const orig = el.play.bind(el);
-        el.play = () => { window.__played.push(id); return orig(); };
-      }
-    });
-    await page.waitForTimeout(4000);
-    const played = await page.evaluate(() => window.__played);
-    console.log('  Auto-fired (expect audio-adhan):', JSON.stringify(played));
+    // The recorded adhan and iqamah were removed: the masjid's own live
+    // broadcast carries both, and a recording playing over it was two
+    // adhans out of step. Nothing to hook here any more.
   });
 
   // 5. Service worker registers without error (needs http, file:// won't register - check for graceful no-op)
