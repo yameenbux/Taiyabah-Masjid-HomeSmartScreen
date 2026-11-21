@@ -199,6 +199,30 @@ function routes(page, state) {
         updateSoundPill(); return document.getElementById('sound-pill-label').textContent;
       });
       check('a 20s gap between sentences still reads as live', /live/i.test(l), l);
+
+      /* The colour has to agree with the words. Green used to stay lit
+         while the label said nothing was on air, which is the one
+         combination that actively misleads: a glance at the dot says you
+         are hearing the masjid. And red is deliberately NOT used for
+         silence — there is something to hear roughly 9% of the day, so a
+         red light would burn for twenty-two hours and mean nothing by the
+         time it mattered. */
+      const dot = () => page.evaluate(() => {
+        updateSoundPill();
+        return getComputedStyle(document.querySelector('#sound-pill .dot')).backgroundColor;
+      });
+      const green = 'rgb(127, 192, 143)', red = 'rgb(180, 83, 47)';
+
+      await page.evaluate(() => { LIVE.analyserProven=true; LIVE.lastSound=Date.now(); });
+      check('live is green', (await dot()) === green, await dot());
+
+      await page.evaluate(() => { LIVE.lastSound = Date.now() - 120000; });
+      const quiet = await dot();
+      check('a silent hall is not green', quiet !== green, quiet);
+      check('and is not red either, because silence is not a fault', quiet !== red, quiet);
+
+      await page.evaluate(() => { LIVE.state='failed'; });
+      check('being unable to reach the masjid IS red', (await dot()) === red, await dot());
       await page.close();
     }
 
