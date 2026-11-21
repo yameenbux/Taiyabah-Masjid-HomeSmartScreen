@@ -346,7 +346,7 @@ a:focus-visible,
    wherever the day has got to. A plain divider would have been one more
    piece of furniture; this is the same hairline carrying the information
    the removed day-band used to. */
-.daygroup{flex:0 0 auto;margin-top:clamp(20px,3.4vmin,56px)}
+.daygroup{flex:0 0 auto;margin-top:clamp(26px,5.2vmin,84px)}
 .rule{position:relative;height:2px;background:rgba(201,178,194,.26);overflow:visible}
 .rule-fill{position:absolute;left:0;top:0;bottom:0;width:0;
   background:linear-gradient(90deg,rgba(198,162,76,.5),var(--gold-bright));
@@ -356,17 +356,29 @@ a:focus-visible,
   box-shadow:0 0 0 clamp(3px,.45vmin,7px) rgba(220,187,99,.22);transition:left 1s linear}
 
 /* ---- the six times: one row, no boxes ---- */
+/* Spacing here is bought, not invented. .stage above is flex:1 and bottom-
+   aligns the hero, so on a 1366x1024 iPad it was holding 172px of dead air
+   between the header and the countdown while these three lines crowded each
+   other at the floor in 24-29px steps. Everything added below comes out of
+   that slack. */
 .times{flex:0 0 auto;display:grid;grid-template-columns:repeat(6,1fr);
-  gap:clamp(10px,1.4vw,30px);margin-top:clamp(16px,2.4vmin,38px)}
-.t-item{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:clamp(2px,.5vmin,8px)}
-.t-name{display:flex;align-items:baseline;gap:.4em;flex-wrap:wrap;min-width:0}
-.t-en{font-size:clamp(15px,1.9vmin,29px);font-weight:600;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--on-2);line-height:1.3}
-.t-ar{font-family:"Amiri",serif;font-size:clamp(16px,2vmin,31px);color:var(--on-3);line-height:1.3}
+  gap:clamp(14px,2vw,44px);margin-top:clamp(28px,5.2vmin,82px)}
+.t-item{min-width:0;display:flex;flex-direction:column;align-items:flex-start;
+  gap:clamp(8px,1.25vmin,19px)}
+/* nowrap, because a wrapped "SUNRISE / الشروق" made its column a line taller
+   than the five beside it and the whole row looked misaligned. The tighter
+   tracking is what buys the space to keep them on one line. */
+.t-name{display:flex;align-items:baseline;gap:.42em;min-width:0;white-space:nowrap}
+.t-en{font-size:clamp(15px,1.72vmin,26px);font-weight:600;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--on-2);line-height:1.25}
+.t-ar{font-family:"Amiri",serif;font-size:clamp(15px,1.8vmin,28px);color:var(--on-3);line-height:1.25}
 .t-jamaah{font-family:"Fraunces",Georgia,serif;font-weight:400;color:var(--on-1);
-  font-size:clamp(24px,3.2vmin,54px);line-height:1.1}
+  font-size:clamp(26px,3.5vmin,58px);line-height:1.05}
 .t-jamaah.none{color:var(--on-3)}
-.t-begins{font-size:clamp(16px,1.85vmin,28px);color:var(--on-3);line-height:1.3}
+/* Third in the hierarchy and now looks it. At 1.85vmin it was nearly the
+   size of the prayer's own name, so each cell read as three competing lines
+   instead of a label, a time, and a footnote. */
+.t-begins{font-size:clamp(15px,1.5vmin,22px);color:var(--on-3);opacity:.82;line-height:1.25}
 /* Where we are now: the name goes gold and a rule appears under the time.
    Two cues, so it survives a colour-blind reader and a sunlit screen. */
 .t-item.is-now .t-en{color:var(--gold-bright)}
@@ -376,10 +388,13 @@ a:focus-visible,
 /* Horizon has no panels, so these are underlined links — but they are the
    only touch targets on the page, so they carry real padding to clear the
    44px minimum and a focus ring the D-pad can land on. */
-.quicklinks{flex:0 0 auto;display:flex;align-items:center;gap:clamp(16px,2.6vw,56px);
-  flex-wrap:wrap;margin-top:clamp(18px,2.8vmin,44px)}
+.quicklinks{display:flex;align-items:center;gap:clamp(16px,2.4vw,50px);
+  flex-wrap:wrap;min-width:0}
+/* Stepped down from 2.3vmin. These are three ways out of the screen, not
+   the point of it, and at the old size they carried more weight than the
+   prayer times directly above them. */
 .quicklink{background:none;border:none;color:var(--on-1);cursor:pointer;text-align:left;
-  font-size:clamp(18px,2.3vmin,37px);font-weight:500;line-height:1.2;
+  font-size:clamp(16px,1.95vmin,30px);font-weight:500;line-height:1.2;
   padding:clamp(9px,1.2vmin,18px) 0;min-height:44px;
   border-bottom:2px solid rgba(201,178,194,.4);
   transition:color .18s ease,border-color .18s ease}
@@ -455,9 +470,9 @@ a:focus-visible,
 body.nodata .daygroup,body.nodata .times{display:none}
 
 /* ---- the floor line ---- */
-.footline{flex:0 0 auto;display:flex;align-items:baseline;justify-content:space-between;
-  gap:clamp(12px,2.4vw,40px);margin-top:clamp(16px,2.4vmin,38px);
-  font-size:clamp(15px,1.7vmin,26px);color:var(--on-2);flex-wrap:wrap}
+.footline{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
+  gap:clamp(14px,2.4vw,44px);margin-top:clamp(30px,5.6vmin,88px);
+  font-size:clamp(15px,1.6vmin,24px);color:var(--on-2);flex-wrap:wrap}
 .jumline{display:flex;align-items:baseline;gap:.6em;min-width:0}
 .jumline .k{font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-bright)}
 .jumline .v{color:var(--on-2)}
@@ -647,18 +662,6 @@ body.nodata .daygroup,body.nodata .times{display:none}
 
   <section class="times" id="times"></section>
 
-  <nav class="quicklinks">
-    <button class="quicklink" id="btn-month" type="button">
-      <span class="v">This month</span>
-    </button>
-    <button class="quicklink primary" id="btn-support" type="button">
-      <span class="v">Support the new build</span>
-      <span class="go" aria-hidden="true">→</span>
-    </button>
-    <button class="quicklink" id="btn-contact" type="button">
-      <span class="v">Visit or get in touch</span>
-    </button>
-  </nav>
 
   <div class="donate" id="donate" hidden>
     <span class="code" id="donate-code"></span>
@@ -667,7 +670,24 @@ body.nodata .daygroup,body.nodata .times{display:none}
 
   <div class="expiry" id="expiry" hidden><span class="dot"></span><span id="expiry-text"></span></div>
 
+  <!-- One floor row, not two. The links sat on their own line with the
+       Jumu'ah note on another below it, and after the MasjidOne credit came
+       out the whole right-hand half of that second line was empty while the
+       two rows crowded each other. They share a line now: links left,
+       Jumu'ah right, which gives a whole row back to the prayer times. -->
   <div class="footline">
+    <nav class="quicklinks">
+      <button class="quicklink" id="btn-month" type="button">
+        <span class="v">This month</span>
+      </button>
+      <button class="quicklink primary" id="btn-support" type="button">
+        <span class="v">Support the new build</span>
+        <span class="go" aria-hidden="true">→</span>
+      </button>
+      <button class="quicklink" id="btn-contact" type="button">
+        <span class="v">Visit or get in touch</span>
+      </button>
+    </nav>
     <div class="jumline" id="jummah-line"></div>
   </div>
 </div>
