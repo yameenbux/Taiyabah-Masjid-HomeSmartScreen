@@ -245,7 +245,11 @@ a:focus-visible,
 /* Thinner than before because there are thirteen of them now instead of
    seven, and the row still has to sit in the header beside the pill, the
    volume and the dial without pushing the clock around. */
-.meter i{display:block;width:clamp(2.5px,.3vmin,5px);height:22%;border-radius:2px;
+/* .42vmin, not .3: measured on the iPad the narrower value fell through to
+   the 2.5px floor, which is thinner than the seven-bar row it replaces and
+   loses the shape the extra bars exist to show. At .42 the tablet gets
+   3.2px and the row still takes under 8% of the header. */
+.meter i{display:block;width:clamp(2.5px,.42vmin,5px);height:22%;border-radius:2px;
   background:var(--gold-bright);opacity:.85;
   /* Shorter than the 33ms tick on purpose. Anything longer and each bar is
      still travelling when the next value lands, so the row reaches neither
