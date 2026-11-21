@@ -149,6 +149,83 @@ function routes(page, state) {
       await page.close();
     }
 
+    // ---- "on air" has to mean something is happening ----
+    /* The masjid leaves its encoder connected around the clock, so
+       streamstatus reads 1 at four in the afternoon with nobody in the
+       hall. The server therefore cannot answer the question a listener
+       actually has. The level can. */
+    {
+      const page = await ctx.newPage();
+      await routes(page, { onAir: true, streamUp: true });
+      await page.addInitScript(fakeDateScript(QUIET_CLOCK));
+      await page.addInitScript(() => { try {
+        localStorage.setItem('taiyabah-sound-unlocked','1');
+        localStorage.removeItem('taiyabah.live.on');
+      } catch(e){} });
+      await page.goto(FILE, { waitUntil: 'load' });
+      await wait(1500);
+
+      const label = () => page.evaluate(() => {
+        updateSoundPill();
+        return document.getElementById('sound-pill-label').textContent;
+      });
+
+      // the analyser cannot read this device: say connected, claim nothing
+      let l = await page.evaluate(() => {
+        LIVE.state='live'; LIVE.wanted=true; LIVE.analyserProven=false; LIVE.lastSound=0;
+        updateSoundPill(); return document.getElementById('sound-pill-label').textContent;
+      });
+      check('an unmeasurable stream says only that it is connected',
+        /connected/i.test(l) && !/nothing on air/i.test(l), l);
+
+      // measurable, and something is being said
+      l = await page.evaluate(() => {
+        LIVE.analyserProven=true; LIVE.lastSound=Date.now();
+        updateSoundPill(); return document.getElementById('sound-pill-label').textContent;
+      });
+      check('sound in the hall reads as live', /live/i.test(l), l);
+
+      // measurable, and silent for longer than the window
+      l = await page.evaluate(() => {
+        LIVE.lastSound = Date.now() - 120000;
+        updateSoundPill(); return document.getElementById('sound-pill-label').textContent;
+      });
+      check('a silent hall reads as nothing on air, not as live',
+        /nothing on air/i.test(l), l);
+
+      // a pause mid-khutbah must not flicker the label
+      l = await page.evaluate(() => {
+        LIVE.lastSound = Date.now() - 20000;
+        updateSoundPill(); return document.getElementById('sound-pill-label').textContent;
+      });
+      check('a 20s gap between sentences still reads as live', /live/i.test(l), l);
+      await page.close();
+    }
+
+    // ---- the live element must be blessed by the one gesture we get ----
+    {
+      const page = await ctx.newPage();
+      await routes(page, { onAir: true, streamUp: true });
+      await page.addInitScript(fakeDateScript(QUIET_CLOCK));
+      await page.goto(FILE, { waitUntil: 'load' });
+      await wait(1200);
+      /* Force the element back to the state a cold page is really in,
+         otherwise the stream has already connected, the src is already set
+         and the assertion passes without the priming branch ever running. */
+      const primed = await page.evaluate(() => {
+        const a = document.getElementById('audio-live');
+        liveStop();
+        a.removeAttribute('src'); a.load();
+        const before = a.getAttribute('src');
+        unlockSound(false);
+        return { before, after: a.getAttribute('src') };
+      });
+      check('unlocking from cold gives the live element a source to be blessed with',
+        primed.before === null && !!primed.after,
+        `before=${primed.before} after=${primed.after ? 'set' : 'none'}`);
+      await page.close();
+    }
+
     // ---- the volume slider, which did nothing on an iPad ----
     {
       const page = await ctx.newPage();

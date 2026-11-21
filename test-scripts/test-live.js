@@ -104,7 +104,11 @@ const QUIET_CLOCK = '2026-08-20T10:30:00';
     return;
   }
   check('one tap connects', live.state === 'live' && live.playing, live.label);
-  check('label names the masjid', /live/i.test(live.label), live.label);
+  /* Names the masjid — not necessarily the word "live". The label now
+     distinguishes a hall with something happening in it from one that is
+     merely connected and silent, and between prayers the honest answer is
+     "nothing on air". Asserting on "live" made a correct label a failure. */
+  check('label names the masjid', /Taiyabah/i.test(live.label), live.label);
   check('audio clock is advancing', live.t > 1, `currentTime=${live.t}`);
 
   // A masjid between prayers sits near silence. The meter must still move,

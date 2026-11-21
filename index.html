@@ -1176,6 +1176,7 @@ const LIVE = {
   timer: null,
   ctx: null, gain: null, analyser: null, buf: null, level: 0, quietFor: 0,
   silentTicks: 0, meterWarned: false,
+  lastSound: 0, analyserProven: false,
   onAir: null,            // what the masjid's server last said: true, false, or unknown
   airChecked: 0,
 };
@@ -1223,6 +1224,17 @@ function liveConnect(){
    means the screen can say "off air" when that is the truth, stop retrying
    a stream that nobody is sending, and come on by itself the moment the
    masjid starts. */
+/* How long silence has to last before the screen stops calling it live.
+   Long enough to ride out the pauses in a khutbah, short enough that the
+   screen is honest within a minute of the hall emptying. */
+const QUIET_AFTER_MS = 75000;
+
+function liveSomethingOnAir(){
+  if(!LIVE.analyserProven) return null;          // cannot tell on this device
+  if(LIVE.state !== 'live') return null;
+  return (Date.now() - LIVE.lastSound) < QUIET_AFTER_MS;
+}
+
 function liveStatusUrl(){
   const st = curStation();
   if(!st || !st.url) return null;
@@ -1552,6 +1564,31 @@ function liveMeterTick(){
     rms = Math.sqrt(sum / LIVE.buf.length);
   }
   LIVE.level = LIVE.level * 0.6 + rms * 0.4;
+
+  /* Whether anything is actually being broadcast, as opposed to whether an
+     encoder happens to be connected. The masjid leaves its encoder running
+     around the clock — streamstatus reads 1 at four in the afternoon with
+     nobody in the hall — so the server can never tell us "nothing is
+     happening right now", which is the thing a listener wants to know.
+     The level can. Anything above the floor counts as live and is held for
+     a while so gaps between sentences do not flicker the label; sustained
+     silence reads as nothing on air.
+     Only trusted once the analyser has proved it works on this device: if
+     it cannot read the stream at all it returns a flat zero, and calling
+     that "nothing on air" would be a lie told all day. */
+  if(LIVE.state === 'live'){
+    /* Two different thresholds doing two different jobs. Any reading at all
+       above the noise floor proves the analyser works on this device — a
+       broken one returns a flat exact zero, which is what we must not
+       mistake for a quiet hall. Room tone between prayers measures about
+       0.006 here, so proving it does NOT require anyone to speak; waiting
+       for a loud reading left the screen saying "connected" all afternoon
+       when it could already tell nothing was on air. */
+    if(rms > 0.0008) LIVE.analyserProven = true;
+    if(rms > 0.012)  LIVE.lastSound = Date.now();
+  } else {
+    LIVE.lastSound = 0;
+  }
   /* An analyser that reads a flat zero for a minute of live audio is not a
      quiet hall, it is a broken graph — iOS has shipped that bug more than
      once for streamed media. Say so once, so the next person does not have
@@ -1613,6 +1650,26 @@ function unlockSound(playConfirm){
     audioKeepAlive.currentTime = 0;
     audioKeepAlive.play().catch(()=>{});
   } catch(e){}
+
+  /* And the live element, which is the one that actually matters and was
+     never primed. iOS grants playback permission per ELEMENT, per page
+     load, tied to a real gesture — so blessing the keep-alive did nothing
+     for audioLive, and every later liveStart() from a timer was refused.
+     That is why the masjid coming on air did not bring the sound on by
+     itself: the screen knew, and was not allowed to act on it.
+     Giving it the silent loop as a source for one play/pause cycle inside
+     this handler blesses the element; liveConnect() replaces the source
+     with the real stream afterwards. */
+  if(LIVE.state === 'off' && !LIVE.wanted){
+    try {
+      audioLive.muted = true;
+      audioLive.src = audioKeepAlive.currentSrc || audioKeepAlive.src;
+      const pr = audioLive.play();
+      const done = ()=>{ try { audioLive.pause(); } catch(e){} audioLive.muted = false; };
+      if(pr && pr.then) pr.then(done).catch(()=>{ audioLive.muted = false; });
+      else done();
+    } catch(e){ audioLive.muted = false; }
+  }
   // Same gesture starts the keep-alive loop, which is the only moment
   // we're guaranteed permission to start audio at all.
   keepAliveMissedTicks = 0;
@@ -1643,8 +1700,16 @@ function updateSoundPill(){
     // adhan: the recording still fires even with the masjid off-air.
     if(LIVE.state === 'live'){
       soundPill.classList.add('on');
-      soundPillLabel.textContent = (curStation().name || "Masjid") +
-        (autoTuned ? " · live for salah" : " · live");
+      const name = curStation().name || "Masjid";
+      const onAir = liveSomethingOnAir();
+      /* Three different facts, three different sentences. Connected and
+         something is being said; connected and the hall is silent; and the
+         case where this device cannot measure the level at all, where the
+         only honest thing is to say it is connected and nothing more. */
+      soundPillLabel.textContent =
+          onAir === false ? name + " · nothing on air"
+        : onAir === true  ? name + (autoTuned ? " · live for salah" : " · live")
+        : name + " · connected";
       return;
     }
     soundPill.classList.remove('on');
