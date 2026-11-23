@@ -44,7 +44,7 @@ Two things follow:
 | | Needed? | If it's missing |
 | --- | --- | --- |
 | A year of prayer times | **Yes** | They cannot be on the screen at all. |
-| Permission to carry their stream | **Yes**, if they want to be listened to | They appear with times only; their adhan plays as the recording. |
+| Permission to carry their stream | **Yes**, if they want to be listened to | They appear with times only. Since the recorded adhan was removed (`7f6f976`) there is no substitute: a household on that masjid hears no adhan from the screen at all. |
 | Their stream URL | For listening | Must be **https** — a plain-http mount is blocked as mixed content and fails *silently*. Test the exact endpoint in a browser, not a media player. |
 | Contact details | No | The "Visit or get in touch" button is hidden for them. |
 | A donation link | No | No QR for them. |

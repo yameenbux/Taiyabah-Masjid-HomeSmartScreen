@@ -73,7 +73,9 @@ is about a device you have in front of you.
 | Mains powered, permanently | See the warning below. |
 
 Roughly **£120–200** for a Lenovo Tab M11 class device, though listings vary enough that you should
-price it the week you buy. At any serious unit count this is the dominant cost of the whole project,
+price it the week you buy. If you are going to an ODM or wholesaler rather than a UK retailer, the
+requirements above are expanded into a supplier-facing sheet with an acceptance test in
+[`device-spec.md`](device-spec.md) — send that, not this page. At any serious unit count this is the dominant cost of the whole project,
 so it is worth getting quotes rather than buying at retail.
 
 > **The battery is the part that will fail.** A tablet held at 100% charge, warm, for two years will
@@ -215,7 +217,7 @@ to protect Fajr, and all three follow *your* masjid rather than a fixed one:
 | Behaviour | Why |
 | --- | --- |
 | Auto-tune only works on your own masjid | The prayer windows are built from your masjid's timetable, so they mean nothing on someone else's stream. |
-| The recorded adhan still plays when tuned away | Another masjid's programme is **not** your adhan. Suppressing on it would hand the household someone else's talk at Fajr with the radio apparently working perfectly. |
+| Tuning away does not borrow someone else's adhan | Another masjid's programme is **not** your adhan. The recorded fallback that used to cover this was removed (`7f6f976`), so a household tuned away hears that masjid's stream and nothing is substituted — which is why the overnight return below matters more than it used to. |
 | The dial returns home overnight | The nightly reload comes back on your masjid, so tuning away and forgetting does not cost months of live Fajr. |
 
 > **Ask before adding anyone's stream.** Every screen that tunes to a masjid
@@ -238,7 +240,6 @@ Over Fully Cloud, or `adb logcat | grep taiyabah` on the same network:
 | `autoplay probe refused: …` | The adhan will not sound unattended. Go back to the test section. |
 | `tuning in for the adhan` | Auto-tune opened the stream. |
 | `jamaa'ah over — leaving the stream` | Auto-tune closed it. Normal. |
-| `adhan is coming through the live stream — recording suppressed` | Correct behaviour: the masjid's own muadhin, not the bundled recording. |
 | `live stream <reason> — reconnecting in Ns` | Stream dropped; backoff is working. |
 | `device timezone <zone>; showing Europe/London` | Printed every boot. Times are corrected regardless, but a large correction means that device's clock is wrong. |
 | `timers were suspended for ~Ns — catching up` | The device slept. Revisit the idle settings. |

@@ -55,9 +55,6 @@ data/
   timetable-2026.json      ← prayer times, see schema below
   newbuild.json            ← New Build appeal copy + bank details
   occasions.json           ← Ramadan/Eid greeting text + duration rules
-audio/
-  adhan-full.mp3           ← real ~3.4min recording, github.com/abodehq/Athan-MP3, no formal licence file
-  iqamah-short.mp3         ← real ~51s recording (measured: 51.1s)
 logo-cream.png, logo-dark.png, icon-192.png, icon-512.png, apple-touch-icon.png
 test-scripts/              ← Playwright tests, see Testing section below
 ```
